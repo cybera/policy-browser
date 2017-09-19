@@ -1,0 +1,129 @@
+#!/usr/bin/env ruby
+
+###################################################################################
+# Usage:
+#
+# You'll need to setup a scraper.yml file in the project's root folder before
+# running this script. Copy ../../scraper.yml.example to ../../scraper.yml and
+# modify at least the "download_folder" to point to a local path on your machine.
+###################################################################################
+
+require 'HTTParty'
+require 'Nokogiri'
+require 'Pry'
+require 'cgi'
+require 'yaml'
+
+# Return a parse version of the document obtained by making a GET request to the
+# provided href.
+def parse_get(href)
+  text = HTTParty.get(href)
+  Nokogiri::HTML(text)
+end
+
+# Re-opening the class to add some helper methods
+class Nokogiri::HTML::Document
+  # Grab all "a" elements that contain the given content text (this is the text a user will see,
+  # not necessarily part of the actual link).
+  def links_with_text(text)
+    self.xpath("//a[contains(text(),'#{text}')]")
+  end
+
+  # Assumption: the document contains a single table with column headers
+  #
+  # Return all "a" elements in the column represented by the column_header
+  #
+  # TODO: generalize a bit more to get rid of the "single table in document" assumption
+  def links_under_column(column_header)
+    # See: https://stackoverflow.com/questions/8015550/find-cells-under-a-column-in-an-html-table-with-xpath
+
+    self.xpath("//tr/td[
+      count(preceding-sibling::td[not(@colspan)])
+      + sum(preceding-sibling::td/@colspan)
+    = count(../../tr[1]/th[.='#{column_header}']/preceding-sibling::th[not(@colspan)])
+      + sum(../../tr[1]/th[.='#{column_header}']/preceding-sibling::th/@colspan)]/a")
+  end
+end
+
+class Nokogiri::XML::Element
+  # Assumption: The current element is an "a" element with a link that can be accessed via
+  # an HTTP GET request
+  #
+  # Returns a Nokogiri parsed document of the page referenced by the link
+  def follow_link()
+    parse_get(self['href'])
+  end
+
+  # Assumption: The current element is an "a" element with a link to a downloadable document
+  # (accessible via GET request)
+  #
+  # Downloads the document to the given path.
+  def download(path)
+    File.open(path, "w") do |file|
+      file.binmode
+      HTTParty.get(self['href'], stream_body: true) do |fragment|
+        file.write(fragment)
+      end
+    end
+  end
+
+  # Assumption: The current element is an "a" element
+  #
+  # Grabs any query parameters and returns them in a hash
+  def link_params
+    CGI::parse(URI.parse(self['href']).query)
+  end
+end
+
+# Figure out where this script is running and find the config file relative to it
+script_path = File.expand_path(File.dirname(__FILE__))
+config_path = File.join(script_path,"..","..","scraper.yml")
+
+# Load the config file
+scraper_config = YAML.load_file(config_path)
+
+# Grab config entries for the URL to start at and the folder to download to
+entry_url = scraper_config['entry_url']
+download_folder = scraper_config['download_folder']
+
+entry_page = parse_get(entry_url)
+
+# Grab only links on the entry page that display "Interventions" as their link text
+interventions = entry_page.links_with_text("Interventions")
+
+# for testing (restrict the loop to a 1 element array, containing the first of the returned results):
+# interventions = [interventions.first]
+
+for intervention in interventions do
+  intervention_page = intervention.follow_link
+  related_documents = intervention_page.links_with_text("Related Documents")
+
+  # for testing (restrict the loop to a 1 element array, containing the first of the returned results):
+  # related_documents = [related_documents.first]
+
+  for related_document in related_documents do
+    related_document_page = related_document.follow_link
+    download_links = related_document_page.links_under_column("Document Name")
+    for download_link in download_links do
+      # Guess the type of file and extract enough information to give it a unique name
+      # among all the files (in a flat folder structure)
+      header = HTTParty.head(download_link['href'])
+      filename_hint = header['content-disposition']
+      extension = "unknown"
+      meta = related_document.link_params['ID'] + related_document.link_params['en'] + download_link.link_params['DMID']
+      filename = meta.join(".")
+      if filename_hint =~ /filename=(.*?)\.(html|doc|pdf)$/i
+        # The filenames seem pretty random and are unlikely to be useful, but just in case...
+        filename += "(#{$1})"
+        extension = $2
+      end
+      
+      # Do the actual download
+      download_path = File.join(download_folder, "#{filename}.#{extension.downcase}")
+      download_link.download(download_path)
+    end
+  end
+end
+
+# Uncomment for console-based debugging
+# Pry.start(binding)
