@@ -59,6 +59,12 @@ class Nokogiri::XML::Element
   #
   # Downloads the document to the given path.
   def download(path)
+    if File.exists?(path)
+      puts "#{path} already exists"
+
+      return
+    end
+
     File.open(path, "w") do |file|
       file.binmode
       HTTParty.get(self['href'], stream_body: true) do |fragment|
@@ -112,7 +118,7 @@ for intervention in interventions do
       extension = "unknown"
       meta = related_document.link_params['ID'] + related_document.link_params['en'] + download_link.link_params['DMID']
       filename = meta.join(".")
-      if filename_hint =~ /filename=(.*?)\.(html|doc|pdf)$/i
+      if filename_hint =~ /filename=(.*?)\.(.+)$/i
         # The filenames seem pretty random and are unlikely to be useful, but just in case...
         filename += "(#{$1})"
         extension = $2
