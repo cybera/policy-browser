@@ -39,4 +39,6 @@ repo for various CIRA project deliverables
   gem install httparty
   gem install pry
   gem install mechanize
+  gem install yomu
+  gem install sqlite3
   ```
