@@ -1,0 +1,11 @@
+#!/bin/bash
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PROJECT_DIR="$(dirname $SCRIPT_DIR)"
+
+# Build the scraper image
+RUBY_IMG=cybera/hey-cira/ruby
+docker build --build-arg NOCACHE=$(date +%s) \
+             -f $PROJECT_DIR/build/Dockerfile-ruby \
+             -t $RUBY_IMG \
+             $PROJECT_DIR

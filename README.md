@@ -1,7 +1,29 @@
 # hey-cira
 repo for various CIRA project deliverables
 
-## Using the screen scraper
+## Running w/ Docker
+
+1. Install [Docker](https://www.docker.com)
+
+2. Build the Docker image(s)
+
+  ```
+  bin/build
+  ```
+
+3. Scrape CRTC site for documents
+
+  ```
+  bin/scrape
+  ```
+
+4. Build local sqlite database with parsed documents
+
+  ```
+  bin/wrangle
+  ```
+
+## Deprecated: old local Ruby installation instructions
 
 1. Install rbenv
 

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PROJECT_DIR="$(dirname $SCRIPT_DIR)"
+MOUNT_DIR=/mnt/hey-cira
+DOCKER_IMG=cybera/hey-cira/ruby
+
+docker run -it --rm \
+	-v $PROJECT_DIR:$MOUNT_DIR \
+	$DOCKER_IMG \
+	bash -c "cd $MOUNT_DIR; scripts/wrangling/make-db.rb; scripts/wrangling/import-docs.rb"

@@ -8,11 +8,19 @@
 # modify at least the "download_folder" to point to a local path on your machine.
 ###################################################################################
 
-require 'HTTParty'
-require 'Nokogiri'
-require 'Pry'
+require 'httparty'
+require 'nokogiri'
+require 'pry'
 require 'cgi'
 require 'yaml'
+require 'optparse'
+
+options = {}
+OptionParser.new do |opts|
+  opts.on("-c", "--config FILE", "Supply a scraper.yml file for configuration") do |file|
+    options[:config] = file
+  end
+end.parse!
 
 # Return a parse version of the document obtained by making a GET request to the
 # provided href.
@@ -83,7 +91,7 @@ end
 
 # Figure out where this script is running and find the config file relative to it
 script_path = File.expand_path(File.dirname(__FILE__))
-config_path = File.join(script_path,"..","..","scraper.yml")
+config_path = options[:config] || File.join(script_path,"..","..","scraper.yml")
 
 # Load the config file
 scraper_config = YAML.load_file(config_path)
