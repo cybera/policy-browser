@@ -49,3 +49,14 @@ CREATE TABLE IF NOT EXISTS docmeta(
   UNIQUE(docid,key)
 );
 SQL
+
+db.execute <<-SQL
+CREATE TABLE IF NOT EXISTS docentities(
+  id INTEGER PRIMARY KEY,
+  docid INTEGER,
+  type VARCHAR(128),
+  value VARCHAR(256),
+  FOREIGN KEY(docid) REFERENCES docs(id),
+  UNIQUE(docid,type,value)
+);
+SQL
