@@ -1,6 +1,6 @@
 FROM ruby:2.4.2-slim
 
-COPY build/install /tmp/install
+COPY build/install-ruby /tmp/install
 
 ARG NOCACHE
 
