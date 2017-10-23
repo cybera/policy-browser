@@ -3,9 +3,24 @@
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PROJECT_DIR="$(dirname $SCRIPT_DIR)"
 
-# Build the scraper image
-RUBY_IMG=cybera/hey-cira/ruby
-docker build --build-arg NOCACHE=$(date +%s) \
-             -f $PROJECT_DIR/build/Dockerfile-ruby \
-             -t $RUBY_IMG \
-             $PROJECT_DIR
+VERSION=1.0
+
+# Build the ruby image
+RUBY_IMG=cybera/hey-cira/ruby;
+if [ -z $(docker images $RUBY_IMG:$VERSION -q) ]; then
+  docker build --build-arg NOCACHE=$(date +%s) \
+               -f $PROJECT_DIR/build/Dockerfile-ruby \
+               -t $RUBY_IMG \
+               $PROJECT_DIR
+  docker tag $RUBY_IMG:latest $RUBY_IMG:$VERSION
+fi
+
+# Build the python image
+if [ -z $(docker images $PYTHON_IMG:$VERSION -q) ]; then
+  PYTHON_IMG=cybera/hey-cira/python;
+  docker build --build-arg NOCACHE=$(date +%s) \
+               -f $PROJECT_DIR/build/Dockerfile-python \
+               -t $PYTHON_IMG \
+               $PROJECT_DIR
+  docker tag $PYTHON_IMG:latest $PYTHON_IMG:$VERSION
+fi

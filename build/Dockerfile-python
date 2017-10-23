@@ -1,0 +1,7 @@
+FROM continuumio/anaconda3
+
+COPY build/install-python /tmp/install
+
+ARG NOCACHE
+
+RUN NOCACHE=${NOCACHE} /tmp/install/all.sh
