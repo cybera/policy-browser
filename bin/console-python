@@ -1,0 +1,12 @@
+#!/bin/bash
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PROJECT_DIR="$(dirname $SCRIPT_DIR)"
+MOUNT_DIR=/mnt/hey-cira
+PYTHON_IMG=cybera/hey-cira/python
+
+docker run -it --rm \
+  -e PYTHONSTARTUP=scripts/config/console.py \
+  -v $PROJECT_DIR:$MOUNT_DIR $PYTHON_IMG \
+  bash -c "cd $MOUNT_DIR; python"
+
