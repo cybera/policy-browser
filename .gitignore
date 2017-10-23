@@ -1,3 +1,4 @@
 /scraper.yml
 .DS_Store
 .Rhistory
+*.pyc
