@@ -5,6 +5,9 @@ require "yomu"
 require "nokogiri"
 require "timeout"
 
+META_SOURCE = "import-docs"
+META_VERSION = "1.0"
+
 script_path = File.expand_path(File.dirname(__FILE__))
 data_path = File.join(script_path,"..","..","data")
 db_path = File.join(data_path, "processed", "docs.db")
@@ -79,6 +82,8 @@ class Nokogiri::HTML::Document
   end
 end
 
+DB.transaction
+
 # Cycle through just the .html files again, as we know they have other useful information that
 # can be relatively easily extracted.
 htmls = Dir.glob(File.join(docs_path,"*.htm*"))
@@ -119,8 +124,8 @@ for html in htmls
 
     for k,v in meta
       if !v.empty?
-        DB.execute("INSERT OR IGNORE INTO docmeta(docid,key) VALUES (?,?)", [docid,k])
-        DB.execute("UPDATE docmeta SET value = ? WHERE docid = ? AND key = ?", [v,docid,k])
+        DB.execute("INSERT OR IGNORE INTO docmeta(docid,key,source) VALUES (?,?,?)", [docid,k,META_SOURCE])
+        DB.execute("UPDATE docmeta SET value = ?, version = ? WHERE docid = ? AND key = ? AND source = ?", [v,META_VERSION,docid,k,META_SOURCE])
       end
     end
   end
@@ -143,3 +148,5 @@ for doc in docs
     end
   end
 end
+
+DB.commit

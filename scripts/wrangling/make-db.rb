@@ -34,8 +34,10 @@ db.execute <<-SQL
     key VARCHAR(128),
     segmentid INTEGER,
     value TEXT,
+    source VARCHAR(128),
+    version VARCHAR(32),
     FOREIGN KEY(segmentid) REFERENCES segments(id),
-    UNIQUE(segmentid,key)
+    UNIQUE(segmentid,key,source)
   );
 SQL
 
@@ -45,8 +47,10 @@ CREATE TABLE IF NOT EXISTS docmeta(
   key VARCHAR(128),
   docid INTEGER,
   value TEXT,
+  source VARCHAR(128),
+  version VARCHAR(32),
   FOREIGN KEY(docid) REFERENCES docs(id),
-  UNIQUE(docid,key)
+  UNIQUE(docid,key,source)
 );
 SQL
 
