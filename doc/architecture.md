@@ -86,6 +86,18 @@ Tasks:
   - Investigate ways of training an existing named entity classifier
   - Investigate other methods of getting what we're really interested in (potentially names of companies, people, places, dates, etc.)
   - If it's simple (1-2 days), hack out a prototype. Otherwise, create some more specific stories.
+Why?: Generic NE chunkers give some promising results. You can see those in the docentities table. However, there are also a lot of misfires, probably due to the NLTK chunker being a bit too generic and also the fact that we're dealing with more highly specialized documents.
+
+Story: Once we have our own named entity chunker, we can start thinking about how to continually train it to be better. Up to this point, we've always approached training as a one-time thing. We come up with the best process we can, do one last training run, and that's it. But what about introducing "human in the loop" style training, where we allow corrections to mistakes the algorithm makes, and we use those corrections to generate better training data for perhaps an overnight process?
+Tasks:
+  - Requires the above story to be finished, where we already have our own NE chunker.
+  - Identify a piece of metadata where the custom chunker is making a mistake.
+  - Figure out how we would correct that data via a database record change, making it obvious that it's a deviation from the generated version, without completely getting rid of the generated version (so that we can compare things later).
+  - Figure out how to use the corrected data as the basis of an addition to the training set for the chunker.
+  - Set up a training process that can be run manually to regenerate the chunker model (we know that something like this could easily be made into a cron task)
+  - Figure out an interface to allow an end user (or admin) to make those changes
+  - Consider for future stories how we might modify the interface to allow less skilled/trusted users to help out (i.e. some sort of consensus system where, if 3 different people correct the same piece of data, we make it an "official" correction)
+Why?: I think this could be at the root of developing some really useful metadata. Turns out I'm [far](https://www.computerworld.com/article/3004013/robotics/why-human-in-the-loop-computing-is-the-future-of-machine-learning.html) from [the](https://blog.algorithmia.com/machine-learning-with-human-in-the-loop/) only [one](https://medium.com/kaizen-data/machine-learning-with-humans-in-the-loop-lessons-from-stitchfix-300672904f80) thinking [this](http://www.kritikalsolutions.com/blog/human-in-the-loop-crucial-for-machine-learning/). Going through this process on an NE chunker will get us thinking about how to do it in other areas of the project and perhaps other data science projects. It's an aspect of practical machine learning that we haven't really explored much.
 
 Story: As a person interested in CRTC policy, dividing intervention sumissions into groups would probably be helpful. But what would that even look like?
 Tasks:
@@ -101,3 +113,40 @@ Tasks:
   - Set up a RAC server w/ Apache and a simple web framework (we'll have to fight out which one, but we may want this to be a little more familiar/flexible/efficient than R's shiny - RoR or Django would be some obvious contenders)
   - Set up a simple document browsing interface: Click a link, see the text of a submission
   - Any other bells and whistles for a first cut? Things that we could get done in 1-3 days?
+Why?: I think we're not going to truly get a feel for these documents if we don't start actually trying to read/browse them. In theory, we can browse by actually opening the files, or by querying them on the command line from the sqlite database. But that's just not the same as being able to click through and have text immediately show up. The sooner we get this up, the sooner we can start thinking about how to make the entire experience of looking for stuff better.
+
+# Top stories:
+
+I'm thinking these could be some of the most useful "next up" stories:
+
+- Interface: Simple document browser
+- Our own NE chunker (possibly requiring our own Part-of-speech tagger)
+- A simple human-in-the-loop system to correct NE chunker misfires
+
+# Machine Learnin' Problem Formulations
+
+Let's use this as a place to sketch out ideas of where we might apply machine learning and what problems we may have to solve to do so. Before we actually try one of these ideas, we should have:
+1. The problem boiled down to a typical machine learning problem formulation, where we have a bunch of examples with some number of features and we're using them to make a single prediction.
+2. We should have an idea of how much data we'd need and how hard it would be to get it. Would there be any creative ways of obtaining it? Or could we deploy it imperfectly and have human-in-the-loop style modification/addition to the data set? Could we bootstrap off of a more comprehensive dataset and just specialize at the last step?
+3. We should have a good idea of what that information might be useful for in serving our larger goal of making these documents easier to browse and digest. How do we use the predictions once we have them?
+4. What sort of machine learning approach do we think would give the most chance of success? For example, if we have a really small data set, maybe we want to consider just a simple linear or logistic regression over some really deep model?
+
+- predict whether a case (or segment within a case) is a response to a previous case
+  - high usefulness in organizing segments: even if we don't know *which* segment it is responding to, we could use the information to show segments that haven't yet been linked to the things they're responding to but are probably responses to *something*. This would allow a human to make these linkages without having to sort through the vast majority of segments that aren't responses.
+  - small amount of data (and we would have to label all of it ourselves)
+  - probably a very simple machine learning algorithm that wouldn't need lots of data and could run quickly
+- topic extraction as a tool to help other labelling?
+  - show segments that seem to be related and ask
+    - are they related?
+    - how are they related?
+- any way we could turn it into a crowd-sourcing thing?
+  - i.e. someone organizing their own information could help others and speed up labelling
+  - how to know how much that would help speed things up?
+
+# Continaul Process for Generating New Stories
+
+With this project in particular, we can probably figure out a lot of where we want to go with it by just trying to browse/organize documents with it and trying to make that experience better. Here's a simple sketch for something we could be doing at regular (possibly daily?) intervals:
+
+- Start organizing something by hand
+- Note the pain points
+- Think about how a ML process and/or user interface addition/change might aid that
