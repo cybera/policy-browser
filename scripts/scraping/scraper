@@ -8,19 +8,13 @@
 # modify at least the "download_folder" to point to a local path on your machine.
 ###################################################################################
 
-require 'httparty'
-require 'nokogiri'
-require 'pry'
+require 'HTTParty'
+require 'Nokogiri'
+require 'Pry'
 require 'cgi'
 require 'yaml'
-require 'optparse'
-
-options = {}
-OptionParser.new do |opts|
-  opts.on("-c", "--config FILE", "Supply a scraper.yml file for configuration") do |file|
-    options[:config] = file
-  end
-end.parse!
+require 'mechanize'
+require 'fileutils'
 
 # Return a parse version of the document obtained by making a GET request to the
 # provided href.
@@ -29,6 +23,7 @@ def parse_get(href)
   Nokogiri::HTML(text)
 end
 
+
 # Re-opening the class to add some helper methods
 class Nokogiri::HTML::Document
   # Grab all "a" elements that contain the given content text (this is the text a user will see,
@@ -36,7 +31,14 @@ class Nokogiri::HTML::Document
   def links_with_text(text)
     self.xpath("//a[contains(text(),'#{text}')]")
   end
-
+  
+  # Grab all the 'a' elements from the pagination table. Here we are specifically looking under the first table
+  # of the page. Currently this is fine cause the pagination table is the first table, but in future this may change
+  # and in such cases we will have to figure out a way to generalize the search.
+  def get_all_pages()
+    a_links = self.xpath('//tr[1]/td/table/tr/td/a/@href')
+    a_links.map {|a_link| a_link.value}
+  end
   # Assumption: the document contains a single table with column headers
   #
   # Return all "a" elements in the column represented by the column_header
@@ -89,16 +91,50 @@ class Nokogiri::XML::Element
   end
 end
 
+def get_related_documents(intervention_page)
+  
+    related_documents = intervention_page.links_with_text("Related Documents")
+    # for testing (restrict the loop to a 1 element array, containing the first of the returned results):
+    # related_documents = [related_documents.first]
+    
+    for related_document in related_documents do
+      related_document_page = related_document.follow_link
+      download_links = related_document_page.links_under_column("Document Name")
+      for download_link in download_links do
+        # Guess the type of file and extract enough information to give it a unique name
+        # among all the files (in a flat folder structure)
+        header = HTTParty.head(download_link['href'])
+        filename_hint = header['content-disposition']
+        extension = "unknown"
+        meta = related_document.link_params['ID'] + related_document.link_params['en'] + download_link.link_params['DMID']
+        filename = meta.join(".")
+        if filename_hint =~ /filename=(.*?)\.(.+)$/i
+          # The filenames seem pretty random and are unlikely to be useful, but just in case...
+          filename += "(#{$1})"
+          extension = $2
+        end
+        
+        # Do the actual download
+        download_path = File.join(DOWNLOAD_FOLDER, "#{filename}.#{extension.downcase}")
+        download_link.download(download_path)
+      end
+    end
+  
+  
+end
+
 # Figure out where this script is running and find the config file relative to it
 script_path = File.expand_path(File.dirname(__FILE__))
-config_path = options[:config] || File.join(script_path,"..","..","scraper.yml")
+config_path = File.join(script_path,"..","..","scraper.yml")
 
 # Load the config file
 scraper_config = YAML.load_file(config_path)
 
 # Grab config entries for the URL to start at and the folder to download to
 entry_url = scraper_config['entry_url']
-download_folder = scraper_config['download_folder']
+DOWNLOAD_FOLDER = scraper_config['download_folder']
+REGEX = /javascript:__doPostBack\('ctl00$MainContent$gvData','(Page\$\d+)'\)/
+TARGET = 'ctl00$MainContent$gvData'
 
 entry_page = parse_get(entry_url)
 
@@ -107,34 +143,37 @@ interventions = entry_page.links_with_text("Interventions")
 
 # for testing (restrict the loop to a 1 element array, containing the first of the returned results):
 # interventions = [interventions.first]
-
 for intervention in interventions do
-  intervention_page = intervention.follow_link
-  related_documents = intervention_page.links_with_text("Related Documents")
+  intervention_page_one = intervention.follow_link
+  
+  # Grab related documents in the page one first and then move on to scraping all the other pages
+  get_related_documents(intervention_page_one)
+  # Get the event number to construct the url link to Page$1 of an intervention. 
+  event_no = intervention.link_params['en'][0]  
+  request_url = "https://services.crtc.gc.ca/pub/ListeInterventionList/Default-Defaut.aspx?en=#{event_no}&dt=i&lang=e"
+  agent = Mechanize.new()
+  page = agent.get(request_url)
+  
+  form = page.form_with(:id => 'aspnetForm')
+  # edge case: the first page of results
+  max_page_val_visited = 1
+  page_links = intervention_page_one.get_all_pages()
+  # Get related documents by loading each page.
+  while (page_val = page_links.shift)
+    num = page_val.match(/(Page\$\d|Page\$Last+)/).to_s
+    p_num = num.match(/\d|Last+/)[0].to_s
+    if (max_page_val_visited < p_num.to_i) || (p_num.match("Last"))
+      max_page_val_visited = p_num.to_i==0 ? max_page_val_visited+1 : p_num.to_i
+      form['__EVENTTARGET'] = TARGET
+      form['__EVENTARGUMENT'] = num
+      my_page = form.submit
+      sleep 1
 
-  # for testing (restrict the loop to a 1 element array, containing the first of the returned results):
-  # related_documents = [related_documents.first]
+      # Convert Mechanize Page to Nokogiri html page
+      my_html = Nokogiri::HTML(my_page.parser.to_html)
 
-  for related_document in related_documents do
-    related_document_page = related_document.follow_link
-    download_links = related_document_page.links_under_column("Document Name")
-    for download_link in download_links do
-      # Guess the type of file and extract enough information to give it a unique name
-      # among all the files (in a flat folder structure)
-      header = HTTParty.head(download_link['href'])
-      filename_hint = header['content-disposition']
-      extension = "unknown"
-      meta = related_document.link_params['ID'] + related_document.link_params['en'] + download_link.link_params['DMID']
-      filename = meta.join(".")
-      if filename_hint =~ /filename=(.*?)\.(.+)$/i
-        # The filenames seem pretty random and are unlikely to be useful, but just in case...
-        filename += "(#{$1})"
-        extension = $2
-      end
-      
-      # Do the actual download
-      download_path = File.join(download_folder, "#{filename}.#{extension.downcase}")
-      download_link.download(download_path)
+      get_related_documents(my_html)
+
     end
   end
 end
