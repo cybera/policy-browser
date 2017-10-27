@@ -6,3 +6,4 @@ gem install pry
 gem install mechanize
 gem install yomu
 gem install sqlite3
+gem install sinatra

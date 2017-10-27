@@ -4,5 +4,7 @@ COPY build/install-ruby /tmp/install
 
 ARG NOCACHE
 
+EXPOSE 4567
+
 RUN NOCACHE=${NOCACHE} /tmp/install/all.sh
 
