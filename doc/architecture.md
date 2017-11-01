@@ -36,20 +36,20 @@ If we do end up using machine learning techniques, they'll likely be focused in 
 
 ## Systems
 
-Story: As hey-cira makers, we'd like to not have to always think about rebuilding the database whenever there's a change or addition to data refinement scripts.
+Story: As hey-cira makers, we'd like to not have to always think about rebuilding the database whenever there's a change or addition to data refinement scripts.  
 Tasks:
   - Set up a server in RAC that can run our Docker containers
   - Set it to build a new version of the docs.db when changes are made to "wrangling" scripts
   - When finished, push a new version of the docs.db to our hey-cira Swift container
 
-Story: As hey-cira makers, we're worried that continually crawling the CRTC website and downloading fresh documents all the time might get us blocked by their network folks, so it would be nice to only do that when we absolutely have to. Even though we're less likely to get into trouble rebuilding the database from already downloaded documents, we want those rebuilds to be as quick as possible.
+Story: As hey-cira makers, we're worried that continually crawling the CRTC website and downloading fresh documents all the time might get us blocked by their network folks, so it would be nice to only do that when we absolutely have to. Even though we're less likely to get into trouble rebuilding the database from already downloaded documents, we want those rebuilds to be as quick as possible.  
 Tasks:
   - Review scraping script to ensure that it won't download documents that are already downloaded
   - Consider using versioning (experimentally being used in the "wrangling" scripts) to help avoid even having to scrape certain sections at all (if they've already been scraped with the latest "version" of the scraper)
   - Use existing versioning to smartly avoid re-generating metadata when the scripts that produced it haven't changed. Make sure to also cover the case where the script has already been run, but a document has been added. Can we run the entire processing pipeline and have it just pick up those new documents?
   - Use existing versioning (and/or perhaps other mechanisms) to smartly re-generate metadata that's dependent on other metadata when that earlier metadata is regenerated
 
-Story: As hey-cira makers, it would really be nice to have a more centralized source of truth for a lot of this stuff. When do we graduate from SQLite?
+Story: As hey-cira makers, it would really be nice to have a more centralized source of truth for a lot of this stuff. When do we graduate from SQLite?  
 Tasks:
   - Before diving in, review whether we're really at the point of needing to do this.
   - Create a real database!
@@ -60,35 +60,27 @@ Tasks:
 
 ## Tools
 
-Story: As hey-cira makers, occasionally we just want a quick notebook to be able to play around with some ideas.
+Story: As hey-cira makers, occasionally we just want a quick notebook to be able to play around with some ideas.  
 Tasks:
   - Create a "bin" script that uses the "cybera/hey-cira/python" docker container (which has the Anaconda distro) to fire up a Jupyter notebook session
   - Create a notebooks folder in our project and point the jupyter notebook to that initially (but leave the Docker container pointing at the project root) for easy saving/opening of existing notebooks
   - Figure out how to set any default paths, etc. that make it easier to try out an idea quickly.
 
-## Exploration
-
-Story: As someone interested in what these documents are all about, what can we do right now with the metadata that we have?
-Tasks:
-  - Take a day to explore the currently derived metadata in R (or platform of choice)
-  - If it's a new platform, identify any tooling that may make it easier for people to do the same type of exploration and/or reproduce results
-  - If you're refining any of the metadata further in your scripts, make note of that. If there's an easy way to add that to a more general refinement script, do that before wrapping the story up, or create new stories to add that refinement to the scripts. Don't let this distract from the exploration. It can be done after, and we're really only interested in data that we think might be more generally useful.
-
 ## Machine Learning / Data Science Techniques
 
-Story: As hip, bleeding edge Cyberans, we're keen to try out the latest and greatest ML techniques, especially if they can help sort through this data. We should keep an ideas list and review it from time to time.
+Story: As hip, bleeding edge Cyberans, we're keen to try out the latest and greatest ML techniques, especially if they can help sort through this data. We should keep an ideas list and review it from time to time.  
 Tasks:
   - Create list of ideas for data refinement, to review in standups, adhoc meetings, and/or backlog grooming
   - Decide on some basic decisions/information we'd want to get before trying out an idea or to decide which ones to prioritize (i.e. Have we used the technique before? How quickly do we think we'd be able to test it out? Would it help refine metadata we're actually interested in? Are there other easier ways to get that refined metadata?)
 
-Story: Our named entity extraction is pretty generic. As people interested in the CRTC policy domain, we'd like something that is a bit smarter about what entities might look like in an Intervention document.
+Story: Our named entity extraction is pretty generic. As people interested in the CRTC policy domain, we'd like something that is a bit smarter about what entities might look like in an Intervention document.  
 Tasks:
   - Investigate ways of training an existing named entity classifier
   - Investigate other methods of getting what we're really interested in (potentially names of companies, people, places, dates, etc.)
   - If it's simple (1-2 days), hack out a prototype. Otherwise, create some more specific stories.
 Why?: Generic NE chunkers give some promising results. You can see those in the docentities table. However, there are also a lot of misfires, probably due to the NLTK chunker being a bit too generic and also the fact that we're dealing with more highly specialized documents.
 
-Story: Once we have our own named entity chunker, we can start thinking about how to continually train it to be better. Up to this point, we've always approached training as a one-time thing. We come up with the best process we can, do one last training run, and that's it. But what about introducing "human in the loop" style training, where we allow corrections to mistakes the algorithm makes, and we use those corrections to generate better training data for perhaps an overnight process?
+Story: Once we have our own named entity chunker, we can start thinking about how to continually train it to be better. Up to this point, we've always approached training as a one-time thing. We come up with the best process we can, do one last training run, and that's it. But what about introducing "human in the loop" style training, where we allow corrections to mistakes the algorithm makes, and we use those corrections to generate better training data for perhaps an overnight process?  
 Tasks:
   - Requires the above story to be finished, where we already have our own NE chunker.
   - Identify a piece of metadata where the custom chunker is making a mistake.
@@ -99,27 +91,15 @@ Tasks:
   - Consider for future stories how we might modify the interface to allow less skilled/trusted users to help out (i.e. some sort of consensus system where, if 3 different people correct the same piece of data, we make it an "official" correction)
 Why?: I think this could be at the root of developing some really useful metadata. Turns out I'm [far](https://www.computerworld.com/article/3004013/robotics/why-human-in-the-loop-computing-is-the-future-of-machine-learning.html) from [the](https://blog.algorithmia.com/machine-learning-with-human-in-the-loop/) only [one](https://medium.com/kaizen-data/machine-learning-with-humans-in-the-loop-lessons-from-stitchfix-300672904f80) thinking [this](http://www.kritikalsolutions.com/blog/human-in-the-loop-crucial-for-machine-learning/). Going through this process on an NE chunker will get us thinking about how to do it in other areas of the project and perhaps other data science projects. It's an aspect of practical machine learning that we haven't really explored much.
 
-Story: As a person interested in CRTC policy, dividing intervention sumissions into groups would probably be helpful. But what would that even look like?
-Tasks:
-  - Use the quickest and dirtiest available approach to doing all or one of LDA, Word2Vec, or [LDA2Vec](http://multithreaded.stitchfix.com/blog/2016/05/27/lda2vec/#topic=38&lambda=1&term=) to divide our current submissions into topics
-  - Consider that we already have a very good way of dividing the submissions by the particular public process they're related to (i.e. the public process number), and see if there are ways of dividing information within the same public process and/or finding other groupings across public processes that would be helpful
-  - Consider using this as the basis for a "human in the loop" tool. Could it be useful for helping a human to organize documents even if it can't fully organize them itself?
-  - Write up recommendations for building system components either as stories or other documentation and share with the group.
-  
-## Interface
-
-Story: As an average citizen, I'm not going to be interested in any of this unless I can load it up and look at it in my web browser. We may not have the killer app yet, but let's get *something* up that we can iterate on.
-Tasks:
-  - Set up a RAC server w/ Apache and a simple web framework (we'll have to fight out which one, but we may want this to be a little more familiar/flexible/efficient than R's shiny - RoR or Django would be some obvious contenders)
-  - Set up a simple document browsing interface: Click a link, see the text of a submission
-  - Any other bells and whistles for a first cut? Things that we could get done in 1-3 days?
-Why?: I think we're not going to truly get a feel for these documents if we don't start actually trying to read/browse them. In theory, we can browse by actually opening the files, or by querying them on the command line from the sqlite database. But that's just not the same as being able to click through and have text immediately show up. The sooner we get this up, the sooner we can start thinking about how to make the entire experience of looking for stuff better.
-
 # Top stories:
 
 I'm thinking these could be some of the most useful "next up" stories:
 
-- Interface: Simple document browser
+- Interface: Simple document browser *done*
+- Interface: Provide timeline view of when documents were submitted
+- Exploration: What can we determine using the metadata as it currently sits
+- Interface: Provide view of when documents according to which company/intervenor they were submitted by
+- Machine Learning: Using _some_ algorithm to split documents into topics
 - Our own NE chunker (possibly requiring our own Part-of-speech tagger)
 - A simple human-in-the-loop system to correct NE chunker misfires
 
