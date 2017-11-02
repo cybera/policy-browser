@@ -111,5 +111,8 @@ wishlist_add("Date", "date_arrived")
 wishlist_add("?", "request_to_appear", "import-docs")
 wishlist_add("?", "respondent", "import-docs")
 wishlist_add("?","copy_sent", "import-docs")
+wishlist_add("Company sector", "?")
+wishlist_add("Document Type", "?")
+wishlist_add("Document Length", "?")
 
 summary()
