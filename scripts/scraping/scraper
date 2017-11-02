@@ -100,8 +100,37 @@ class Nokogiri::XML::Element
   end
 end
 
-def get_related_documents(intervention_page)
+def download_document(link_params, down_link)
   
+    # Guess the type of file and extract enough information to give it a unique name
+    # among all the files (in a flat folder structure)
+
+    header = HTTParty.head(link_params['href'])
+    filename_hint = header['content-disposition'] 
+    # The naming convention used here is a bit different than the one used for Interventions and Replies
+    # Some documents have only a "Key" which I believe is the 'ID' and do not have the DMID
+    # So we will use the Key as id followed by the consultation number and Type of the document.
+
+    # Type - currently grabbing the name of the document as listed on the page. We can change this
+    # to something more useful later.
+
+    meta = [link_params['id']] + [link_params['en']] + [link_params['type']]
+    filename = meta.join(".")
+    extension = "html"
+    if filename_hint =~ /filename=(.*?)\.(.+)$/i
+      # The filenames seem pretty random and are unlikely to be useful, but just in case...
+      extension = $2
+    end
+    
+    # Do the actual download
+    download_path = File.join(DOWNLOAD_FOLDER, "#{filename}.#{extension.downcase}")
+    down_link.download(download_path)
+  
+end
+
+
+def get_related_documents(intervention_page, doc_type)
+    
     related_documents = intervention_page.links_with_text("Related Documents")
     # for testing (restrict the loop to a 1 element array, containing the first of the returned results):
     # related_documents = [related_documents.first]
@@ -115,7 +144,7 @@ def get_related_documents(intervention_page)
         header = HTTParty.head(download_link['href'])
         filename_hint = header['content-disposition']
         extension = "unknown"
-        meta = related_document.link_params['ID'] + related_document.link_params['en'] + download_link.link_params['DMID']
+        meta = related_document.link_params['ID'] + related_document.link_params['en'] + download_link.link_params['DMID'] + [doc_type]
         filename = meta.join(".")
         if filename_hint =~ /filename=(.*?)\.(.+)$/i
           # The filenames seem pretty random and are unlikely to be useful, but just in case...
@@ -134,7 +163,7 @@ end
 
 # Figure out where this script is running and find the config file relative to it
 script_path = File.expand_path(File.dirname(__FILE__))
-config_path = config_path = options[:config] || File.join(script_path,"..","..","scraper.yml")
+config_path = File.join(script_path,"..","..","scraper.yml")
 
 # Load the config file
 scraper_config = YAML.load_file(config_path)
@@ -142,50 +171,95 @@ scraper_config = YAML.load_file(config_path)
 # Grab config entries for the URL to start at and the folder to download to
 entry_url = scraper_config['entry_url']
 DOWNLOAD_FOLDER = scraper_config['download_folder']
-REGEX = /javascript:__doPostBack\('ctl00$MainContent$gvData','(Page\$\d+)'\)/
+#REGEX = /javascript:__doPostBack\('ctl00$MainContent$gvData','(Page\$\d+)'\)/
 TARGET = 'ctl00$MainContent$gvData'
 
+# Look for the first table in the entry page and get the contents of all the rows,
+# then iterate through them to get the different consultations and its Related documents
+
 entry_page = parse_get(entry_url)
-
-# Grab only links on the entry page that display "Interventions" as their link text
-interventions = entry_page.links_with_text("Interventions")
-
-# for testing (restrict the loop to a 1 element array, containing the first of the returned results):
-# interventions = [interventions.first]
-for intervention in interventions do
-  intervention_page_one = intervention.follow_link
-  
-  # Grab related documents in the page one first and then move on to scraping all the other pages
-  get_related_documents(intervention_page_one)
-  # Get the event number to construct the url link to Page$1 of an intervention. 
-  event_no = intervention.link_params['en'][0]  
-  request_url = "https://services.crtc.gc.ca/pub/ListeInterventionList/Default-Defaut.aspx?en=#{event_no}&dt=i&lang=e"
-  agent = Mechanize.new()
-  page = agent.get(request_url)
-  
-  form = page.form_with(:id => 'aspnetForm')
-  # edge case: the first page of results
-  max_page_val_visited = 1
-  page_links = intervention_page_one.get_all_pages()
-  # Get related documents by loading each page.
-  while (page_val = page_links.shift)
-    num = page_val.match(/(Page\$\d|Page\$Last+)/).to_s
-    p_num = num.match(/\d|Last+/)[0].to_s
-    if (max_page_val_visited < p_num.to_i) || (p_num.match("Last"))
-      max_page_val_visited = p_num.to_i==0 ? max_page_val_visited+1 : p_num.to_i
-      form['__EVENTTARGET'] = TARGET
-      form['__EVENTARGUMENT'] = num
-      my_page = form.submit
-      sleep 1
-
-      # Convert Mechanize Page to Nokogiri html page
-      my_html = Nokogiri::HTML(my_page.parser.to_html)
-
-      get_related_documents(my_html)
-
+table = entry_page.css('table.item').first
+rows = table.css('tr')
+text_all_rows = Hash.new
+rows.each do |row|
+    # we get the notice number from first row
+    
+    row_name = row.css('td[1]/a').text.match(/\d{4}+-\d{3}\b+|\d{4}+-\d{2}\b+/)
+    # We get all the hrefs and texts of each individual consultation row (<td>)
+    row_href_values = row.css('td[5]/a')
+    row_text_values = row.css('td[5]/a').map(&:text)
+ 
+    # We map the consultation number (key), to all the links and corresponding 
+    # document type (text) associated with it.
+    if row_name.to_s!=""
+      text_all_rows[row_name.to_s] = [row_text_values, row_href_values]
     end
-  end
+    
 end
+  
+text_all_rows.each do |key, value|
+  if !key.nil? && !value.nil?
+    links = value[1]
+    types = value[0]
+    
+     for val in 0..links.length-1
+      link_params = Hash.new
+      link = links[val]
+      type = types[val]
+      link_params['en'] = key
+      
+      if link.to_s.include? "OpenDocument.aspx"
+        link_parameters = CGI::parse(URI.parse(link['href']).query)
+        link_params['type'] = types[val]
+        link_params['href'] = link['href']
+        link_params['id'] = link_parameters["Key"][0]
+        download_document(link_params, link)
+      elsif link.to_s.include? "ListeInterventionList"
+          
+          intervention_page_one = link.follow_link
+          
+          # Grab related documents in the page one first and then move on to scraping all the other pages
+          get_related_documents(intervention_page_one, type)
+          # Get the event number to construct the url link to Page$1 of an intervention. 
+          event_no = link.link_params['en'][0]  
+          request_url = "https://services.crtc.gc.ca/pub/ListeInterventionList/Default-Defaut.aspx?en=#{event_no}&dt=i&lang=e"
+          agent = Mechanize.new()
+          page = agent.get(request_url)
+          
+          form = page.form_with(:id => 'aspnetForm')
+          # edge case: the first page of results
+          max_page_val_visited = 1
+          page_links = intervention_page_one.get_all_pages()
+          # Get related documents by loading each page.
+          while (page_val = page_links.shift)
+            num = page_val.match(/(Page\$\d|Page\$Last+)/).to_s
+            p_num = num.match(/\d|Last+/)[0].to_s
+            if (max_page_val_visited < p_num.to_i) || (p_num.match("Last"))
+              max_page_val_visited = p_num.to_i==0 ? max_page_val_visited+1 : p_num.to_i
+              form['__EVENTTARGET'] = TARGET
+              form['__EVENTARGUMENT'] = num
+              my_page = form.submit
+              sleep 1
+        
+              # Convert Mechanize Page to Nokogiri html page
+              my_html = Nokogiri::HTML(my_page.parser.to_html)
+        
+              get_related_documents(my_html, type)
+        
+            end
+          end
+        else
+          link_params['type'] = types[val]
+          link_params['href'] = link['href']
+          # Some Related documents are just html links, in such case they do not
+          # have a document id, so to maintain a decent naming convention, lets 
+          # just give them all a dummy 6-digit if i.e., 111111.
+          # CHANGE THIS LATER
+          link_params['id'] = 111111
+          download_document(link_params, link)       
+      end
 
-# Uncomment for console-based debugging
-# Pry.start(binding)
+     end
+  end
+
+end
