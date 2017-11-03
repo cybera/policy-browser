@@ -35,13 +35,20 @@ get "/public_process/:ppn/case/:case?" do
     FROM docmeta 
     WHERE 
       key = 'case' AND 
-      source = 'filename-meta'
+      source = 'filename-meta' AND
+      docid IN (
+        SELECT DISTINCT docid
+        FROM docmeta
+        WHERE
+          KEY = 'public_process_number' AND
+          value = ?
+      )
   """
 
   ppn = params['ppn']
   casenum = params['case']
 
-  cases = DB.execute(query).flatten.uniq.sort
+  cases = DB.execute(query, [ppn]).flatten.uniq.sort
   case_links = cases.map do |cn|
     "<a href='/public_process/#{ppn}/case/#{cn}'>#{cn}</a>"
   end
