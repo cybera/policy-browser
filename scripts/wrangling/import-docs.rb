@@ -36,9 +36,11 @@ def import_doc(fpath)
     doc = Nokogiri::HTML(File.new(fpath))
     comment = doc.xpath("//div[contains(text(),'Comment')]/following::div[1]")
     comment.text
-  else
+  elsif [".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".odt", ".ods", ".odp", ".rtf", ".pdf"].include?(ftype)
     parser = Yomu.new(fpath)
     parser.text
+  else
+    puts "Sorry, currently we don't process #{ftype} file types"
   end
 
   DB.execute("INSERT INTO docs(docname,content) VALUES (?,?)", [fname, content])
@@ -141,7 +143,7 @@ for doc in docs
   # Don't re-populate segments if they already exist (may end up wanting to change this)
   segments = DB.execute("SELECT content FROM segments WHERE docid = ?", [id])
   if segments.empty?
-    segments = content.split(/\n+/)
+    segments = content.split(/\n+/) if !content.nil? 
 
     segments.each_with_index do |segment,index|
       DB.execute("INSERT INTO segments(docid,seq,content) VALUES (?,?,?)", [id,index+1,segment])

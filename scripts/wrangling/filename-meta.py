@@ -20,10 +20,12 @@ def insert_meta(docid, key, value, source=META_SOURCE, version=META_VERSION, con
 for fname in os.listdir(scrapedir):
   result = DB.execute("SELECT id FROM docs WHERE docname LIKE ?", [fname]).fetchone()
   if result:
+    print(fname)
     docid = result[0]
-    [case,public_process_number,dmid] = re.sub(r'\(.*',"",fname).split(".")
-    insert_meta(docid, "case", case)
+    [public_process_number,case,dmid,dtype] = re.sub(r'\(.*',"",fname).split(".")
     insert_meta(docid, "public_process_number", public_process_number)
+    insert_meta(docid, "case", case)
     insert_meta(docid, "dmid", dmid)
+    insert_meta(docid, "type", dtype)
 
 DB.commit()

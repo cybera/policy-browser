@@ -114,11 +114,11 @@ def download_document(link_params, down_link)
     # Type - currently grabbing the name of the document as listed on the page. We can change this
     # to something more useful later.
 
-    meta = [link_params['id']] + [link_params['en']] + [link_params['type']]
+    meta = [link_params['en']] +[link_params['ID']] + [link_params['DMID']] + [link_params['type']] + ["(unknown)"]
     filename = meta.join(".")
     extension = "html"
     if filename_hint =~ /filename=(.*?)\.(.+)$/i
-      # The filenames seem pretty random and are unlikely to be useful, but just in case...
+      # Not all files have a filename, so lets just use unknown for now
       extension = $2
     end
     
@@ -144,7 +144,7 @@ def get_related_documents(intervention_page, doc_type)
         header = HTTParty.head(download_link['href'])
         filename_hint = header['content-disposition']
         extension = "unknown"
-        meta = related_document.link_params['ID'] + related_document.link_params['en'] + download_link.link_params['DMID'] + [doc_type]
+        meta =  related_document.link_params['en'] + related_document.link_params['ID'] + download_link.link_params['DMID'] + [doc_type]
         filename = meta.join(".")
         if filename_hint =~ /filename=(.*?)\.(.+)$/i
           # The filenames seem pretty random and are unlikely to be useful, but just in case...
@@ -198,7 +198,8 @@ rows.each do |row|
 end
   
 text_all_rows.each do |key, value|
-  if !key.nil? && !value.nil?
+  # Take out the '&& key=="2015-134"' to get documents related to all other process_numbers as well.
+  if !key.nil? && !value.nil? && key=="2015-134"
     links = value[1]
     types = value[0]
     
@@ -212,7 +213,8 @@ text_all_rows.each do |key, value|
         link_parameters = CGI::parse(URI.parse(link['href']).query)
         link_params['type'] = types[val]
         link_params['href'] = link['href']
-        link_params['id'] = link_parameters["Key"][0]
+        link_params['ID'] = link_parameters["Key"][0]
+        link_params['DMID'] = 1000001
         download_document(link_params, link)
       elsif link.to_s.include? "ListeInterventionList"
           
@@ -252,10 +254,12 @@ text_all_rows.each do |key, value|
           link_params['type'] = types[val]
           link_params['href'] = link['href']
           # Some Related documents are just html links, in such case they do not
-          # have a document id, so to maintain a decent naming convention, lets 
-          # just give them all a dummy 6-digit if i.e., 111111.
+          # have both the case number and document id, so to maintain a decent naming convention, lets 
+          # just give them all a dummy 6-digit case number i.e., 100001 and 7-digit DMID 10000001
           # CHANGE THIS LATER
-          link_params['id'] = 111111
+          link_params['ID'] = 100001
+          link_params['DMID'] = 1000001
+
           download_document(link_params, link)       
       end
 
