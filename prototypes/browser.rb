@@ -5,7 +5,7 @@ require "sqlite3"
 
 set :bind, '0.0.0.0'
 
-dbpath = "/mnt/hey-cira/data/processed/docs.db"
+dbpath = "/mnt/hey-cira/data/intermediate/docs.db"
 
 DB = SQLite3::Database.new(dbpath)
 
@@ -20,7 +20,7 @@ get "/" do
 
   public_process_numbers = DB.execute(query).flatten.uniq.sort
   public_process_links = public_process_numbers.map do |ppn|
-    "<a href='/public_process/#{ppn}/case/'>#{ppn}</a>"
+    "<a href='/public_process/#{ppn}/date/'>#{ppn}</a>"
   end
 
   """
@@ -29,13 +29,13 @@ get "/" do
   """
 end
 
-get "/public_process/:ppn/case/:case?" do
+get "/public_process/:ppn/date/:date?" do
   query = """
     SELECT value 
     FROM docmeta 
     WHERE 
-      key = 'case' AND 
-      source = 'filename-meta' AND
+      key = 'date_arrived' AND 
+      source = 'import-docs' AND
       docid IN (
         SELECT DISTINCT docid
         FROM docmeta
@@ -44,30 +44,81 @@ get "/public_process/:ppn/case/:case?" do
           value = ?
       )
   """
-
   ppn = params['ppn']
-  casenum = params['case']
-
-  cases = DB.execute(query, [ppn]).flatten.uniq.sort
-  case_links = cases.map do |cn|
-    "<a href='/public_process/#{ppn}/case/#{cn}'>#{cn}</a>"
+  date_arrived = params['date']
+  
+  dates = DB.execute(query, [ppn]).flatten.uniq.sort
+  date_links = dates.map do |cn|
+    "<a href='/public_process/#{ppn}/date/#{cn}/case/'>#{cn}</a>"
   end
+  
+  """
+  <h1>Arrival dates</h1>
+  #{date_links.join('<br/>')}
+  """
+end
 
-  case_text = ""
-  if casenum
-    case_text = casenum
-    query = """
-      SELECT docname, content
-      FROM docs
-      WHERE id IN (
+
+get "/public_process/:ppn/date/:date/case/:case?" do
+
+  query = """
+    SELECT value 
+    FROM docmeta 
+    WHERE 
+      key = 'case' AND 
+      source = 'filename-meta' AND
+      docid IN (
         SELECT DISTINCT docid
         FROM docmeta 
         WHERE 
-          key = 'case' AND 
+          key = 'date_arrived' AND 
+          source = 'import-docs' AND
+          value = ? AND 
+          docid IN (
+        SELECT DISTINCT docid
+        FROM docmeta
+        WHERE
+          KEY = 'public_process_number' AND
           value = ?
-      )
-    """
-    case_content = DB.execute(query, [casenum])
+      ))
+  """
+  ppn = params['ppn']
+  date_arrived = params['date']
+  casenum = params['case']
+  cases = DB.execute(query, [date_arrived, ppn]).flatten.uniq.sort
+  case_links = cases.map do |cn|
+    "<a href='/public_process/#{ppn}/date/#{date_arrived}/case/#{cn}'>#{cn}</a>"
+  end
+
+    case_text = ""
+    if casenum
+      case_text = casenum
+      query = """
+        SELECT docname, content
+        FROM docs
+        WHERE id IN (
+          SELECT DISTINCT docid
+          FROM docmeta 
+          WHERE 
+            key = 'case' AND 
+            value = ? AND 
+            docid IN (
+              SELECT DISTINCT docid
+              FROM docmeta 
+              WHERE 
+                key = 'date_arrived' AND 
+                value = ? AND 
+                docid IN (
+              SELECT DISTINCT docid
+              FROM docmeta
+              WHERE
+                KEY = 'public_process_number' AND
+                value = ?
+            )
+        )
+        )
+      """
+    case_content = DB.execute(query, [casenum,date_arrived,ppn])
     case_text = case_content.map do |ccr|
       doc_name = ccr[0]
       doc_paragraphs = ccr[1].split(/\n+/)
@@ -78,7 +129,7 @@ get "/public_process/:ppn/case/:case?" do
       """
     end
   end
-
+  
   """
   <h1>Public Process #{params['ppn']}</h1>
   <table>

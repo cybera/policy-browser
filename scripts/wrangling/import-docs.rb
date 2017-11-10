@@ -39,11 +39,11 @@ def import_doc(fpath)
   elsif [".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".odt", ".ods", ".odp", ".rtf", ".pdf"].include?(ftype)
     parser = Yomu.new(fpath)
     parser.text
-  else
-    puts "Sorry, currently we don't process #{ftype} file types"
   end
 
-  DB.execute("INSERT INTO docs(docname,content) VALUES (?,?)", [fname, content])
+  if !content.nil?
+    DB.execute("INSERT INTO docs(docname,content) VALUES (?,?)", [fname, content])
+  end
 end
 
 # Go through all of the files that have been downloaded and try to parse them

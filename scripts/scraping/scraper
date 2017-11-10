@@ -114,11 +114,12 @@ def download_document(link_params, down_link)
     # Type - currently grabbing the name of the document as listed on the page. We can change this
     # to something more useful later.
 
-    meta = [link_params['en']] +[link_params['ID']] + [link_params['DMID']] + [link_params['type']] + ["(unknown)"]
+    meta = [link_params['en']] +[link_params['ID']] + [link_params['DMID']] + [link_params['type']]
     filename = meta.join(".")
     extension = "html"
     if filename_hint =~ /filename=(.*?)\.(.+)$/i
       # Not all files have a filename, so lets just use unknown for now
+      filename += "(unknown)"
       extension = $2
     end
     
