@@ -5,7 +5,7 @@ require "sqlite3"
 
 set :bind, '0.0.0.0'
 
-dbpath = "/mnt/hey-cira/data/intermediate/docs.db"
+dbpath = "/mnt/hey-cira/data/processed/docs.db"
 
 DB = SQLite3::Database.new(dbpath)
 
