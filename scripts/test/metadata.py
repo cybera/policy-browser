@@ -114,5 +114,13 @@ wishlist_add("?","copy_sent", "import-docs")
 wishlist_add("Company sector", "?")
 wishlist_add("Document Type", "?")
 wishlist_add("Document Length", "?")
+# Would be interesting to know if we can track something like a request being made in the submission and maybe just specific for 
+# our analysis, whether we could automatically extract how much bandwidth they would like to get. 
+wishlist_add("Request submitted", "?")
+wishlist_add("Bandwidth requested", "?")
+wishlist_add("Words in submission", "?")
+wishlist_add("Submission format (eg. PDF, doc, html)", "?")
+wishlist_add("Stage document was submitted in", "?")
+
 
 summary()
