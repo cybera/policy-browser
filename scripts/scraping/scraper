@@ -145,7 +145,8 @@ def get_related_documents(intervention_page, doc_type)
         header = HTTParty.head(download_link['href'])
         filename_hint = header['content-disposition']
         extension = "unknown"
-        meta =  related_document.link_params['en'] + related_document.link_params['ID'] + download_link.link_params['DMID'] + [doc_type]
+        #meta =  related_document.link_params['en'] + related_document.link_params['ID'] + download_link.link_params['DMID'] + [doc_type]
+        meta =  related_document.link_params['en'] + related_document.link_params['ID'] + download_link.link_params['DMID'] + [download_link.text]
         filename = meta.join(".")
         if filename_hint =~ /filename=(.*?)\.(.+)$/i
           # The filenames seem pretty random and are unlikely to be useful, but just in case...
