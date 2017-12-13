@@ -164,7 +164,7 @@ end
 
 # Figure out where this script is running and find the config file relative to it
 script_path = File.expand_path(File.dirname(__FILE__))
-config_path = File.join(script_path,"..","..","scraper.yml")
+config_path = config_path = options[:config] || File.join(script_path,"..","..","scraper.yml")
 
 # Load the config file
 scraper_config = YAML.load_file(config_path)
