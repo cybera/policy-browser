@@ -22,10 +22,13 @@ for fname in os.listdir(scrapedir):
   if result:
     print(fname)
     docid = result[0]
-    [public_process_number,case,dmid,dtype] = re.sub(r'\(.*',"",fname).split(".")
+    doctype=fname.rsplit('.', 1)[1]
+    the_rest=fname.rsplit('.', 1)[0]
+    [public_process_number,case,dmid,name] = the_rest.split('.', 3)
     insert_meta(docid, "public_process_number", public_process_number)
     insert_meta(docid, "case", case)
     insert_meta(docid, "dmid", dmid)
-    insert_meta(docid, "type", dtype)
-
+    insert_meta(docid, "name", name)
+    insert_meta(docid, "type", doctype)
+    
 DB.commit()
