@@ -5,8 +5,12 @@ PROJECT_DIR="$(dirname $SCRIPT_DIR)"
 MOUNT_DIR=/mnt/hey-cira
 PYTHON_IMG=cybera/hey-cira/python
 
-docker run -it --rm \
+docker-compose -f $PROJECT_DIR/build/docker-compose.yml run --rm \
   -e PYTHONSTARTUP=scripts/config/console.py \
-  -v $PROJECT_DIR:$MOUNT_DIR $PYTHON_IMG \
-  bash -c "cd $MOUNT_DIR; python"
+  python-shell bash -c "cd $MOUNT_DIR; python"
+
+#docker run -it --rm \
+#  -e PYTHONSTARTUP=scripts/config/console.py \
+#  -v $PROJECT_DIR:$MOUNT_DIR $PYTHON_IMG \
+#  bash -c "cd $MOUNT_DIR; python"
 

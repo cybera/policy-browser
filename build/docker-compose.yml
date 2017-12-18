@@ -1,0 +1,41 @@
+version: '3'
+services:
+  neo4j:
+    image: neo4j:3.0
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - ../data/neo4j/data:/data
+      - ../data/neo4j/logs:/logs
+    networks:
+      - default
+  python-shell:
+    image: cybera/hey-cira/python
+    networks:
+      - default
+    volumes:
+      - ../:/mnt/hey-cira
+    stdin_open: true
+    tty: true
+  ruby-shell:
+    image: cybera/hey-cira/ruby
+    networks:
+      - default
+    volumes:
+      - ../:/mnt/hey-cira
+    stdin_open: true
+    tty: true
+  python-script:
+    image: cybera/hey-cira/python
+    networks:
+      - default
+    volumes:
+      - ../:/mnt/hey-cira
+  ruby-script:
+    image: cybera/hey-cira/ruby
+    networks:
+      - default
+    volumes:
+      - ../:/mnt/hey-cira
+  

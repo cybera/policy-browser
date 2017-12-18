@@ -1,0 +1,13 @@
+#!/bin/bash
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PROJECT_DIR="$(dirname $SCRIPT_DIR)"
+
+action=$1
+
+if [[ $action == 'start' ]]; then
+  docker-compose -f $PROJECT_DIR/build/docker-compose.yml up -d neo4j
+elif [[ $action == 'stop' ]]; then
+  docker-compose -f $PROJECT_DIR/build/docker-compose.yml stop neo4j
+  docker-compose -f $PROJECT_DIR/build/docker-compose.yml rm -f neo4j
+fi
