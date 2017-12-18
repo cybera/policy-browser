@@ -1,0 +1,32 @@
+#!/bin/bash
+
+SCRIPTNAME=$1
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PROJECT_DIR="$(dirname $SCRIPT_DIR)"
+MOUNT_DIR=/mnt/hey-cira
+RUBY_IMG=cybera/hey-cira/ruby
+PYTHON_IMG=cybera/hey-cira/python
+
+ruby_script() {
+	script_name=$1
+	echo "Running $script_name"
+	docker-compose -f $PROJECT_DIR/build/docker-compose.yml run --rm \
+		ruby-script bash -c "cd $MOUNT_DIR; scripts/$script_name"
+}
+
+python_script() {
+	script_name=$1	
+	echo "Running $script_name"
+	docker-compose -f $PROJECT_DIR/build/docker-compose.yml run --rm \
+  	-e PYTHONSTARTUP=scripts/config/console.py \
+  	python-script bash -c "cd $MOUNT_DIR; scripts/$script_name"
+}
+
+extension="${SCRIPTNAME##*.}"
+
+if [[ $extension == "py" ]]; then
+  python_script $SCRIPTNAME
+elif [[ $extension == "rb" ]]; then
+  ruby_script $SCRIPTNAME
+fi

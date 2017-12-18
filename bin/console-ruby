@@ -5,7 +5,10 @@ PROJECT_DIR="$(dirname $SCRIPT_DIR)"
 MOUNT_DIR=/mnt/hey-cira
 DOCKER_IMG=cybera/hey-cira/ruby
 
-docker run -it --rm \
-	-v $PROJECT_DIR:$MOUNT_DIR \
-	$DOCKER_IMG \
-	bash -c "cd $MOUNT_DIR; irb"
+docker-compose -f $PROJECT_DIR/build/docker-compose.yml run --rm \
+	ruby-shell bash -c "cd $MOUNT_DIR; irb"
+
+#docker run -it --rm \
+#	-v $PROJECT_DIR:$MOUNT_DIR \
+#	$DOCKER_IMG \
+#	bash -c "cd $MOUNT_DIR; irb"
