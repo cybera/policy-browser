@@ -10,6 +10,10 @@ services:
       - ../data/neo4j/logs:/logs
     networks:
       - default
+    environment:
+      NEO4J_dbms_memory_heap_maxSize: 3072
+      NEO4J_dbms_memory_pagecache_size: 1048576
+
   python-shell:
     image: cybera/hey-cira/python
     networks:
