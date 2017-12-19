@@ -5,10 +5,13 @@ from neo4j.v1 import GraphDatabase
 uri = "bolt://neo4j:7687"
 driver = GraphDatabase.driver(uri, auth=("neo4j", "password"))
 
-def create(statement):
+from contextlib import contextmanager
+
+@contextmanager
+def transaction():
   with driver.session() as session:
     with session.begin_transaction() as tx:
-      tx.run(statement)
+      yield tx
 
 def xml_top_level(doc, fieldname):
   element = doc.xpath("//div[contains(text(),'%s')]/*" % fieldname)
@@ -69,36 +72,44 @@ with driver.session() as session:
         raw_text = file.read()
         tx.run("MATCH (d:Document { name: $fname }) SET d.raw_text = $raw_text", fname=record['name'], raw_text=raw_text)
 
-    for record in tx.run("""
+def merge_people():
+  with transaction() as tx:
+    results = tx.run("""
       MATCH (i:Intervention)-[:CONTAINS]->(d:Document {type:'html'})
       WHERE NOT (:Person)-[:SUBMITTED]->(i:Intervention) 
       RETURN i.case AS case, d.raw_text AS raw_text
-      """):
-      doc = Selector(text=record["raw_text"])
+      """)
+    for r in results:
+      doc = Selector(text=r["raw_text"])
       person_name = xml_client_info(doc, "Name")
-      person_title = xml_client_info(doc, "Title")
-      organization_name = xml_client_info(doc, "On behalf of company")
-
       if person_name:
-        tx.run("MERGE (p:Person { name: {name} })", name=person_name)
         tx.run("""
-        MATCH (i:Intervention { case: {case}}), (p:Person { name: {name} })
-        MERGE (p)-[:SUBMITTED]->(i)
-        """, name=person_name, case=record["case"])
-        print(person_name)
+          MATCH (i:Intervention { case: {case}})
+          MERGE (p:Person { name: {name} })
+          MERGE (p)-[:SUBMITTED]->(i)
+          """, name=person_name, case=r["case"] )
 
-        if organization_name:
-          print(organization_name)
-          tx.run("MERGE (o:Organization { name: {organization_name} })", organization_name=organization_name)
-          if person_title:
-            tx.run("""
-            MATCH (o:Organization { name: {organization_name}}), (p:Person { name: {name} })
-            MERGE (p)-[:WORKING_FOR { title: {title} } ]->(o)
-            MERGE (o)-[:EMPLOYS {title: {title} }]->(p)
-            """, organization_name=organization_name, name=person_name, title=person_title)
-          else:
-            tx.run("""
-            MATCH (o:Organization { name: {organization_name}}), (p:Person { name: {name} })
-            MERGE (p)-[:WORKING_FOR]->(o)
-            MERGE (o)-[:EMPLOYS]->(p)
-            """, organization_name=organization_name, name=person_name)
+def merge_organizations():
+  with transaction() as tx:
+    results = tx.run("""
+      MATCH (person:Person)-[:SUBMITTED]->(i:Intervention)-[:CONTAINS]->(doc:Document {type:'html'})
+      WHERE NOT (person)-[:WORKING_FOR]->(:Organization)
+      RETURN i.case AS case, doc.raw_text, person.name
+      """)
+    for r in results:
+      doc = Selector(text=r["doc.raw_text"])
+      person_name = xml_client_info(doc, "Name")
+      org_name = xml_client_info(doc, "On behalf of company")
+      person_title = xml_client_info(doc, "Title")
+      if person_name == r["person.name"] and org_name:
+        tx.run("""
+          MATCH (p:Person { name: {name} })
+          MERGE (o:Organization { name: {organization_name} })
+          MERGE (p)-[r1:WORKING_FOR]->(o)
+          ON CREATE SET r1.title = {title}
+          MERGE (o)-[r2:EMPLOYS]->(p)
+          ON CREATE SET r2.title = {title}
+        """, organization_name=org_name, name=person_name, title=person_title)
+
+merge_people()
+merge_organizations()
