@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import os, re
 from neo4j.v1 import GraphDatabase
 from html_submission import HTMLSubmission
 
@@ -14,9 +15,6 @@ def transaction():
     with session.begin_transaction() as tx:
       yield tx
 
-import os
-import re
-
 scrapedir = os.path.join("data", "raw")
 txtdir = os.path.join("data", "processed", "raw_text")
 
@@ -27,16 +25,20 @@ def merge_core():
       if fname != ".gitignore" and fname != ".DS_Store":
         dtype=fname.rsplit('.', 1)[1]
         the_rest=fname.rsplit('.', 1)[0]
-        [public_process_number,case,dmid,name] = the_rest.split('.', 3)
+        [public_process_number,case,dmid,phase_and_orig_filename] = the_rest.split('.', 3)
+        phase_name = re.sub(r'\(.*\)','', phase_and_orig_filename)
+        print(phase_name)
         tx.run("""
           MERGE (p:PublicProcess { ppn: $ppn })
           MERGE (i:Intervention { case: $case })
           MERGE (d:Document { dmid: $dmid, type: $dtype, name: $fname })
+          MERGE (phase:Phase { name: $phase_name } )
           MERGE (i)-[:CONTAINS]->(d)
           MERGE (i)-[:SUBMITTED_TO]->(p)
           MERGE (d)-[:PART_OF]->(i)
           MERGE (p)-[:RECEIVES]->(i)
-        """, ppn=public_process_number, case=int(case), dmid=int(dmid), dtype=dtype, fname=fname)
+          MERGE (d)-[:IN_PHASE]->(phase)
+        """, ppn=public_process_number, case=int(case), dmid=int(dmid), dtype=dtype, fname=fname, phase_name=phase_name)
 
 def merge_raw_text():
   print("Parsing text and merging as raw_text on Documents")
@@ -67,9 +69,19 @@ def merge_people():
       if person_name:
         tx.run("""
           MATCH (i:Intervention { case: $case})
-          MERGE (p:Person { name: $name })
+          MERGE (p:Person:Client { name: $name })
           MERGE (p)-[:SUBMITTED]->(i)
         """, name=person_name, case=r["case"] )
+      representative_name = doc.designated_representative("Name")
+      if representative_name:
+        tx.run("""
+          MATCH (i:Intervention { case: $case})
+          MERGE (p:Person { name: $name })
+          ON CREATE SET p:DesignatedRepresentative
+          ON MATCH SET p:DesignatedRepresentative
+          MERGE (p)-[:SUBMITTED]->(i)
+        """, name=representative_name, case=r["case"] )
+
 
 def merge_organizations():
   print("Finding Organizations from HTML document submissions related to an Intervention")
@@ -77,22 +89,35 @@ def merge_organizations():
     results = tx.run("""
       MATCH (person:Person)-[:SUBMITTED]->(i:Intervention)-[:CONTAINS]->(doc:Document {type:'html'})
       WHERE NOT (person)-[:WORKING_FOR]->(:Organization)
-      RETURN i.case AS case, doc.raw_text, person.name
+      RETURN i.case AS case, doc.raw_text, person.name, labels(person) AS roles
     """)
     for r in results:
       doc = HTMLSubmission(r["doc.raw_text"])
-      person_name = doc.client_info("Name")
-      org_name = doc.client_info("On behalf of company")
-      person_title = doc.client_info("Title")
-      if person_name == r["person.name"] and org_name:
-        tx.run("""
-          MATCH (p:Person { name: $name })
-          MERGE (o:Organization { name: $org_name })
-          MERGE (p)-[r1:WORKING_FOR]->(o)
-          ON CREATE SET r1.title = $title
-          MERGE (o)-[r2:EMPLOYS]->(p)
-          ON CREATE SET r2.title = $title
-        """, org_name=org_name, name=person_name, title=person_title)
+
+      roles = set(r["roles"])
+      if "Person" in roles:
+        roles.remove("Person")
+
+      for role in roles:
+        role_function = None
+        if role == "Client":
+          role_function = doc.client_info
+        elif role == "DesignatedRepresentative":
+          role_function = doc.designated_representative
+        
+        person_name = role_function("Name")
+        org_name = role_function("On behalf of company")
+        person_title = role_function("Title")
+
+        if person_name == r["person.name"] and org_name:
+          tx.run("""
+            MATCH (p:Person { name: $name })
+            MERGE (o:Organization { name: $org_name })
+            MERGE (p)-[r1:WORKING_FOR]->(o)
+            ON CREATE SET r1.title = $title
+            MERGE (o)-[r2:EMPLOYS]->(p)
+            ON CREATE SET r2.title = $title
+          """, org_name=org_name, name=person_name, title=person_title)
 
 merge_core()
 merge_raw_text()
