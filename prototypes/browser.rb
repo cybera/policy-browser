@@ -1,26 +1,27 @@
 #!/usr/bin/env ruby
 
 require "sinatra"
-require "sqlite3"
+
+# neo4j
+require "neo4j-core"
+require "date"
+require "timeout"
+require "socket"
+require 'neo4j/core/cypher_session/adaptors/http'
+require 'neo4j/core/cypher_session/adaptors/bolt'
+
+bolt_adaptor = Neo4j::Core::CypherSession::Adaptors::Bolt.new("bolt://neo4j:password@neo4j:7687", timeout: 10)
+neo4jDB = Neo4j::Core::CypherSession.new(bolt_adaptor)
+
+results = neo4jDB.query("MATCH (p:PublicProcess) RETURN p.ppn AS ppn")
+results.map { |r| r[:ppn] }
 
 set :bind, '0.0.0.0'
 
-dbpath = "/mnt/hey-cira/data/processed/docs.db"
-
-DB = SQLite3::Database.new(dbpath)
-
 get "/" do
-  query = """
-    SELECT value 
-    FROM docmeta 
-    WHERE 
-      key = 'public_process_number' AND 
-      source = 'filename-meta';
-  """
-
-  public_process_numbers = DB.execute(query).flatten.uniq.sort
+  public_process_numbers = neo4jDB.query("MATCH (p:PublicProcess) RETURN p.ppn AS ppn ORDER BY ppn").map { |r| r[:ppn] }
   public_process_links = public_process_numbers.map do |ppn|
-    "<a href='/public_process/#{ppn}/date/'>#{ppn}</a>"
+    "<a href='/public_process/#{ppn}/submission/'>#{ppn}</a>"
   end
 
   """
@@ -29,116 +30,73 @@ get "/" do
   """
 end
 
-get "/public_process/:ppn/date/:date?" do
-  query = """
-    SELECT value 
-    FROM docmeta 
-    WHERE 
-      key = 'date_arrived' AND 
-      source = 'import-docs' AND
-      docid IN (
-        SELECT DISTINCT docid
-        FROM docmeta
-        WHERE
-          KEY = 'public_process_number' AND
-          value = ?
-      )
-  """
-  ppn = params['ppn']
-  date_arrived = params['date']
-  
-  dates = DB.execute(query, [ppn]).flatten.uniq.sort
-  date_links = dates.map do |cn|
-    "<a href='/public_process/#{ppn}/date/#{cn}/case/'>#{cn}</a>"
-  end
-  
-  """
-  <h1>Arrival dates</h1>
-  #{date_links.join('<br/>')}
-  """
+def int_to_ymd(num)
+  day = (num % 100).to_i
+  month = (((num - day) / 100) % 100).to_i
+  year = ((num - (month * 100 + day)) / 10000).to_i
+  return year, month, day
 end
 
+get "/public_process/:ppn/submission/:id?" do
+  ppn = params["ppn"]
 
-get "/public_process/:ppn/date/:date/case/:case?" do
+  submissions = neo4jDB.query("""
+    MATCH (s:Submission)<-[:INVOLVING]-(i:Intervention)-[:SUBMITTED_TO]->(p:PublicProcess { ppn: $ppn })
+    WHERE EXISTS(s.date_arrived)
+    RETURN s.date_arrived AS date_arrived, i.case AS case, s.name AS name, ID(s) AS id
+    ORDER BY date_arrived
+  """, ppn:ppn)
 
-  query = """
-    SELECT value 
-    FROM docmeta 
-    WHERE 
-      key = 'case' AND 
-      source = 'filename-meta' AND
-      docid IN (
-        SELECT DISTINCT docid
-        FROM docmeta 
-        WHERE 
-          key = 'date_arrived' AND 
-          source = 'import-docs' AND
-          value = ? AND 
-          docid IN (
-        SELECT DISTINCT docid
-        FROM docmeta
-        WHERE
-          KEY = 'public_process_number' AND
-          value = ?
-      ))
-  """
-  ppn = params['ppn']
-  date_arrived = params['date']
-  casenum = params['case']
-  cases = DB.execute(query, [date_arrived, ppn]).flatten.uniq.sort
-  case_links = cases.map do |cn|
-    "<a href='/public_process/#{ppn}/date/#{date_arrived}/case/#{cn}'>#{cn}</a>"
+  grouped_submissions = {}
+  submissions.each do |s|
+    grouped_submissions[s["date_arrived"]] ||= []
+    grouped_submissions[s["date_arrived"]] << { :id => s["id"], :case => s["case"], :name => s["name"] }
   end
 
-    case_text = ""
-    if casenum
-      case_text = casenum
-      query = """
-        SELECT docname, content
-        FROM docs
-        WHERE id IN (
-          SELECT DISTINCT docid
-          FROM docmeta 
-          WHERE 
-            key = 'case' AND 
-            value = ? AND 
-            docid IN (
-              SELECT DISTINCT docid
-              FROM docmeta 
-              WHERE 
-                key = 'date_arrived' AND 
-                value = ? AND 
-                docid IN (
-              SELECT DISTINCT docid
-              FROM docmeta
-              WHERE
-                KEY = 'public_process_number' AND
-                value = ?
-            )
-        )
-        )
-      """
-    case_content = DB.execute(query, [casenum,date_arrived,ppn])
-    case_text = case_content.map do |ccr|
-      doc_name = ccr[0]
-      doc_paragraphs = ccr[1].split(/\n+/)
-      content_html = doc_paragraphs.map { |para| "<p>#{para}</p>" }
+  timeline = grouped_submissions.map do |date_arrived, submissions_on_date|
+    ymd = int_to_ymd(date_arrived)
+    date_str = Date.new(*ymd).strftime("%B %d, %Y")
+    date_header = "<h3>#{date_str}</h3>"
+    submission_links = submissions_on_date.map do |s|
+      "<a href='/public_process/#{ppn}/submission/#{s[:id]}'>#{s[:case]}-#{s[:name]}</a>"
+    end
+    date_header + submission_links.join("<br/>")
+  end
+
+  submission_text = ""
+
+  if params[:id]
+    documents = neo4jDB.query("""
+      MATCH (submission:Submission)-[:CONTAINING]->(document:Document)
+      WHERE ID(submission) = $id
+      RETURN document.name, document.content
+    """, id:params[:id].to_i)
+
+    submission_text = documents.map do |doc|
+      doc_name = doc["document.name"]
+      doc_paragraphs = doc["document.content"].split(/\n+/)
+      content_html = doc_paragraphs.select do |para| 
+        para.strip != ""
+      end.map do |para| 
+        "<p>#{para}</p>"
+      end.join("\n")
+
       """
       <h3>#{doc_name}</h3>
       #{content_html}
       """
-    end
+    end.join("<br/>\n")
   end
-  
+
   """
-  <h1>Public Process #{params['ppn']}</h1>
+  <h1>Public Process #{ppn}</h1>
   <table>
     <tr>
       <td valign='top' width='30%'>
-        #{case_links.join(', ')}
+        #{timeline.join("\n")}
       </td>
       <td valign='top'>
-        #{case_text}
+        #{submission_text}
       </td>
     </tr>
   </table>

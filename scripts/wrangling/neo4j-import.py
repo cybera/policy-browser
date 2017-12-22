@@ -154,10 +154,41 @@ def merge_submitter(role):
           WHERE ID(r) = $participant_id
           MERGE (r)-[:PARTICIPATES_IN]->(s)
         """, submission_id=submission_id, participant_id=participant_id)
-  
+
+def ymd_to_int(year, month, day):
+  return year * 10000 + month * 100 + day
+
+def int_to_ymd(num):
+  day = int(num % 100)
+  month = int(((num - day) / 100) % 100)
+  year = int((num - (month * 100 + day)) / 10000)
+  return (year, month, day)
+
+def merge_dates():
+  print("Attaching date_arrived to Submissions where it can be found")
+  with transaction() as tx:
+    results = tx.run("""
+      MATCH (s:Submission)-[:CONTAINING]->(d:Document {type:'html'})
+      WHERE NOT EXISTS(s.date_arrived)
+      RETURN ID(s) as id, d.raw_text as raw_text
+    """)
+
+    for r in results:
+      doc = HTMLSubmission(r["raw_text"])
+      date_arrived = doc.top_level("Date Arrived")
+      if date_arrived:
+        ymd = re.match(r"(\d{4})-(\d{2})-(\d{2})", date_arrived).groups()
+        date_arrived_val = ymd_to_int(*[int(n) for n in ymd])
+        tx.run("""
+          MATCH (s:Submission)
+          WHERE ID(s) = $id
+          SET s.date_arrived = $date_arrived
+        """, id=r['id'], date_arrived=date_arrived_val)    
+
 merge_core()
 merge_expert_knowledge()
 merge_raw_text()
 merge_content()
 merge_submitter("Client")
 merge_submitter("Designated Representative")
+merge_dates()

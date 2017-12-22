@@ -5,8 +5,6 @@ PROJECT_DIR="$(dirname $SCRIPT_DIR)"
 MOUNT_DIR=/mnt/hey-cira
 DOCKER_IMG=cybera/hey-cira/ruby
 
-docker run -it --rm \
-	-v $PROJECT_DIR:$MOUNT_DIR \
-  -p 4567:4567 \
-	$DOCKER_IMG \
-	bash -c "cd $MOUNT_DIR; prototypes/browser.rb"
+docker-compose -f $PROJECT_DIR/build/docker-compose.yml run --rm \
+	-p 4567:4567 \
+	ruby-script bash -c "cd $MOUNT_DIR; prototypes/browser.rb"
