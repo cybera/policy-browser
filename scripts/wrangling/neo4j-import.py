@@ -4,6 +4,7 @@ import os, re
 from neo4j.v1 import GraphDatabase
 from html_submission import HTMLSubmission
 from contextlib import contextmanager
+import csv
 
 uri = "bolt://neo4j:7687"
 driver = GraphDatabase.driver(uri, auth=("neo4j", "password"))
@@ -16,6 +17,7 @@ def transaction():
 
 scrapedir = os.path.join("data", "raw")
 txtdir = os.path.join("data", "processed", "raw_text")
+csvdir = os.path.join("data", "processed")
 
 def merge_core():
   print("Using filenames to merge PublicProcess, Intervention, and Document nodes")
@@ -56,10 +58,11 @@ def merge_raw_text():
     for r in tx.run("""
       MATCH (d:Document) WHERE NOT EXISTS(d.raw_text) RETURN d.name AS name
       """):
-      filepath = os.path.join(scrapedir, r['name'])
+      #filepath = os.path.join(scrapedir, r['name'])
       txtpath = os.path.join(txtdir, "%s.txt" % r['name'])
       if os.path.exists(txtpath):
         raw_text = open(txtpath, "r", encoding="latin-1").read()
+        print(raw_text)
         tx.run("""
           MATCH (doc:Document { name: $fname })
           SET doc.raw_text = $raw_text
@@ -183,7 +186,71 @@ def merge_dates():
           MATCH (s:Submission)
           WHERE ID(s) = $id
           SET s.date_arrived = $date_arrived
-        """, id=r['id'], date_arrived=date_arrived_val)    
+        """, id=r['id'], date_arrived=date_arrived_val) 
+        
+        
+def topics():
+  print("Creating topics")
+  topics = os.path.join(csvdir, 'topics.csv')
+  with open(topics) as csvfile:
+    readCSV = csv.reader(csvfile)
+    next(readCSV)
+    i=1
+    for row in readCSV:
+        print(row[6], row[1],row[2],row[3],row[4],row[5])
+        with transaction() as tx:
+                tx.run("""
+                       MERGE (to:topic { label:$label,id: $id})
+                       MERGE (te1:term { word: $word1 })
+                       MERGE (te2:term { word: $word2 })
+                       MERGE (te3:term { word: $word3 })
+                       MERGE (te4:term { word: $word4 })
+                       MERGE (te5:term { word: $word5 })
+                       MERGE (to)-[r1:RankIn {rank:1}]->(te1)
+                       MERGE (to)-[r2:RankIn {rank:2}]->(te2)
+                       MERGE (to)-[r3:RankIn {rank:3}]->(te3)
+                       MERGE (to)-[r4:RankIn {rank:4}]->(te4)
+                       MERGE (to)-[r5:RankIn {rank:5}]->(te5)
+                       """, id=i,label=row[6], word1=row[1], word2=row[2], word3=row[3], word4=row[4], word5=row[5])
+        i=i+1
+
+def categories():
+  print("Creating categories")
+  categories = os.path.join(csvdir, 'Categories.csv')
+  with open(categories) as csvfile:
+    readCSV = csv.reader(csvfile)
+    next(readCSV)
+    i=1
+    for row in readCSV:
+        print(row[0], row[1],i)
+        with transaction() as tx:
+                tx.run("""
+                       MERGE (c:category { name:$name,id: $id})
+                       """, id=i,name=row[0])
+                tx.run("""
+                       MATCH (c:category {id:$id}), (t:topic {id:$topic_id})
+                       CREATE (c)-[:MOST_DIAGNOSED]->(t)
+                       """, id=i,topic_id=int(row[1]))
+        i=i+1
+
+def doc_category_topic():
+  print("Creating relationship between topics/categories and documents")
+  doc_topics = os.path.join(csvdir, 'doc_topics.csv')
+  with open(doc_topics) as csvfile:
+    readCSV = csv.reader(csvfile)
+    next(readCSV)
+    for row in readCSV:
+        print(row[2], row[3],row[4])
+        with transaction() as tx:
+                tx.run("""
+                       MATCH (d:Document {name:$name}), (t:topic {id:$topic_id})
+                       CREATE (d)-[:HAS_TOPIC]->(t)
+                       """, name=row[2],topic_id=int(row[3]))
+               # tx.run("""
+               #        MATCH (d:Document {name:$name}), (c:category {name:$c_name})
+                #       CREATE (d)-[:HAS_CATEGORY]->(c)
+                #       """, name=row[2],c_name=row[4])
+  
 
 merge_core()
 merge_expert_knowledge()
@@ -192,3 +259,5 @@ merge_content()
 merge_submitter("Client")
 merge_submitter("Designated Representative")
 merge_dates()
+topics()
+doc_category_topic()
