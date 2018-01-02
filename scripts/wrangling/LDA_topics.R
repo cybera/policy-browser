@@ -6,6 +6,10 @@ library(tm)
 library(topicmodels)
 library(tidytext)
 library(ldatuning)
+library(LDAvis)
+library(stringi)
+library(magrittr)
+library(tsne)
 #setwd("~/DS/hey-cira/data/processed")
 
 con = dbConnect(RSQLite::SQLite(), dbname="docs.db")
@@ -45,7 +49,7 @@ docs_corpus <- tm_map(docs_corpus, tolower)
 docs_corpus <- tm_map(docs_corpus, removeWords, stopwords("english"))
 docs_corpus <- tm_map(docs_corpus, removeWords, stopwords("french"))
 docs_corpus <- tm_map(docs_corpus, content_transformer(gsub), pattern = "non profit", replacement = "nonprofit")
-docs_corpus <- tm_map(docs_corpus, removeWords, c("can","name","via","first","last","per", "will", "plus","form","next","none"))
+docs_corpus <- tm_map(docs_corpus, removeWords, c("can","name","via","first","last","per", "will", "plus","form","next","non"))
 docs_corpus <- tm_map(docs_corpus, content_transformer(gsub), pattern = "services", replacement = "service")
 docs_corpus <- tm_map(docs_corpus, content_transformer(gsub), pattern = "communities", replacement = "community")
 docs_corpus <- tm_map(docs_corpus, content_transformer(gsub), pattern = "providers", replacement = "provider")
@@ -75,6 +79,8 @@ control_list_gibbs <- list(
   nstart = 5,
   best = TRUE
 )
+##find optimal topics number 2-15
+## this takes forever to run I was never patient enough 
 system.time(
   topic_number <- FindTopicsNumber(
     reduced.dtm,
@@ -87,6 +93,7 @@ system.time(
   )
 )
 FindTopicsNumber_plot(topic_number)
+############
 
 system.time(model5 <- topicmodels::LDA(reduced.dtm, 5, method = "Gibbs", control =control_list_gibbs))
 system.time(model10 <- topicmodels::LDA(reduced.dtm, 10, method = "Gibbs", control =control_list_gibbs))
@@ -169,6 +176,43 @@ gamma_dtm15 <- gamma_dtm15 %>%
   filter(gamma==max(gamma))
 table(gamma_dtm15$topic)
 
+zero_docs <- unname(which(rowTotals==0))
+svd_tsne <- function(x) tsne(svd(x)$u)
+topicmodels_json_ldavis <- function(fitted, corpus, doc_term){
+  phi <- posterior(fitted)$terms %>% as.matrix
+  theta <- posterior(fitted)$topics %>% as.matrix
+  vocab <- colnames(phi)
+  doc_length <- vector()
+  for (i in 1:length(corpus)) 
+    if (!(i %in% zero_docs)){
+      temp <- paste(corpus[[i]]$content, collapse = ' ')
+      doc_length <- c(doc_length, stri_count(temp, regex = '\\S+'))
+    }
+  temp_frequency <- as.matrix(doc_term)
+  freq_matrix <- data.frame(ST = colnames(temp_frequency),
+                            Freq = colSums(temp_frequency))
+  rm(temp_frequency)
+  json_lda <- LDAvis::createJSON(phi = phi, theta = theta,
+                                 vocab = vocab,
+                                 doc.length = doc_length,
+                                 term.frequency = freq_matrix$Freq)
+                                 #mds.method = svd_tsne) #for 2 topics
+  
+  return(json_lda)
+}
+
+json10 <- topicmodels_json_ldavis(model10, docs_corpus, reduced.dtm)
+serVis(json10)
+
+json2 <- topicmodels_json_ldavis(model2, docs_corpus, reduced.dtm)
+serVis(json2)
+
+json5 <- topicmodels_json_ldavis(model5, docs_corpus, reduced.dtm)
+serVis(json5)
+
+json15 <- topicmodels_json_ldavis(model15, docs_corpus, reduced.dtm)
+serVis(json15)
+
 dtm_topics <- topicmodels::topics(model10, 1)
 doctopics.df <- as.data.frame(dtm_topics)
 docs1<-docs1[rowTotals> 0, ]
@@ -236,3 +280,4 @@ topics$label=topicLabel$Label
 write.csv(topics,file = "topics.csv")
 #3Category  - topic
 write.csv(topics.most.diagnostic, file="Categories.csv")
+
