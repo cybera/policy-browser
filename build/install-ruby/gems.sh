@@ -8,3 +8,4 @@ gem install yomu
 gem install sqlite3
 gem install sinatra
 gem install neo4j
+gem install rubyzip
