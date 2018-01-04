@@ -114,6 +114,14 @@ def download_document(link_params, down_link)
     # Type - currently grabbing the name of the document as listed on the page. We can change this
     # to something more useful later.
 
+    # TODO: See the mirror comment to this in scripts/wrangling/process-docs.py. If you're looking
+    # at this section because you need to add another piece of information to the filename in order
+    # to keep track of meta-information we'll eventually want to import into the database, strongly
+    # consider implementing a sha256 hash function to match the python version, using that for the
+    # filename, and keeping track of the rest of the information in a json file (with a basename that
+    # is the sha256 hash of the original file's contents). Right now, process-docs.py is creating
+    # these .json files from the filename information generated here, but it is an extra step that
+    # really wouldn't be needed if we just generated the json files here.
     meta = [link_params['en']] +[link_params['ID']] + [link_params['DMID']] + [link_params['type']]
     filename = meta.join(".")
     extension = "html"

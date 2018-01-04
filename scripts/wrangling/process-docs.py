@@ -40,6 +40,12 @@ def copy_file(inpath, outdir, open_func=open, open_flags='rb', check_existing=Fa
       for chunk in iter(lambda: indoc.read(4096), b""):
         outdoc.write(chunk)
 
+# TODO: If you're looking at changing the following because you've made some changes to
+# the scraping script and have added/removed items from the generated filenames that broke
+# the processing/import steps, strongly consider moving this .json file creation to the
+# scraping script so that it does that directly. The only reason it's here right now is that
+# the scraping process takes a longer time and there's no pressing need at the moment to
+# rescrape all of the documents.
 def extract_basic_filename_info(fname, container_filename=None):
   dtype=fname.rsplit('.', 1)[1]
 
