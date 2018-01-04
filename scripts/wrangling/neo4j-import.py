@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 
 import os, re
+import os.path
 from neo4j.v1 import GraphDatabase
 from html_submission import HTMLSubmission
 from contextlib import contextmanager
 import csv
+from glob import glob
+import json
 
 uri = "bolt://neo4j:7687"
 driver = GraphDatabase.driver(uri, auth=("neo4j", "password"))
@@ -15,28 +18,31 @@ def transaction():
     with session.begin_transaction() as tx:
       yield tx
 
-scrapedir = os.path.join("data", "raw")
+metadir = os.path.join("data", "processed", "meta")
 txtdir = os.path.join("data", "processed", "raw_text")
 csvdir = os.path.join("data", "processed")
+hasheddir = os.path.join("data", "processed", "hashed")
 
 def merge_core():
   print("Using filenames to merge PublicProcess, Intervention, and Document nodes")
   with transaction() as tx:
-    for fname in os.listdir(scrapedir):
-      if fname != ".gitignore" and fname != ".DS_Store":
-        dtype=fname.rsplit('.', 1)[1]
-        the_rest=fname.rsplit('.', 1)[0]
-        [public_process_number,case,dmid,submission_and_orig_filename] = the_rest.split('.', 3)
-        submission_name = re.sub(r'\(.*\)','', submission_and_orig_filename)
+    for fpath in glob(f"{metadir}/*"):
+      meta = json.load(open(fpath))
+      sha256 = os.path.splitext(os.path.basename(fpath))[0]
 
-        tx.run("""
-          MERGE (p:PublicProcess { ppn: $ppn })
-          MERGE (i:Intervention { case: $case })
-          MERGE (d:Document { dmid: $dmid, type: $dtype, name: $fname })
-          MERGE (i)-[:INVOLVING]->(s:Submission { name: $submission_name })
-          MERGE (s)-[:CONTAINING]->(d)
-          MERGE (i)-[:SUBMITTED_TO]->(p)
-        """, ppn=public_process_number, case=int(case), dmid=int(dmid), dtype=dtype, fname=fname, submission_name=submission_name)
+      tx.run("""
+        MERGE (p:PublicProcess { ppn: $ppn })
+        MERGE (i:Intervention { case: $case })
+        MERGE (d:Document { sha256: $sha256 })
+        MERGE (i)-[:INVOLVING]->(s:Submission { name: $submission_name })
+        MERGE (s)-[:CONTAINING]->(d)
+        MERGE (i)-[:SUBMITTED_TO]->(p)
+      """, ppn=meta['ppn'], case=int(meta['case']), sha256=sha256, submission_name=meta['submission_name'])
+
+      tx.run("""
+        MATCH (d:Document { sha256: $sha256 })
+        SET d += $props
+      """, sha256=sha256, props=meta)
 
 # This is stuff that would be ideally found in the data but isn't really derivable at this point.
 # Instead, we're explicitly setting it based on expert knowledge of the way these things work. This
@@ -56,29 +62,36 @@ def merge_raw_text():
   print("Parsing text and merging as raw_text on Documents")
   with transaction() as tx:
     for r in tx.run("""
-      MATCH (d:Document) WHERE NOT EXISTS(d.raw_text) RETURN d.name AS name
+      MATCH (d:Document) WHERE NOT EXISTS(d.raw_text) RETURN d.sha256 AS sha256, d.type as type
       """):
-      #filepath = os.path.join(scrapedir, r['name'])
-      txtpath = os.path.join(txtdir, "%s.txt" % r['name'])
+      sha256 = r['sha256']
+      txtpath = os.path.join(txtdir, f"{sha256}.txt")
       if os.path.exists(txtpath):
-        raw_text = open(txtpath, "r", encoding="latin-1").read()
-        print(raw_text)
-        tx.run("""
-          MATCH (doc:Document { name: $fname })
-          SET doc.raw_text = $raw_text
-        """, fname=r['name'], raw_text=raw_text)  
+        with open(txtpath, "r") as txtfile:
+          tx.run("""
+            MATCH (doc:Document { sha256: $sha256 })
+            SET doc.raw_text = $raw_text
+          """, sha256=sha256, raw_text=txtfile.read())
+
+        if r['type'] == 'html':
+          hashedpath = os.path.join(hasheddir, f"{sha256}.html")
+          with open(hashedpath, "r", encoding="latin-1") as htmlfile:
+            tx.run("""
+              MATCH (doc:Document { sha256: $sha256 })
+              SET doc.raw_html = $raw_html
+            """, sha256=sha256, raw_html=htmlfile.read())
 
 def merge_content():
   with transaction() as tx:
     results = tx.run("""
       MATCH (d:Document)
       WHERE NOT EXISTS(d.content)
-      RETURN d.type AS type, d.raw_text AS raw_text, ID(d) AS id
+      RETURN d.type AS type, d.raw_text AS raw_text, d.raw_html AS raw_html, ID(d) AS id
     """)
     for r in results:
       content = None
       if r["type"] == "html":
-        doc = HTMLSubmission(r["raw_text"])
+        doc = HTMLSubmission(r["raw_html"])
         content = doc.comment()
       else:
         content = r["raw_text"]
@@ -131,11 +144,11 @@ def merge_submitter(role):
     results = tx.run("""
       MATCH (s:Submission)-[:CONTAINING]->(d:Document {type:'html'})
       WHERE NOT (:Participant { role: $role })-[:PARTICIPATES_IN]->(s:Submission) 
-      RETURN ID(s) AS id, d.raw_text AS raw_text
+      RETURN ID(s) AS id, d.raw_html AS raw_html
     """, role=role)
 
     for r in results:
-      doc = HTMLSubmission(r["raw_text"])
+      doc = HTMLSubmission(r["raw_html"])
       role_function = None
       if role == "Client":
         role_function = doc.client_info
@@ -173,11 +186,11 @@ def merge_dates():
     results = tx.run("""
       MATCH (s:Submission)-[:CONTAINING]->(d:Document {type:'html'})
       WHERE NOT EXISTS(s.date_arrived)
-      RETURN ID(s) as id, d.raw_text as raw_text
+      RETURN ID(s) as id, d.raw_html as raw_html
     """)
 
     for r in results:
-      doc = HTMLSubmission(r["raw_text"])
+      doc = HTMLSubmission(r["raw_html"])
       date_arrived = doc.top_level("Date Arrived")
       if date_arrived:
         ymd = re.match(r"(\d{4})-(\d{2})-(\d{2})", date_arrived).groups()

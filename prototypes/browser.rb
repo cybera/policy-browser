@@ -92,7 +92,7 @@ get "/public_process/:ppn/submission/:id?" do
   <h1>Public Process #{ppn}</h1>
   <table>
     <tr>
-      <td valign='top' width='30%'>
+      <td valign='top' width='20%'>
         #{timeline.join("\n")}
       </td>
       <td valign='top'>

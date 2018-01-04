@@ -1,0 +1,13 @@
+#!/bin/bash
+
+SCRIPTNAME=$1
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PROJECT_DIR="$(dirname $SCRIPT_DIR)"
+
+docker-compose -f $PROJECT_DIR/build/docker-compose.yml up -d tika
+
+$SCRIPT_DIR/script wrangling/process-docs.py
+
+docker-compose -f $PROJECT_DIR/build/docker-compose.yml stop tika
+docker-compose -f $PROJECT_DIR/build/docker-compose.yml rm -f tika
