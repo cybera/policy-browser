@@ -8,6 +8,7 @@ from contextlib import contextmanager
 import csv
 from glob import glob
 import json
+from nltk.tokenize import TextTilingTokenizer
 
 uri = "bolt://neo4j:7687"
 driver = GraphDatabase.driver(uri, auth=("neo4j", "password"))
@@ -201,7 +202,46 @@ def merge_dates():
           SET s.date_arrived = $date_arrived
         """, id=r['id'], date_arrived=date_arrived_val) 
         
-        
+def merge_segments():
+  print("Splitting documents into segments via nltk.tokenize.TextTilingTokenizer")
+
+  tiler = TextTilingTokenizer()
+
+  with transaction() as tx:
+    results = tx.run("""
+      MATCH (d:Document)
+      WHERE 
+        EXISTS(d.content) AND
+        NOT (d)-[:CONTAINS_SEGMENT]->(:Segment)
+      RETURN ID(d) as id, d.content as content, d.name as name
+    """)
+  
+  for r in results:
+    print(f"Segmenting: {r['name']}")
+
+    with transaction() as tx:
+      content = r['content']
+      segments = [content]
+
+      try:
+        segments = tiler.tokenize(content)
+      except ValueError as e:  # as e syntax added in ~python2.5
+        too_short = "No paragraph breaks were found(text too short perhaps?)"
+        if str(e) != too_short:
+          raise
+
+      seq = 1
+      for segment in segments:
+        tx.run("""
+          MATCH (d:Document)
+          WHERE ID(d) = $docid
+          WITH d
+          MERGE (d)-[:CONTAINS_SEGMENT]->(s:Segment { seq:$seq })
+          SET s.content = $segment
+        """, docid=r['id'], seq=seq, segment=segment)
+        seq = seq + 1
+  
+
 def topics():
   print("Creating topics")
   topics = os.path.join(csvdir, 'topics.csv')
@@ -272,5 +312,9 @@ merge_content()
 merge_submitter("Client")
 merge_submitter("Designated Representative")
 merge_dates()
+# Currently this slows down way too much on some of the parsed PDF documents (the
+# ones containing ~3000 pages) and may not be useful enough to justify that sort
+# of time investment.
+# merge_segments()
 topics()
 doc_category_topic()

@@ -1,0 +1,11 @@
+--- /opt/conda/lib/python3.6/site-packages/nltk/tokenize/texttiling.py	2018-01-05 04:47:48.768187053 +0000
++++ /root/texttiling.py	2018-01-05 04:47:28.091983632 +0000
+@@ -312,7 +312,7 @@
+         #that a section shouldn't be smaller than at least 2
+         #pseudosentences for small texts and around 5 for larger ones.
+ 
+-        clip = min(max(len(scores)/10, 2), 5)
++        clip = int(min(max(len(scores)/10, 2), 5))
+         index = clip
+ 
+         for gapscore in scores[clip:-clip]:
