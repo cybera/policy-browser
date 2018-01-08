@@ -69,16 +69,26 @@ get "/public_process/:ppn/submission/:id?" do
     documents = neo4jDB.query("""
       MATCH (submission:Submission)-[:CONTAINING]->(document:Document)
       WHERE ID(submission) = $id
-      RETURN document.name, document.content
+      RETURN document.name, document.content, document.type
     """, id:params[:id].to_i)
 
     submission_text = documents.map do |doc|
       doc_name = doc["document.name"]
-      doc_paragraphs = doc["document.content"].split(/\n+/)
-      content_html = doc_paragraphs.select do |para| 
+
+      content = doc["document.content"]
+      paragraphs = content.split(/\n+/).select do |para| 
         para.strip != ""
-      end.map do |para| 
-        "<p>#{para}</p>"
+      end
+      
+      avg_length = paragraphs.map { |p| p.length }.reduce(:+).to_f / paragraphs.length
+      paragraphs = paragraphs.slice_when do |prevpara, nextpara|
+        prevpara.strip =~ /.*?[.?!;:]$/ || prevpara.length < 0.8 * avg_length
+      end.map { |parablock| parablock.join("") }
+
+      content_html = paragraphs.chunk do | para |
+        para.length < 0.8 * avg_length
+      end.map do | short, parachunk | 
+        short ? parachunk.join("<br/>") : parachunk.map { |para| "<p>#{para}</p>" }
       end.join("\n")
 
       """
@@ -90,12 +100,12 @@ get "/public_process/:ppn/submission/:id?" do
 
   """
   <h1>Public Process #{ppn}</h1>
-  <table>
+  <table style='table-layout: fixed; width: 100%'>
     <tr>
       <td valign='top' width='20%'>
         #{timeline.join("\n")}
       </td>
-      <td valign='top'>
+      <td valign='top' width='80%' style='word-wrap: break-word'>
         #{submission_text}
       </td>
     </tr>
