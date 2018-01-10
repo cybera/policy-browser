@@ -6,6 +6,7 @@ from neo4j.v1 import GraphDatabase
 from html_submission import HTMLSubmission
 from contextlib import contextmanager
 import csv
+import sys
 from glob import glob
 import json
 from nltk.tokenize import TextTilingTokenizer
@@ -303,7 +304,21 @@ def doc_category_topic():
                #        MATCH (d:Document {name:$name}), (c:category {name:$c_name})
                 #       CREATE (d)-[:HAS_CATEGORY]->(c)
                 #       """, name=row[2],c_name=row[4])
-  
+def doc_french():
+  csv.field_size_limit(sys.maxsize)
+  print("Adding french translation")
+  french_data = os.path.join(csvdir, 'data_french.csv')
+  with open(french_data) as csvfile:
+    readCSV = csv.reader(csvfile)
+    next(readCSV)
+    for row in readCSV:
+        #print(row[1], row[3])
+        with transaction() as tx:
+                tx.run("""
+                       MATCH (d:Document {sha256:$sha256})
+                       WHERE NOT EXISTS(d.translated)
+                       SET d.translated = $translated
+                       """, sha256=row[1],translated=row[3])
 
 merge_core()
 merge_expert_knowledge()
@@ -315,6 +330,7 @@ merge_dates()
 # Currently this slows down way too much on some of the parsed PDF documents (the
 # ones containing ~3000 pages) and may not be useful enough to justify that sort
 # of time investment.
-# merge_segments()
+ merge_segments()
 topics()
 doc_category_topic()
+doc_french()
