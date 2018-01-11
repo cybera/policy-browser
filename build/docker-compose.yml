@@ -48,4 +48,14 @@ services:
       - "9998:9998"
     networks:
       - default
-  
+  solr:
+    image: solr
+    ports:
+      - "8983:8983"
+    volumes:
+      - ../data/solr/mycores:/opt/solr/server/solr/mycores
+    networks:
+      - default
+    entrypoint:
+      - solr-precreate
+      - cira

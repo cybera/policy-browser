@@ -1,0 +1,24 @@
+#!/bin/bash
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PROJECT_DIR="$(dirname $SCRIPT_DIR)"
+
+# see: https://askubuntu.com/questions/354915/quote-command-in-the-shell
+quote ()
+{ 
+    local quoted=${1//\'/\'\\\'\'};
+    printf "'%s'" "$quoted"
+}
+
+opts=()
+
+for var in "$@"
+do
+  if [[ ! "$var" =~ ^-- ]]; then
+    query=$(quote "$var")
+  else
+    opts+=($var)
+  fi
+done
+
+$PROJECT_DIR/bin/script wrangling/segment.py ${opts[@]} $query

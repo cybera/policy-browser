@@ -6,3 +6,8 @@ def sha256(path, open_func=open, open_flags='rb'):
     for chunk in iter(lambda: f.read(4096), b""):
       hash_sha256.update(chunk)
   return hash_sha256.hexdigest()
+
+def sha256str(text):
+  hash_sha256 = hashlib.sha256()
+  hash_sha256.update(text.encode())
+  return hash_sha256.hexdigest()
