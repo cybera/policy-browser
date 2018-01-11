@@ -184,7 +184,7 @@ Finally, if I'm happy with those results and want to re-import them to Neo4j as 
 Now, in Neo4j, you could do something like:
 
   ```
-  MATCH (q:Query { str: "content:'target speeds'" })
+  MATCH (q:Query { str: 'content:"target speeds"' })
   MATCH (o:Organization)-[r1:ACTING_AS]->(:Participant)-[:PARTICIPATES_IN]->(sub:Submission)
   MATCH (sub)-[r2:CONTAINING]->(d:Document)
   MATCH (q)<-[r4:MATCHES]-(s:Segment)-[r3:SEGMENT_OF]->(d)
@@ -192,6 +192,34 @@ Now, in Neo4j, you could do something like:
   ```
 
 This would show all of the segments matched, what documents they came from, and ultimately what companies seem to be attached to those submissions.
+
+With some slight modifications, you could generate a table to show the same data:
+
+  ```
+  MATCH (q:Query { str: 'content:"target speeds"'})
+  MATCH (o:Organization)-[r1:ACTING_AS]->(:Participant)-[:PARTICIPATES_IN]->(sub:Submission)
+  MATCH (sub)-[r2:CONTAINING]->(d:Document)
+  MATCH (q)<-[r4:MATCHES]-(s:Segment)-[r3:SEGMENT_OF]->(d)
+  RETURN q.str,o.name,d.name,s.content
+  ```
+
+Another slight modification would allow us to see how many distinct organizations we have matches for:
+
+  ```
+  MATCH (q:Query { str: 'content:"target speeds"'})
+  MATCH (o:Organization)-[r1:ACTING_AS]->(:Participant)-[:PARTICIPATES_IN]->(sub:Submission)
+  MATCH (sub)-[r2:CONTAINING]->(d:Document)
+  MATCH (q)<-[r4:MATCHES]-(s:Segment)-[r3:SEGMENT_OF]->(d)
+  RETURN COUNT (DISTINCT o)
+  ```
+
+Comparing that with a simple count of organizations allows us to figure out how much we still need to search to get a particular type of answer:
+
+  ```
+  MATCH (o:Organization) RETURN COUNT(o)
+  ```
+
+Currently on my data set, that search seems to provide matches for 39 out of 128 identified companies.
 
 ## Deprecated: old local Ruby installation instructions
 
