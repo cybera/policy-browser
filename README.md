@@ -164,13 +164,13 @@ Ideally we'll eventually include this in our document browser, but for the time 
 To run our network speed query:
 
   ```
-  bin/segment "content:'target speeds'"
+  bin/segment 'content:"target speeds"'
   ```
 
 Matches to the actual search should show up in **bold** text in your terminal. On my screen, this shows "10 of 481 documents". To get the entire set, then, I could run:
 
   ```
-  bin/segment --rows=481 "content:'target speeds'"
+  bin/segment --rows=481 'content:"target speeds"'
   ```
 
   (Note: While usually, you could do something like '--rows 481', there's a bit of bugginess in the way we're passing parameters that will break here. So use '--rows=481' instead).
@@ -178,7 +178,7 @@ Matches to the actual search should show up in **bold** text in your terminal. O
 Finally, if I'm happy with those results and want to re-import them to Neo4j as "Segment" nodes related to the Document nodes where we found them *and* to the Query we're running to find them, I can add an "--add" flag:
 
   ```
-  bin/segment --rows=481 --add "content:'target speeds'"
+  bin/segment --rows=481 --add 'content:"target speeds"'
   ```
 
 Now, in Neo4j, you could do something like:
