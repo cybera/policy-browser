@@ -1,0 +1,24 @@
+body {
+  padding-top: 50px;
+}
+.starter-template {
+  padding: 40px 15px;
+  text-align: center;
+}
+
+.query-matches em {
+  background-color: yellow;
+  font-style: normal;
+}
+
+.browser-main-content {
+  margin-top: 20px;
+}
+
+.browser-navigation-style-dropdown button.dropdown-toggle {
+  width: 100%;
+}
+
+.browser-navigation-style-dropdown ul.dropdown-menu {
+  width: 100%;
+}

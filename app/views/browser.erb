@@ -1,11 +1,11 @@
 <div class="row">
   <div class="col-md-4">
-    <div class="row dropdown">
-      <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="width:100%">
+    <div class="row dropdown browser-navigation-style-dropdown">
+      <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
         <%= camelize(navigation) %>
         <span class="caret"></span>
       </button>
-      <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" style="width:100%">
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
         <li><a href="/browser?navigation=timeline&ppn=<%= ppn %>">Timeline</a></li>
         <li><a href="/browser?navigation=organizations&ppn=<%= ppn %>">Organizations</a></li>
         <li><a href="/browser?navigation=queries&ppn=<%= ppn %>">Queries</a></li>
@@ -14,7 +14,7 @@
   </div>
   <div class="col-md-8"></div>
 </div>
-<div class="row" style="margin-top: 20px">
+<div class="row browser-main-content">
   <div class="col-md-4">
     <div class="row text-left">
       <%= render_navigation(navigation, locals) %>
