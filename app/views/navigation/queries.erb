@@ -2,7 +2,7 @@
   <% queries.each do | q | %>
     <li class="list-group-item">
       <span class="badge"><%= q['hits'] %></span>
-      <a href='<%= "/browser?ppn=#{ppn}&query=#{q['id']}&navigation=queries&view=matches" %>'>
+      <a href='<%= "/browser?ppn=#{ppn}&query=#{q['id']}&navigation=queries&detail=matches" %>'>
         <%= q['str'] %>
       </a>
     </li>

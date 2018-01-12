@@ -2,9 +2,9 @@ require "sinatra/base"
 require "helpers/basic"
 
 module Sinatra
-  module ViewHelpers
+  module DetailHelpers
     class Matches
-      TEMPLATE = "view/matches"
+      TEMPLATE = "detail/matches"
 
       def initialize(params)
         @params = params
