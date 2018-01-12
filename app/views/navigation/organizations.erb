@@ -1,10 +1,17 @@
-<% grouped_submissions.sort.each do | organization, submissions_by_org | %>
-  <h3><%= organization %></h3>
+<div class="panel panel-default">
+  <% grouped_submissions.sort.each do | organization, submissions_by_org | %>
+    <div class="panel-heading">
+      <h5 class="panel-title"><%= organization %></h5>
+    </div>
 
-  <% submissions_by_org.each do | submission | %>
-    <a href='<%= "/browser?ppn=#{ppn}&submission=#{submission[:id]}&navigation=organizations" %>'>
-      <%= "#{submission[:case]}-#{submission[:name]}" %>
-    </a>
-    <br/>
+    <ul class="list-group">
+      <% submissions_by_org.each do | submission | %>
+        <li class="list-group-item">
+          <a href='<%= "/browser?ppn=#{ppn}&submission=#{submission[:id]}&navigation=organizations" %>'>
+            <%= "#{submission[:case]}-#{submission[:name]}" %>
+          </a>
+        </li>
+      <% end %>
+    </ul>
   <% end %>
-<% end %>
+</div>

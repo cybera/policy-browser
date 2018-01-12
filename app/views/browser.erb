@@ -1,16 +1,26 @@
-<html>
-  <h2>Browser | Neo4J | Solr | About</h2>
-  <table style='table-layout: fixed; width: 100%'>
-    <tr>
-      <td valign='top' width='20%'>
-        <a href="/browser?navigation=timeline&ppn=<%= ppn %>">Timeline</a> |
-        <a href="/browser?navigation=organizations&ppn=<%= ppn %>">Organizations</a>
-        <br/>
-        <%= render_navigation(navigation, locals) %>
-      </td>
-      <td valign='top' width='80%' style='word-wrap: break-word'>
-        <%= render_view(view, locals) %>
-      </td>
-    </tr>
-  </table>
-</html>
+<div class="row">
+  <div class="col-md-4">
+    <div class="row dropdown">
+      <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="width:100%">
+        <%= camelize(navigation) %>
+        <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" style="width:100%">
+        <li><a href="/browser?navigation=timeline&ppn=<%= ppn %>">Timeline</a></li>
+        <li><a href="/browser?navigation=organizations&ppn=<%= ppn %>">Organizations</a></li>
+        <li><a href="/browser?navigation=queries&ppn=<%= ppn %>">Queries</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="col-md-8"></div>
+</div>
+<div class="row" style="margin-top: 20px">
+  <div class="col-md-4">
+    <div class="row text-left">
+      <%= render_navigation(navigation, locals) %>
+    </div>
+  </div>
+  <div class="col-md-8 text-left">
+    <%= render_view(view, locals) %>
+  </div>
+</div>

@@ -23,6 +23,23 @@ module Sinatra
     def camelize(snake_case_str)
       snake_case_str.split('_').collect(&:capitalize).join
     end
+
+    def smart_paragraphs(newlines_str)
+      paragraphs = newlines_str.split(/\n+/).select do |para| 
+        para.strip != ""
+      end
+      
+      avg_length = paragraphs.map { |p| p.length }.reduce(:+).to_f / paragraphs.length
+      paragraphs = paragraphs.slice_when do |prevpara, nextpara|
+        prevpara.strip =~ /.*?[.?!;:]$/ || prevpara.length < 0.8 * avg_length
+      end.map { |parablock| parablock.join("") }
+
+      paragraphs.chunk do | para |
+        para.length < 0.8 * avg_length
+      end.map do | short, parachunk | 
+        short ? parachunk.join("<br/>") : parachunk.map { |para| "<p>#{para}</p>" }
+      end.join("\n")
+    end
   end
 
   helpers BasicHelpers

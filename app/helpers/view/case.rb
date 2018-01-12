@@ -22,24 +22,7 @@ module Sinatra
 
           cases = documents.map do |doc|
             doc_name = doc["document.name"]
-
-            content = doc["document.content"]
-            paragraphs = content.split(/\n+/).select do |para| 
-              para.strip != ""
-            end
-            
-            avg_length = paragraphs.map { |p| p.length }.reduce(:+).to_f / paragraphs.length
-            paragraphs = paragraphs.slice_when do |prevpara, nextpara|
-              prevpara.strip =~ /.*?[.?!;:]$/ || prevpara.length < 0.8 * avg_length
-            end.map { |parablock| parablock.join("") }
-
-            content_html = paragraphs.chunk do | para |
-              para.length < 0.8 * avg_length
-            end.map do | short, parachunk | 
-              short ? parachunk.join("<br/>") : parachunk.map { |para| "<p>#{para}</p>" }
-            end.join("\n")
-
-            { doc_name: doc_name, content_html: content_html }
+            { doc_name: doc_name, content: doc["document.content"] }
           end
 
           { :cases => cases }

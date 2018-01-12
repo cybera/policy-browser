@@ -19,6 +19,7 @@ get '/browser' do
   safe_params[:view] = params[:view] || "case"
   safe_params[:ppn] = params[:ppn]
   safe_params[:submission] = params[:submission]
+  safe_params[:query] = params[:query]
 
-  erb :browser, :locals => safe_params
+  erb :browser, :locals => safe_params, :layout => :layout
 end

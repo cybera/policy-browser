@@ -1,0 +1,10 @@
+<ul class="list-group">
+  <% queries.each do | q | %>
+    <li class="list-group-item">
+      <span class="badge"><%= q['hits'] %></span>
+      <a href='<%= "/browser?ppn=#{ppn}&query=#{q['id']}&navigation=queries&view=matches" %>'>
+        <%= q['str'] %>
+      </a>
+    </li>
+  <% end %>
+</ul>

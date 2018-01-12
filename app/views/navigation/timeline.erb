@@ -1,12 +1,16 @@
-<h1>Timeline</h1>
-
-<% grouped_submissions.each do | date_arrived, submissions_on_date | %>
-  <h3><%= int_to_datestr(date_arrived) %></h3>
-
-  <% submissions_on_date.each do | submission | %>
-    <a href='<%= "/browser?ppn=#{ppn}&submission=#{submission[:id]}&navigation=timeline" %>'>
-      <%= "#{submission[:case]}-#{submission[:name]}" %>
-    </a>
-    <br/>
+<div class="panel panel-default">
+  <% grouped_submissions.each do | date_arrived, submissions_on_date | %>
+    <div class="panel-heading">
+      <h5 class="panel-title"><%= int_to_datestr(date_arrived) %></h5>
+    </div>
+    <ul class="list-group query-matches">
+      <% submissions_on_date.each do | submission | %>
+        <li class="list-group-item">
+          <a href='<%= "/browser?ppn=#{ppn}&submission=#{submission[:id]}&navigation=timeline" %>'>
+            <%= "#{submission[:case]}-#{submission[:name]}" %>
+          </a>
+        </li>
+      <% end %>
+    </ul>
   <% end %>
-<% end %>
+</div>

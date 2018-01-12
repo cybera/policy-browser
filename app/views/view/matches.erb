@@ -1,0 +1,14 @@
+<% documents.each do |doc, segments| %>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title"><%= doc %></h3>
+    </div>
+    <ul class="list-group query-matches">
+      <% segments.each do |segment| %>
+        <li class="list-group-item">
+          <%= smart_paragraphs(segment['hlcontent']) %>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>

@@ -1,4 +1,10 @@
 <% cases.each do |c| %>
-  <h3> <%= c[:doc_name] %></h3>
-  <%= c[:content_html] %>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title"><%= c[:doc_name] %></h3>
+    </div>
+    <div class="panel-body">
+      <%= smart_paragraphs(c[:content]) %>
+    </div>
+  </div>
 <% end %>
