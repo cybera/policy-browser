@@ -330,7 +330,7 @@ merge_dates()
 # Currently this slows down way too much on some of the parsed PDF documents (the
 # ones containing ~3000 pages) and may not be useful enough to justify that sort
 # of time investment.
- merge_segments()
+merge_segments()
 topics()
 doc_category_topic()
 doc_french()
