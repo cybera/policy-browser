@@ -1,0 +1,16 @@
+<html>
+  <h2>Browser | Neo4J | Solr | About</h2>
+  <table style='table-layout: fixed; width: 100%'>
+    <tr>
+      <td valign='top' width='20%'>
+        <a href="/browser?navigation=timeline&ppn=<%= ppn %>">Timeline</a> |
+        <a href="/browser?navigation=organizations&ppn=<%= ppn %>">Organizations</a>
+        <br/>
+        <%= render_navigation(navigation, locals) %>
+      </td>
+      <td valign='top' width='80%' style='word-wrap: break-word'>
+        <%= render_view(view, locals) %>
+      </td>
+    </tr>
+  </table>
+</html>

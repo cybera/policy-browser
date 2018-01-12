@@ -1,0 +1,10 @@
+#!/bin/bash
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PROJECT_DIR="$(dirname $SCRIPT_DIR)"
+MOUNT_DIR=/mnt/hey-cira
+DOCKER_IMG=cybera/hey-cira/ruby
+
+docker-compose -f $PROJECT_DIR/build/docker-compose.yml run --rm \
+	-p 4567:4567 \
+	ruby-script bash -c "cd $MOUNT_DIR; app/main.rb"

@@ -1,0 +1,10 @@
+<% grouped_submissions.sort.each do | organization, submissions_by_org | %>
+  <h3><%= organization %></h3>
+
+  <% submissions_by_org.each do | submission | %>
+    <a href='<%= "/browser?ppn=#{ppn}&submission=#{submission[:id]}&navigation=organizations" %>'>
+      <%= "#{submission[:case]}-#{submission[:name]}" %>
+    </a>
+    <br/>
+  <% end %>
+<% end %>
