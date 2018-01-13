@@ -11,6 +11,12 @@ class DataDisplayHelper
     end
   end
 
+  attr_accessor :params
+
+  def initialize(params)
+    @params = params
+  end
+
   def template
     File.join(self.class.template_path_prefix, self.class.param_name).to_sym
   end
