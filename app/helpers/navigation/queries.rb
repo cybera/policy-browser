@@ -1,6 +1,3 @@
-require "sinatra/base"
-require "helpers/basic"
-
 module Sinatra
   module NavigationHelpers
     class Queries < NavigationHelper
