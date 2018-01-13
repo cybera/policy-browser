@@ -6,7 +6,7 @@
     <ul class="list-group query-matches">
       <% segments.each do |segment| %>
         <li class="list-group-item">
-          <%= smart_paragraphs(segment['hlcontent']) %>
+          <%= smart_paragraphs(segment[:hlcontent]) %>
         </li>
       <% end %>
     </ul>

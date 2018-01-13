@@ -2,6 +2,8 @@
 
 require "sinatra"
 require "sinatra/base"
+require "active_support"
+require "active_support/core_ext"
 
 $:.unshift File.expand_path("..", __FILE__)
 
@@ -12,6 +14,8 @@ require "helpers/detail"
 require "helpers/navigation"
 
 set :bind, '0.0.0.0'
+
+Neo4JQueries::connect("neo4j", "password")
 
 get '/browser' do
   safe_params = Sinatra::IndifferentHash.new

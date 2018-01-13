@@ -3,9 +3,7 @@ require "helpers/basic"
 
 module Sinatra
   module DetailHelpers
-    class Matches
-      TEMPLATE = "detail/matches"
-
+    class Matches < DetailHelper
       def initialize(params)
         @params = params
       end
@@ -20,7 +18,7 @@ module Sinatra
             WHERE ID(q) = $query
             RETURN q.str as query, o.name as organization, d.name as document,s.hlcontent as hlcontent
           """, query:@params[:query].to_i)
-          { :documents => segments.group_by { |s| s['document'] } }
+          { :documents => segments.group_by { |s| s[:document] } }
         else
           { :documents => [] }
         end

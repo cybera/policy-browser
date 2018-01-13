@@ -1,10 +1,10 @@
 <div class="panel panel-default">
-  <% grouped_submissions.each do | date_arrived, submissions_on_date | %>
+  <% grouped_submissions.each do | date_arrived, submission_group | %>
     <div class="panel-heading">
-      <h5 class="panel-title"><%= int_to_datestr(date_arrived) %></h5>
+      <h5 class="panel-title"><a href="#collapse<%= date_arrived %>" data-toggle="collapse"><%= int_to_datestr(date_arrived) %></a></h5>
     </div>
-    <ul class="list-group query-matches">
-      <% submissions_on_date.each do | submission | %>
+    <ul class="list-group query-matches collapse in" id="collapse<%= date_arrived %>">
+      <% submission_group.each do | submission | %>
         <li class="list-group-item">
           <a href='<%= "/browser?ppn=#{ppn}&submission=#{submission[:id]}&navigation=timeline" %>'>
             <%= "#{submission[:case]}-#{submission[:name]}" %>

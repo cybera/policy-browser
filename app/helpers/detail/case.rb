@@ -3,31 +3,23 @@ require "helpers/basic"
 
 module Sinatra
   module DetailHelpers
-    class Case
-      TEMPLATE = "detail/case"
-
+    class Case < DetailHelper
       def initialize(params)
         @params = params
       end
 
       def data
-        submission_text = ""
-
         if @params[:submission]
           documents = graph_query("""
             MATCH (submission:Submission)-[:CONTAINING]->(document:Document)
             WHERE ID(submission) = $id
-            RETURN document.name, document.content, document.type
+            RETURN document.name AS name, document.content AS content, 
+                   document.type AS type
           """, id:@params[:submission].to_i)
 
-          cases = documents.map do |doc|
-            doc_name = doc["document.name"]
-            { doc_name: doc_name, content: doc["document.content"] }
-          end
-
-          { :cases => cases }
+          { :documents => documents }
         else
-          { :cases => [] }
+          { :documents => [] }
         end
       end
     end

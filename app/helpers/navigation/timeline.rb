@@ -3,9 +3,7 @@ require "helpers/basic"
 
 module Sinatra
   module NavigationHelpers
-    class Timeline
-      TEMPLATE = "navigation/timeline"
-
+    class Timeline < NavigationHelper
       def initialize(params)
         @params = params
       end
@@ -18,15 +16,9 @@ module Sinatra
           ORDER BY date_arrived
         """, ppn:@params[:ppn])
 
-        grouped_submissions = {}
-        submissions.each do |s|
-          grouped_submissions[s["date_arrived"]] ||= []
-          grouped_submissions[s["date_arrived"]] << { 
-            :id => s["id"], 
-            :case => s["case"], 
-            :name => s["name"] 
-          }
-        end
+        grouped_submissions = submissions.group_by do | submission |
+          submission[:date_arrived]
+        end.sort_by { | date_arrived, submission_group | date_arrived }
 
         { :grouped_submissions => grouped_submissions }
       end

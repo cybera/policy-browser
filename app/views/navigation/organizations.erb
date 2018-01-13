@@ -1,11 +1,13 @@
 <div class="panel panel-default">
-  <% grouped_submissions.sort.each do | organization, submissions_by_org | %>
+  <% grouped_submissions.each do | key, submission_group | %>
     <div class="panel-heading">
-      <h5 class="panel-title"><%= organization %></h5>
+      <h5 class="panel-title">
+        <a href="#collapse<%= key[:orgid] %>" data-toggle="collapse"><%= key[:organization] %></a>
+      </h5>
     </div>
 
-    <ul class="list-group">
-      <% submissions_by_org.each do | submission | %>
+    <ul class="list-group collapse in" id="collapse<%= key[:orgid] %>">
+      <% submission_group.each do | submission | %>
         <li class="list-group-item">
           <a href='<%= "/browser?ppn=#{ppn}&submission=#{submission[:id]}&navigation=organizations" %>'>
             <%= "#{submission[:case]}-#{submission[:name]}" %>
