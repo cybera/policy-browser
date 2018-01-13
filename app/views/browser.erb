@@ -6,9 +6,11 @@
         <span class="caret"></span>
       </button>
       <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-        <li><a href="/browser?navigation=timeline&ppn=<%= ppn %>">Timeline</a></li>
-        <li><a href="/browser?navigation=organizations&ppn=<%= ppn %>">Organizations</a></li>
-        <li><a href="/browser?navigation=queries&ppn=<%= ppn %>">Queries</a></li>
+        <% NavigationHelper.registered_helpers.each do | nav_helper | %>
+          <li><a href="/browser?navigation=<%= nav_helper.param_name %>&ppn=<%= ppn %>">
+            <%= nav_helper.descriptive_name %>
+          </a></li>
+        <% end %>
       </ul>
     </div>
   </div>

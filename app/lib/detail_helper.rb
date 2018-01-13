@@ -1,8 +1,12 @@
-class DetailHelper
-  include Neo4JQueries
+require "lib/data_display_helper"
 
-  def template
-    template_name = self.class.name.split('::').last.underscore
-    File.join("detail", template_name).to_sym
+class DetailHelper < DataDisplayHelper
+  cattr_accessor :registered_helpers
+  cattr_accessor :template_path_prefix
+
+  def self.inherited(subclass)
+    self.template_path_prefix = "detail"
+    self.registered_helpers ||= []
+    self.registered_helpers << subclass
   end
 end
