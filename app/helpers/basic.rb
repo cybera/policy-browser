@@ -20,10 +20,6 @@ module Sinatra
       Date.new(*ymd).strftime("%B %d, %Y")
     end
 
-    def camelize(snake_case_str)
-      snake_case_str.split('_').collect(&:capitalize).join
-    end
-
     def smart_paragraphs(newlines_str)
       paragraphs = newlines_str.split(/\n+/).select do |para| 
         para.strip != ""
