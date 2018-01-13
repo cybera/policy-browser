@@ -221,6 +221,163 @@ Comparing that with a simple count of organizations allows us to figure out how 
 
 Currently on my data set, that search seems to provide matches for 39 out of 128 identified companies.
 
+## The Hey CIRA Browser
+
+The "prototype browser" has been refactored, renamed, and moved to the *app* folder. It uses Sinatra as a basic framework, with ERB templates and Bootstrap CSS.
+
+### Running the browser
+
+```
+bin/app
+```
+
+### Adding new styles of navigation
+
+Adding a new navigation style invovles two main tasks:
+
+1. Gathering the data needed for navigation
+
+  You'll find code for doing this with existing styles of navigation under *app/helpers/navigation*. To add a new style of navigation, create a new file in *app/helpers/navigation* with the following:
+
+  ```ruby
+  module Sinatra
+    module NavigationHelpers
+      class YourHelperClassName < NavigationHelper
+        def data
+          # Optional: Run a Neo4J graph query, using any safe parameters that have been passed
+          #           in via the request. You don't have to access the database. If it made sense
+          #           to supply some sort of static navigation elements, you could simply create
+          #           those in this method.
+          #
+
+          # results = graph_query("MATCH (n) WHERE ID(n) = $id", id:params[:id])
+
+          # Optional: Do whatever transformations on the data you want to prepare it for display.
+          #           Remember that ERB templates provide a lot of flexibility, so you can do many
+          #           things directly in them, but operations like grouping and sorting are best
+          #           done here.
+
+          # transformed_results = results
+
+          # Required: Make sure the last line of the method returns the data in the form that you
+          #           will be using it in the associated ERB template. You can explicitly call
+          #           "return" or let the Ruby language implementation implicitly assume the last
+          #           line is the return value.
+
+          # transformed_results
+        end
+      end
+    end
+  end
+  ```
+
+  By convention, the app assumes that you have a matching ERB template for this in *views/navigation*
+  named *your_helper_class_name.erb*. There are other conventions that you can find in `NavigationHelper`
+  and its superclass, `DataDisplayHelper`, under the *lib* folder. You can override these if necessary,
+  but hopefully you shouldn't have to. If you're doing that often, it's probably time to consider updating
+  the convention.
+
+2. Deciding how to display that data
+
+  The app expects to find *views/navigation/your_helper_class_name.erb*. The template filename is the
+  "snake case" or "underscore case" version of your "camel case" class name, without any of its containing
+  modules. "Foo" turns into "foo". "FooBar" turns into "foo_bar". Etc.
+
+  These templates use [ERB](http://www.kuwata-lab.com/erubis/users-guide.html), a common templating engine
+  in Ruby apps. There's plenty of documentation floating around online about how to use them, but here are
+  the basics: `<%= some_ruby_code %>` will put the results of `some_ruby_code` into your rendered html. Often
+  the "code" is simply a variable reference. `<% some_ruby_code %>` (notice no `=`) just runs the code within.
+  It doesn't render anything. Why would you want this? It's good for things like looping and conditionals *within*
+  your ERB template. So, for example, you could do the following to loop through an array of strings and render
+  them in a list:
+
+  ```erb
+  <ul>
+    <% string_array.each do |str| %>
+      <li><%= str %></li>
+    <% end %>
+  </ul>
+  ```
+
+  You could get the same results using raw ruby code:
+
+  ```ruby
+  "<ul>" + 
+    string_array.map { |str| "<li>#{str}</li>" } + 
+  "</ul>"
+  ```
+
+  But when the bulk of code is actually HTML, it's nice to just occasionally hop into Ruby-mode when you need
+  it. That's why most of the structure of a website will tend to be done in ERB. Read up on MVC architecture
+  to dive deeper into this separation of display and control logic if you're interested, but the above should
+  be good enough for most of what you'll want to do here.
+
+  One last question you may have: where do thos useful variables come from? Well, there's a bit of magic going
+  on with Sinatra's `erb` helper and the classes in this application play with that a bit further, but bottom
+  line is that you're guaranteed to have access to any variables you return in the `data` method of your
+  `YourHelperClassName` above. The variables will be named the same as the keys of that hash. The other things
+  you should have access to are various "helper" methods. See, for example, *helpers/basic.rb*. You can find
+  examples of where some of those methods are used in various ERB templates. 
+  
+  See the [Sinatra documentation](http://sinatrarb.com/extensions.html) for more extensive information on
+  how to writer helpers and add them in.
+
+### Adding to the navigation selector
+
+Ha! You actually shouldn't have to do this. As long as you follow the conventions, your new navigation
+style should be added to the list automatically. The parameter name will be the "snake case" version
+of your class name and the display name will be the class name itself by default. You can override
+either or both of these if necessary.
+
+### Navigation links
+
+Any links that you generate in your navigation HTML should have a `navigation=` parameter that refers
+back to your navigation (so that clicking a link doesn't change the navigation style), a parameter
+or several parameters that provide a way of finding the object the link refers to (often simply an
+ID value to look a graph object up directly), and a `detail=` parameter specifying a compatible
+display style that will be able to handle the parameters you've provided.
+
+### Adding a new style of detail display
+
+Adding a different style of detail display is very similar to adding a different style of navigation.
+Instead of extending `NavigationHelper`, you extend `DetailHelper`. And instead of putting your ERB
+template in *views/navigation*, you put it in *views/detail*. Here's your template for the helper:
+
+```ruby
+module Sinatra
+  module DetailHelpers
+    class YourHelperClassName < DetailHelper
+      def data
+        # similar code to a NavigationHelper
+      end
+    end
+  end
+end
+```
+
+There currenly isn't any way of choosing different display styles explicitly (the navigation link tends 
+to dictate the display style), but in theory, this wouldn't be too hard to add.
+
+### TODO
+
+- We should probably add some way for both navigation and detail displays to specify the parameters they
+are compatible with and/or output so that we can give some smart options for mixing and matching them
+without explicitly having to code them. This would also help in checking for bad parameters if someone
+realizes they can try different (potentially incompatible) methods simply by changing the GET parameters
+in their browser.
+
+### CSS, Javascript, and Bootstrap
+
+We're using [Bootstrap](https://getbootstrap.com/docs/3.3/) as a UI framework. It will handle the vast majority 
+of things you might want to otherwise do in CSS and/or Javascript. See their extensive documentation for good
+code snippits you might want to use. As long as you use the right CSS class names and HTML property values,
+they often "just work".
+
+We can also access JQuery directly if we need to do something in Javascript that Bootstrap isn't already doing
+for us. Finally, we can put any of our own .js and .css files in *public/js* and *public/css* respectively.
+They can then be referenced within any ERB HTML code as *js/some_js_file.js* and *css/some_css_file.css*. We
+already have a *public/css/layout.css* file started out with some minor tweaks.
+
 ## Deprecated: old local Ruby installation instructions
 
 1. Install rbenv
