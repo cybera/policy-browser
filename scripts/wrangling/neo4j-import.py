@@ -251,59 +251,37 @@ def topics():
     next(readCSV)
     i=1
     for row in readCSV:
-        print(row[6], row[1],row[2],row[3],row[4],row[5])
+        #print(row[6], row[1],row[2],row[3],row[4],row[5])
         with transaction() as tx:
                 tx.run("""
-                       MERGE (to:topic { label:$label,id: $id})
-                       MERGE (te1:term { word: $word1 })
-                       MERGE (te2:term { word: $word2 })
-                       MERGE (te3:term { word: $word3 })
-                       MERGE (te4:term { word: $word4 })
-                       MERGE (te5:term { word: $word5 })
-                       MERGE (to)-[r1:RankIn {rank:1}]->(te1)
-                       MERGE (to)-[r2:RankIn {rank:2}]->(te2)
-                       MERGE (to)-[r3:RankIn {rank:3}]->(te3)
-                       MERGE (to)-[r4:RankIn {rank:4}]->(te4)
-                       MERGE (to)-[r5:RankIn {rank:5}]->(te5)
+                       MERGE (to:Topic { label:$label,id: $id})
+                       MERGE (te1:Term { word: $word1 })
+                       MERGE (te2:Term { word: $word2 })
+                       MERGE (te3:Term { word: $word3 })
+                       MERGE (te4:Term { word: $word4 })
+                       MERGE (te5:Term { word: $word5 })
+                       MERGE (to)-[r1:RANK {rank:1}]->(te1)
+                       MERGE (to)-[r2:RANK {rank:2}]->(te2)
+                       MERGE (to)-[r3:RANK {rank:3}]->(te3)
+                       MERGE (to)-[r4:RANK {rank:4}]->(te4)
+                       MERGE (to)-[r5:RANK {rank:5}]->(te5)
                        """, id=i,label=row[6], word1=row[1], word2=row[2], word3=row[3], word4=row[4], word5=row[5])
         i=i+1
 
-def categories():
-  print("Creating categories")
-  categories = os.path.join(csvdir, 'Categories.csv')
-  with open(categories) as csvfile:
-    readCSV = csv.reader(csvfile)
-    next(readCSV)
-    i=1
-    for row in readCSV:
-        print(row[0], row[1],i)
-        with transaction() as tx:
-                tx.run("""
-                       MERGE (c:category { name:$name,id: $id})
-                       """, id=i,name=row[0])
-                tx.run("""
-                       MATCH (c:category {id:$id}), (t:topic {id:$topic_id})
-                       CREATE (c)-[:MOST_DIAGNOSED]->(t)
-                       """, id=i,topic_id=int(row[1]))
-        i=i+1
-
-def doc_category_topic():
-  print("Creating relationship between topics/categories and documents")
+def doc_topic():
+  print("Creating relationship between topics and documents")
   doc_topics = os.path.join(csvdir, 'doc_topics.csv')
   with open(doc_topics) as csvfile:
     readCSV = csv.reader(csvfile)
     next(readCSV)
     for row in readCSV:
-        print(row[2], row[3],row[4])
+        #print(row[2],row[3])
         with transaction() as tx:
                 tx.run("""
-                       MATCH (d:Document {name:$name}), (t:topic {id:$topic_id})
+                       MATCH (d:Document {sha256:$sha256}), (t:topic {id:$topic_id})
                        CREATE (d)-[:HAS_TOPIC]->(t)
-                       """, name=row[2],topic_id=int(row[3]))
-               # tx.run("""
-               #        MATCH (d:Document {name:$name}), (c:category {name:$c_name})
-                #       CREATE (d)-[:HAS_CATEGORY]->(c)
-                #       """, name=row[2],c_name=row[4])
+                       """, sha256=row[2],topic_id=int(row[3]))
+               
 def doc_french():
   csv.field_size_limit(sys.maxsize)
   print("Adding french translation")
@@ -332,5 +310,5 @@ merge_dates()
 # of time investment.
 merge_segments()
 topics()
-doc_category_topic()
+doc_topic()
 doc_french()
