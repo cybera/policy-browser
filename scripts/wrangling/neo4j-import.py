@@ -298,6 +298,13 @@ def doc_french():
                        SET d.translated = $translated
                        """, sha256=row[1],translated=row[3])
 
+def cat_merge():
+  print("Adding property for intervenor category")
+  with transaction() as tx:
+          tx.run("""LOAD CSV WITH HEADERS FROM "https://swift-yyc.cloud.cybera.ca:8080/v1/AUTH_ab5c2378570945ffb1b46cd9b62f5132/test_folder/intervenor_categories.csv" AS csvLine
+                    MATCH (o:Organization {name:csvLine.name})
+                    SET o.category=csvLine.Category""")
+
 merge_core()
 merge_expert_knowledge()
 merge_raw_text()
@@ -308,7 +315,8 @@ merge_dates()
 # Currently this slows down way too much on some of the parsed PDF documents (the
 # ones containing ~3000 pages) and may not be useful enough to justify that sort
 # of time investment.
-merge_segments()
+#merge_segments()
 topics()
 doc_topic()
 doc_french()
+cat_merge()
