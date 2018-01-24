@@ -24,7 +24,9 @@ repo for various CIRA project deliverables
   bin/solr start
   ```
 
-  Persistent data for these containers will be stored under *data/neo4j* and *data/solr*. It is not intended to be checked in and is ignored by git.
+  Persistent data for these containers will be stored under *data/neo4j* and *data/solr*. It is not intended to be checked in and is ignored by git. 
+
+  The neo4j database will be available at [localhost:7474](localhost:7474). In order to make the next step work, change the password to 'password'.
 
 5. Convert PDF, doc, etc. files to raw text
 
@@ -35,6 +37,7 @@ repo for various CIRA project deliverables
   This will create both copies of the original files and .txt conversions named using a sha256 hash of the contents of the original file. The copies will be found under *data/processed/hashed*, and the .txt conversions will be found under *data/processed/raw_text*. Metadata for the files, including the filenames is stored in .json files under *data/processed/meta* by this process (although, ideally, this should be done in the scraping process, as noted in some code comments there).
 
 6. Import data into Neo4j
+  This step requires a number of files it seeks to import into the database. These can be downloaded from [here](https://cloud.cybera.ca/project/containers/container/hey-cira/processed).
 
   ```
   bin/wrangle-neo4j
@@ -230,6 +233,8 @@ The "prototype browser" has been refactored, renamed, and moved to the *app* fol
 ```
 bin/app
 ```
+
+The app will be available at [localhost:4567/browser?ppn=2015-134](localhost:4567/browser?ppn=2015-134)
 
 ### Adding new styles of navigation
 
