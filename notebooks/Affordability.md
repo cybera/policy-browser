@@ -58,7 +58,7 @@ Comparison Word cloud:
 
 ![sent](images/sent.png)
 
-Sentiment ananlysis - top 15 distinctive  words:
+Sentiment ananlysis - top negative/positive distinctive  words:
 
 ![wc](images/wc.png)
 
@@ -85,6 +85,6 @@ Comparison Word cloud:
 
 ![sent1](images/sent1.png)
 
-Sentiment ananlysis - top 15 distinctive  words:
+Sentiment ananlysis - top negative/positive distinctive words:
 
 ![wc1](images/wc1.png)
