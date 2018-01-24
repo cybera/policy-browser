@@ -1,4 +1,5 @@
-##Goal: understand the positions of intervenors on how affordable internet services should be if it mandated to be a basic service.
+### Goal: 
+understand the positions of intervenors on how affordable internet services should be if it mandated to be a basic service.
 
 ### Part1. ACORN members testimonials
 
