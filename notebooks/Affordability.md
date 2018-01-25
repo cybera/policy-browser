@@ -94,10 +94,7 @@ Used  tidytext sentiment dictionaries -  afinn, nrc and Bing
 ![score_nrc](images/pie_bing.png)
 ![score_afinn](images/pie_nrc.png)
 
-<<<<<<< Updated upstream
-Sentiment ananlysis - top negative/positive distinctive words:
-=======
-Distribution of scores:
+*Distribution of scores*:
 
 ![bar_bing](images/bar_afinn.png)
 ![bar_nrc](images/bar_bing.png)
@@ -147,7 +144,6 @@ customers seeking to limit or reduce the cost of their service.1. Bill managemen
 that the monies required to support any subsidy program should come from general tax revenues, not from taxes or charges on telecommunications services. “Contribution” payments by telecommunications providers to fund subsidies necessarily raise the cost of services provided by theses carriers and, therefore, require higher prices for these services, thereby discouraging their use. The loss in economic value from such narrowly-targeted support regimes is much greater than the loss that results from taxes that are collected from a much wider tax base. Hausman (1998) has estimated that the taxes levied by the FCC on U.S. international and interstate carrier revenues to support universal service more than double the economic cost of providing the universal service subsidies because they substantially reduce subscribers’ use of international and interstate services.40 If they were funded from general tax revenues, the economic welfare loss would be much lower
 
 *Bing*
->>>>>>> Stashed changes
 
 - `score`: -10
 - `document name`: DM#2597436 - 2015-134 - Res to RFI - 5 May - CNOC - CNOC(CRTC)25Apr16-2 TNC 2015-134 .pdf
