@@ -71,9 +71,12 @@ def neo4j_count(match_condition, **kwargs):
     results = tx.run(match_condition + "RETURN COUNT(*) AS count", **kwargs)
   return int(results.single()['count'])
 
-def classes(mod, exclude=[]):
+def classes(mod, subclassof=None, exclude=[]):
   mod_class_tuples = inspect.getmembers(mod, inspect.isclass)
   mod_classes = [tup[1] for tup in mod_class_tuples if tup[1] not in exclude]
+  if subclassof:
+    mod_classes = [c for c in mod_classes if issubclass(c, subclassof)]
+    mod_classes = [c for c in mod_classes if c != subclassof]
   return mod_classes
 
 def itemize(strlist, prefix):

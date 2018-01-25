@@ -2,6 +2,7 @@ import csv
 
 class HandSortedDocCSVImport(TransformBase):
   DESCRIPTION = "Import hand sorted documents"
+  METHOD_TAG = "hand-sorted"
 
   def preconditions(self):
     self.csv_path = path.join(paths.data.processed, "sorted-document-organizations.csv")
@@ -14,7 +15,7 @@ class HandSortedDocCSVImport(TransformBase):
       WHERE 
         doc.sha256 in $sha256s AND
         NOT (:Organization)-[:SUBMITTED { method: $method }]->(doc)
-    """, method='hand-sorted', sha256s=sha256s)
+    """, method=self.METHOD_TAG, sha256s=sha256s)
 
   def transform(self, data):
     tx_results = []
@@ -27,7 +28,7 @@ class HandSortedDocCSVImport(TransformBase):
             MATCH (doc:Document { sha256: $sha256 })
             MERGE (o:Organization { name: $orgname })
             MERGE (o)-[:SUBMITTED { method: $method }]->(doc)
-          """, sha256=row['sha256'], orgname=row['organization'], method='hand-sorted')
+          """, sha256=row['sha256'], orgname=row['organization'], method=self.METHOD_TAG)
           tx_results.append(results)
 
     return neo4j_summary(tx_results)

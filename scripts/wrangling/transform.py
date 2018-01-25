@@ -27,7 +27,7 @@ transformations = []
 for tmod in transformation_mods:
   init_transformation_mod(tmod)
   util.init_module(tmod)
-  transform_classes = util.classes(tmod, exclude=[transform_base.TransformBase])
+  transform_classes = util.classes(tmod, subclassof=transform_base.TransformBase)
   transform_objs = [t() for t in transform_classes]
   transformations.extend(transform_objs)
 
