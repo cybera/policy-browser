@@ -68,7 +68,7 @@ def neo4j_summary(results):
 
 def neo4j_count(match_condition, **kwargs):
   with neo4jtx() as tx:
-    results = tx.run(match_condition + "RETURN COUNT(*) AS count", **kwargs)
+    results = tx.run(match_condition + " RETURN COUNT(*) AS count", **kwargs)
   return int(results.single()['count'])
 
 def classes(mod, subclassof=None, exclude=[]):
@@ -95,7 +95,7 @@ class PathBuilder(str):
       fullpath = path.join(self.root,subpath)
       setattr(self, subpath, PathBuilder(fullpath))
 
-project_paths = PathBuilder("/mnt/hey-cira")
-project_paths.add("data", "scripts")
-project_paths.data.add("raw", "processed")
-project_paths.data.processed.add("hashed", "meta", "raw_text", "sorted")
+project_root = PathBuilder("/mnt/hey-cira")
+project_root.add("data", "scripts")
+project_root.data.add("raw", "processed")
+project_root.data.processed.add("hashed", "meta", "raw_text", "sorted")

@@ -14,7 +14,7 @@ def init_transformation_mod(transformation):
   transformation.neo4j_summary = util.neo4j_summary
   transformation.neo4j_count = util.neo4j_count
   transformation.path = path
-  transformation.paths = util.project_paths
+  transformation.project_root = util.project_root
 
 transforms_path = path.join("scripts", "wrangling", "transformations")
 transform_module_paths = glob(path.join(transforms_path, "*.py"))
@@ -35,6 +35,14 @@ for tmod in transformation_mods:
 for tobj in transformations:
   tobj.preconditions()
 
+# Read transformations being explicitly skipped
+force_skip_transforms = []
+with open(path.join(util.project_root, ".skip-transforms")) as skipfile:
+  transform_names = [line.strip() for line in skipfile.readlines()]
+  force_skip_transforms = [t for t in transformations if type(t).__name__ in transform_names]
+for t in force_skip_transforms:
+  t.status.append("Entry in .skip-transforms file")
+
 cycles = 0
 max_cycles = 20
 completed_transformations = []
@@ -48,7 +56,7 @@ while cycles < max_cycles:
   transform_count = 0
 
   for t in transformations:
-    if t.process():
+    if t not in force_skip_transforms and t.process():
       transform_count = transform_count + 1
       completed_transformations.append(t)
   

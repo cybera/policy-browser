@@ -5,7 +5,7 @@ class HandSortedDocCSVImport(TransformBase):
   METHOD_TAG = "hand-sorted"
 
   def preconditions(self):
-    self.csv_path = path.join(paths.data.processed, "sorted-document-organizations.csv")
+    self.csv_path = path.join(project_root.data.processed, "sorted-document-organizations.csv")
     self.check_file(self.csv_path)
 
   def match(self):

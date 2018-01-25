@@ -24,6 +24,7 @@ get '/browser' do
   safe_params[:ppn] = params[:ppn]
   safe_params[:submission] = params[:submission]
   safe_params[:query] = params[:query]
+  safe_params[:question] = params[:question]
 
   erb :browser, :locals => safe_params, :layout => :layout
 end
