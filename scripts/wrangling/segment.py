@@ -35,7 +35,8 @@ search_config = {
   'hl.tag.pre': '<em>', 
   'hl.tag.post': '</em>', 
   'hl.snippets': 200, 
-  'hl.method': 'unified', 
+  #'hl.method': 'unified', 
+  'fq' : '-id:8b86f13c-3a01-45de-9668-b9ffdab7dee9 -id:152ef2a2-0cb4-4cdc-947d-c32fc0d09111',
   'fl':['id','sha256','name'],
   'rows':options.maxrows
 }
@@ -53,11 +54,12 @@ for r in search_results.docs:
   if sha256 not in docs:
     docs[sha256] = []
   print(f"\n\n================{sha256}================\n\n")
+  if 'content' in search_results.highlighting[solr_id]:
+    for hl in search_results.highlighting[solr_id]['content']:
+      docs[sha256].append(hl)
+      normalized = hl.replace("\n", "").replace("<em>", TEXT_BOLD).replace("</em>", TEXT_NORMAL)
+      print(f"{normalized}\n\n")
 
-  for hl in search_results.highlighting[solr_id]['content']:
-    docs[sha256].append(hl)
-    normalized = hl.replace("\n", "").replace("<em>", TEXT_BOLD).replace("</em>", TEXT_NORMAL)
-    print(f"{normalized}\n\n")
 
 if options.add:
   with transaction() as tx:
