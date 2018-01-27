@@ -37,11 +37,13 @@ for tobj in transformations:
 
 # Read transformations being explicitly skipped
 force_skip_transforms = []
-with open(path.join(util.project_root, ".skip-transforms")) as skipfile:
-  transform_names = [line.strip() for line in skipfile.readlines()]
-  force_skip_transforms = [t for t in transformations if type(t).__name__ in transform_names]
-for t in force_skip_transforms:
-  t.status.append("Entry in .skip-transforms file")
+skipfile_path = path.join(util.project_root, ".skip-transforms")
+if path.exists(skipfile_path):
+  with open(skipfile_path) as skipfile:
+    transform_names = [line.strip() for line in skipfile.readlines()]
+    force_skip_transforms = [t for t in transformations if type(t).__name__ in transform_names]
+  for t in force_skip_transforms:
+    t.status.append("Entry in .skip-transforms file")
 
 cycles = 0
 max_cycles = 20
