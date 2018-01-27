@@ -383,6 +383,91 @@ for us. Finally, we can put any of our own .js and .css files in *public/js* and
 They can then be referenced within any ERB HTML code as *js/some_js_file.js* and *css/some_css_file.css*. We
 already have a *public/css/layout.css* file started out with some minor tweaks.
 
+## Transformation Scripts
+
+After creating several random scripts to process our data and a few scripts that just grew and grew and grew, we finally have a mini-framework that should help avoid some of the common problems with having a team of people all trying to make tiny improvements to the data at the same time.
+
+Here are the basics: If you create a file with the following code and put it in "scripts/wrangling/transformations", it will run whenever someone runs: `bin/transform`:
+
+```python
+class WhateverNameYouLike(TransformBase):
+  DESCRIPTION = "A short description of what your transformation does"
+
+  def match(self):
+    return ["hello", "world"]
+
+  def transform(self, data):
+    for item in data:
+      print(item)
+
+    return ["Some description of what happened"]
+```
+
+The above will only end up printing the following:
+
+```
+hello
+world
+```
+
+and it's not the *simplest* script that you could have that would run (you don't even really need the `match` or `transform` method, as there are default implementations in `TransformBase` that return `True` and `["Not implemented"]`), but it illustrates a structure you'd usually want to have.
+
+Some key requirements/conventions:
+
+1. `match` should return something "truth-y" *if* you want to go ahead with the transformation, or something "false-y" if you want to skip the transformation.
+
+  - Truth-y values: `True`, a non-empty list (`[1]`), a non-empty string (`"foo"`), a non-zero number
+  - False-y values: `False`, `[]`, `""`, `0`
+
+2. In the `transform` function, `data` will be whatever you return in `match`. This allows you to avoid having to query the same data twice (once to see if it hasn't had your transformation applied to it and again to do the actual transformation) if that makes sense. There's nothing requiring that you *use* the data parameter, and in some cases, especially when your entire "transformation" is just a slightly more complicated `neo4j` query, you'll simply ignore it. The idea here is to still remain pretty flexible to the various transformation tasks we might want to do.
+
+3. The `transform` function should return an array of strings. What should those strings be? Simply a description of what was done. There are some helper functions, such as `neo4j_summary`, which take a Neo4J `result` (or array of them), and return a good summary (in this case, separate strings detailing the number of `Labels`, `Relationships`, etc. created/deleted/modified). You could just return `["Did stuff"]`, but try to make it something that helps whoever's running it understand what just got changed about the data.
+
+### Preconditions
+
+There's one more function that you may want to implement in some cases: `preconditions`. It runs *before* `match` and is pretty open ended. You could do necessary setup in here (any variables set on the transformation object will remain accessible in the `match` and `transform` calls), you could set `self.preconditions_met` to `False`, or you could call another function, such as `self.check_file` that will set `preconditions_met` for you conditionally (in this case, if a file doesn't exist).
+
+So say your transformation depends on a CSV file that you're crafting, and it's not quite ready for prime-time (or you want to have it generated/accessed in some other way that may mean it's not there when people run `bin/transform`). You want to check in your code (because not checking in code is BAD!!!), but you don't want to mess everyone else up. You could add a `preconditions` function and run `self.check_file("path-to-your-csv")`. If it doesn't exist, the transformation will be skipped (and the reason why reported out to the person running it).
+
+### Helper functions
+
+There are some commonly used functions and imports that are added automatically to every transformation without you having to explicitly import them. For example, to do a Neo4J query, just do the following in your transformation script:
+
+```python
+with neo4j() as tx:
+  tx.run("MATCH (n) RETURN COUNT(n)")
+```
+
+You also have access to `neo4j_summary` (described above), `neo4j_count` (add a `RETURN COUNT(*)` to an initial match clause and extract the single integer response), the `os.path` module (accessible as `path`), and various project paths via `project_root` (`project_root` gives you "/mnt/hey-cira", `project_root.data` gives you "/mnt/hey-cira/data", and so on).
+
+You can add other helper functions in one of two ways:
+
+1. Add a function to `TransformBase` which will be inherited (and can be overridden) by subclasses, and can also have access to any instance variables.
+
+2. Set `transformation.some_name = function_or_mod_you_want_to_add` to the `init_transformation_mod` function in *scripts/wrangling/transform.py*.
+
+There are advantages and disadvantages to either method. The 1st is really useful when you want to exploit some object orientation to specify general behaviour that can be used across transformations with custom hooks (overridden functions in specific transformations). The 2nd is useful when you just want a function or an existing python module without having to import it.
+
+### The .skip-transforms file
+
+If someone's checked in a transformation that breaks for you and you don't have time to deal with it and/or there's a particular transformation that never gets skipped but takes a long time, you can add the class name of the transformation on a single line of `.skip-transforms` in the project root. This file is ignored by git, so it won't get checked in.
+
+Ideally, you should *not* need this file. Every transformation should have a relatively quick way of figuring out whether it needs to be run (in the `match` function), and once run, it should have transformed all of the results that would have shown up in the `match` function, so that running it again would have `match` returning a "false-y" value.
+
+Why might this occur? Here's an example: Currently the `ImportZipOranizationRelationships` transformation tries to fuzzily match up references to an organization from pieces of the name of files contained in .zip files we've scraped from the CRTC site. We *want* `match` to indicate that the transformation should run if there are any files that match the naming scheme convention that seems to be used within those .zip files. However, due either to the fuzziness or an organization not existing yet in the database, we may not be able to match all of the files that we think we could. In theory, at a later point, that same transformation could be run and match up more files (say if someone else's script has since added some more organizations to match to). However, it does take a long time, which is annoying when you're working on something else and you know you're not going to get any new information from running it again. If you put it in your `.skip-transforms` file, it'll be reported as "skipped", to remind you that you're doing this on purpose, but you can stop having to wait for it to run all the time.
+
+### I just want to change some data. Why do it this way?
+
+Here are the advantages that you get for free when you follow the above conventions:
+
+1. You don't have to say "remember to run this new script when you check out the latest code". If we all simply get into the habit of running `bin/transform` every so often, we'll automatically get the transformations that others are checking in.
+
+2. You'll get fewer merge conflicts than constantly modifying `neo4j-import.py`. It'll also be easier to find your code in its own self-contained file.
+
+3. You don't have to think to much about *where* in the pipeline your script should be run. There are still some places we could step on toes here, but if you use your `match` function to look for the existance of untransformed data *and* the information you need to transform the data, only returning something "truth-y" if that's the case, then the transformation mini-framework will manage figuring out *when* to run it. If another transformation needs to be run to create the data your transformation needs, it'll be run first and yours will be run in the next cycle. `bin/transform` will run up to 20 cycles of transformations. Any transformation will only ever be run once during these cycles, and the script will stop before the 20 cycles are up if *none* of the transformations met the conditions to be run in the previous cycle.
+
+4. You can make the code within your transformation as messy as you want, break it into as many helper functions, etc. without having to worry as much about breaking code in other transformations (within reason, of course!).
+
 ## Deprecated: old local Ruby installation instructions
 
 1. Install rbenv
