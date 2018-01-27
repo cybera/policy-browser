@@ -11,8 +11,8 @@ class MakeDirectOrganizationConnection(TransformBase):
   def transform(self, data):
     with neo4j() as tx:
       results = tx.run("""
-        MATCH (o:Organization)-->(:Participant { role: 'Client'})-->(:Submission)-->(d:Document)
-        WHERE NOT (o)-[:SUBMITTED { method: $method }]->(d)
+        MATCH (o:Organization)-->(:Participant { role: 'Client'})-->(s:Submission)-->(d:Document)
+        WHERE NOT ((o)-[:SUBMITTED { method: $method }]->(d) OR s.name STARTS WITH 'Response')
         MERGE (o)-[r:SUBMITTED {method: $method }]->(d)
       """, method=self.METHOD_TAG)
 
