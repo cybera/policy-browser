@@ -1,0 +1,8 @@
+<b>Total Organizations:</b><%= organization_count %><br/>
+<b>Organizations w/ Observations:</b><%= observed_organization_count %><br/>
+<b>Missing organizations</b><br/>
+<ul>
+  <% missing_organizations.each do |mo| %>
+    <li><%= mo %></li>
+  <% end %>
+</ul>

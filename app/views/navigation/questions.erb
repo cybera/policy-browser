@@ -2,8 +2,8 @@
   <% questions.each do | q | %>
     <li class="list-group-item">
       <b><%= q.ref %></b>: <%= q['content'] %><br/><br/>
-      <a href='<%= "/browser?ppn=#{ppn}&question=#{q['id']}&navigation=questions&detail=matches" %>'>
-        Related Segments
+      <a href='<%= "/browser?ppn=#{ppn}&question=#{q['id']}&navigation=questions&detail=question_info" %>'>
+        Info
       </a><br/>
     </li>
   <% end %>
