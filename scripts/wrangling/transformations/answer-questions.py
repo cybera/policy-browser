@@ -50,20 +50,20 @@ class AnswerQuestions(TransformBase):
             with open(self.answer_path) as file:
                 for answer in file.readlines():
                     text = str(answer.split(" OBVIOUS_DELIMITER ")[0])
-                    docs = str(answer.split(" OBVIOUS_DELIMITER ")[1]).strip()
+                    doc256 = str(answer.split(" OBVIOUS_DELIMITER ")[1]).strip()
                     query = "Should broadband Internet service be defined as a basic telecommunications service (BTS)?"
-                    seg = self.sha256str(text)
+                    seg256 = self.sha256str(text)
 
                     results = tx.run("""
-                        MATCH (doc:Document {sha256: $sha256})
+                        MATCH (doc:Document {sha256: $doc256})
                         MATCH (Q:Question {ref: $qref})
-                        MERGE (Qe:Query {query: $query})
-                        MERGE (s:Segment {seg: $seg}) 
+                        MERGE (Qe:Query {str: $query})
+                        MERGE (s:Segment {sha256: $seg256}) 
                         MERGE (Q)-[:RELATED {method: $method}] -> (Qe) 
                         MERGE (Qe) -[:MATCHES]->(s) 
                         MERGE (s) -[:SEGMENT_OF] -> (doc)
                         SET s.content =$content
-                    """, sha256=docs, qref=self.qref, seg=seg, content=text, method=self.METHOD_TAG, query=query)
+                    """, doc256=doc256, qref=self.qref, seg256=seg256, content=text, method=self.METHOD_TAG, query=query)
                     tx_results.append(results)
 
         return neo4j_summary(tx_results)
