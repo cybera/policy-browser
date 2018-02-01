@@ -149,3 +149,31 @@ that the monies required to support any subsidy program should come from general
 - `document name`: DM#2597436 - 2015-134 - Res to RFI - 5 May - CNOC - CNOC(CRTC)25Apr16-2 TNC 2015-134 .pdf
 - `text`:
 example, may have difficulties for reasons of geography in ensuring that all households within an operating territory have access to speeds of at least 5 Mbps download and 1 Mbps upload. Similarly, a wireline operator may not be able to afford extending services delivered over FTTN or FTTP to some remote households in its operating territory. In such cases, without additional factors, it is hard to say that the discrimination or disadvantage suffered by those unable to access speeds of at least 5 Mbps download and 1 Mbps upload is unjust, undue, or unreasonable. For example, discrimination may not contravene subsection 27(2) of the Act if it is either founded on factors largely beyond the reasonable control of the Canadian carrier, or the effort required to remedy the discrimination 1 Broadcasting and Telecom Decision CRTC 2015-26, Complaint against Bell Mobility Inc. and Quebecor Media Inc., Videotron Ltd. and Videotron
+
+
+### My latest affordability solr queries + query that adds relationships between queries and question Q4 in neo4j:
+
+bin/segment 'content:"internet, expensive"~10 OR content:"broadband, expensive"~10 OR content:"services, expensive"~10 OR content:"service, expensive"~10' --add --rows=117
+
+bin/segment 'content:"internet, cheap"~10 OR content:"broadband, cheap"~10 OR content:"services, cheap"~10 OR content:"service, cheap"~10' --add --rows=6
+
+
+bin/segment 'content:"internet, affordable"~10 OR content:"broadband, affordable"~10 OR content:"services, affordable"~10 OR content:"service, affordable"~10' --rows=372 --add
+
+bin/segment 'content:"internet, affordability"~10 OR content:"broadband, affordability"~10 OR content:"services, affordability"~10 OR content:"service, affordability"~10' --add --rows=243
+
+bin/segment 'content:"internet, cost"~10 OR content:"broadband, cost"~10 OR content:"services, cost"~10 OR content:"service, cost"~10' --add --rows=499
+
+bin/segment 'content:"internet, price"~10 OR content:"broadband, price"~10 OR content:"services, price"~10 OR content:"service, price"~10' --rows=405 --add
+
+
+MATCH 
+(qr:Query)  where qr.str in[
+'content:"internet, expensive"~10 OR content:"broadband, expensive"~10 OR content:"services, expensive"~10 OR content:"service, expensive"~10',
+ 'content:"internet, cheap"~10 OR content:"broadband, cheap"~10 OR content:"services, cheap"~10 OR content:"service, cheap"~10',
+'content:"internet, affordable"~10 OR content:"broadband, affordable"~10 OR content:"services, affordable"~10 OR content:"service, affordable"~10' ,
+'content:"internet, affordability"~10 OR content:"broadband, affordability"~10 OR content:"services, affordability"~10 OR content:"service, affordability"~10' ,
+'content:"internet, cost"~10 OR content:"broadband, cost"~10 OR content:"services, cost"~10 OR content:"service, cost"~10',
+'content:"internet, price"~10 OR content:"broadband, price"~10 OR content:"services, price"~10 OR content:"service, price"~10']
+MATCH (qs:Question {ref:'Q4'}) 
+CREATE UNIQUE (qr)-[:RELATED]->(qs)
