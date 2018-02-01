@@ -15,7 +15,7 @@ class AnswerQuestions(TransformBase):
     def preconditions(self):
         
         self.qref = "Q9"
-        self.answer_path = path.join(project_root.data.processed, "Basic_Service_Question.txt")
+        self.answer_path = path.join(project_root.data, "Basic_Service_Question.txt")
         self.check_file(self.answer_path)
 
     def insert_newlines(self,string, characters = 128):
