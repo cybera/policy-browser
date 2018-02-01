@@ -59,7 +59,6 @@ class AnswerQuestions(TransformBase):
                         MATCH (Q:Question {ref: $qref})
                         MERGE (Qe:Query {query: $query})
                         MERGE (s:Segment {seg: $seg}) 
-                        MERGE (r:raw_text_segment {content: $content})
                         MERGE (Q)-[:RELATED {method: $method}] -> (Qe) 
                         MERGE (Qe) -[:MATCHES]->(s) 
                         MERGE (s) -[:SEGMENT_OF] -> (doc)
