@@ -91,27 +91,29 @@ start = time.time()
 # dbow_words = 1 tells the net to also train word vectors, if you set it to 0 
 # it's faster, but the word vectors do not get trained 
 # iter is how many epochs to train
-# hs sets the algorithm to hierarchical softmax
+# hs sets the algorithm to hierarchical softmax, 0 is off
+# negative implies negative sampling, allegedly it has better performance
 
-# NOTE: with these settings it took ~30 min to train. 
+
 model = gensim.models.Doc2Vec(tagged, 
                                 dm = 0, 
                                 alpha=0.025, 
-                                size= 750, 
+                                size= 1500, 
                                 min_alpha=0.0001, 
                                 min_count = 5,
                                 sample = 1e-4,
                                 workers = 8,
                                 dbow_words=1,
                                 iter = 50,
-                                hs=1)
+                                negative = 6,
+                                hs = 0)
 
 end = time.time()
 print("Total training time: ", end-start, '\n')
 
 # this saves your trained neural network
 
-netname = "DBOW1500"
+netname = "DBOW1500_actual_negativesample"
 model.save(netname)
 
 print("Networked ", netname, " trained")
