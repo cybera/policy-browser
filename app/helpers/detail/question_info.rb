@@ -37,8 +37,8 @@ module Sinatra
 
         """
           MATCH (o:Organization)
-          MATCH (s:Segment)-->(obs:Observation)
-          MATCH (obs)-->(q:Question)
+          MATCH (s:Segment)-->(query:Query)
+          MATCH (query)-->(q:Question)
           MATCH (s)-[:SEGMENT_OF]->(d:Document)
           WHERE ID(q) = $question AND
             #{missing_str}(o)-[:SUBMITTED]->(d)

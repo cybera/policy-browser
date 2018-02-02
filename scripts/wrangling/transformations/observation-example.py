@@ -12,26 +12,24 @@ class ObservationExample(TransformBase):
 
     with neo4j() as tx:
       results = tx.run("""
-        MATCH (q:Query { str: $solr_query })<--(s:Segment)
+        MATCH (q:Query { str: $solr_query })
         MATCH (question:Question { ref: $ref })
-        WHERE NOT (s)-[:IN_OBSERVATION]->(:Observation)-[:CONCERNING]->(question)
-        RETURN ID(s) AS id
+        WHERE NOT (q)-[:ABOUT]->(question)
+        RETURN ID(q) AS query, ID(question) AS question
       """, solr_query=self.solr_query, ref=self.qref)
 
-    return [ r['id'] for r in results ]
+    return [ { 'query': r['query'], 'question': r['question'] } for r in results ]
 
     
   def transform(self, data):
     tx_results = []
 
     with neo4j() as tx:
-      for segment_id in data:
+      for qq in data:
         tx_results.append(tx.run("""
-          MATCH (question:Question { ref: $ref })
-          MATCH (segment:Segment)
-          WHERE ID(segment) = $sid
-          MERGE (segment)-[:IN_OBSERVATION]->(observation:Observation { group:'segment' })
-          MERGE (observation)-[:CONCERNING { confidence: 0.9 }]->(question)
-        """, ref=self.qref, sid=segment_id))
+          MATCH (question:Question), (query:Query)
+          WHERE ID(question) = $question_id AND ID(query) = $query_id
+          MERGE (query)-[:ABOUT]->(question)
+        """, question_id=qq['question'], query_id=qq['query']))
 
     return neo4j_summary(tx_results)
