@@ -15,7 +15,7 @@ df.reset_index(inplace=True)
 
 s_indexes = []
 
-with open("MC_BasicService_CopyPaste.txt", 'r') as file:
+with open("MC_BasicService_CopyPaste_750.txt", 'r') as file:
 
     for lines in file.readlines():
         s_indexes.append(int(lines))
@@ -39,11 +39,7 @@ for drops in drop_copies:
     
 
 for keys in counted:
-    # 300 comes from returns from neural net
-    if counted[keys] < len(s_indexes)/300./100.:
-        pass
-    else:
-        to_base.append(keys)
+  to_base.append(keys)
 
 to_base = sorted(to_base)
 pd.options.display.max_colwidth = 150
@@ -72,17 +68,36 @@ def Create_Range(array, gap = 3):
 
     sentence_combine = []
     squished_array = list(group_integers(array, gap = gap))
+    before = len(squished_array)
+    # shouldn't be any duplicates, but this is more of a 'just in case'
+    squished_array = [list(x) for x in set(tuple(x) for x in squished_array)]
+    after = len(squished_array)
+
 
     for ranges in squished_array:
         start = min(ranges)
         stop = max(ranges) 
 
-        bottom = top = gap
+        if stop < start:
+            print(start, stop, df["DocumentNumber"][start], df["DocumentNumber"][stop])
+            quit()
+
+        bottom = gap
+        # use in range, going to be -1 of end point, so add one for fun
+        top = gap + 1
 
         # this just prevents us from matching beginnings/endings of documents
         # by accident. Potentially infinite loops because I am lazy. 
 
-        if df["DocumentNumber"][int(start-bottom)] != df["DocumentNumber"][int(start)]:
+        if df["DocumentNumber"][start] != df["DocumentNumber"][stop]:
+            while True:
+                stop -= 1
+                print("SDFSDFSF", df["DocumentNumber"][start], df["DocumentNumber"][stop])
+                if df["DocumentNumber"][start] == df["DocumentNumber"][stop]:
+                    break
+
+
+        if df["DocumentNumber"][start-bottom] != df["DocumentNumber"][int(start)]:
             while True:
                 bottom -= 1
                 if df["DocumentNumber"][start-bottom] == df["DocumentNumber"][start]:
@@ -94,20 +109,20 @@ def Create_Range(array, gap = 3):
                 if df["DocumentNumber"][stop + top] == df["DocumentNumber"][stop]:
                     break
 
+
+
+
         sentence_combine.append([start-bottom, stop+top])
 
     return sentence_combine
 
-a = Create_Range(to_base, gap=5)
+a = Create_Range(to_base, gap=3)
 
-
-
-#START HERE TOMORROW YOU'RE MISSING SENTENCES FOR SOME RASIN
 
 
 for i, ranges in enumerate(a): 
     sentencetoprint = []
-    for j in range(ranges[0], ranges[1]+1):
+    for j in range(ranges[0], ranges[1]):
         sentencetoprint.append(df["Sentence"][j])
         if j in to_base:
             place = to_base.index(j)
@@ -115,9 +130,10 @@ for i, ranges in enumerate(a):
 
     for sentence in sentencetoprint:
         print(sentence, df["DocumentNumber"][to_base[place]], ranges, to_base[place])
-     
 
     print('\n')
+     
+
 
 print(len(a))
 
@@ -125,7 +141,7 @@ print(len(a))
 with open("Basic_Service_Question.txt", 'w') as file:
     for ranges in a:
         block = []
-        for j in range(ranges[0], ranges[1]+1):
+        for j in range(ranges[0], ranges[1]):
             block.append(" ".join([str(df["Sentence"][j])]))
             document = df["Document"][j].split('/')[-1].strip('.txt')
 
@@ -139,11 +155,11 @@ with open("Basic_Service_Question.txt", 'w') as file:
         
         file.write(block)
         file.write(" OBVIOUS_DELIMITER ")
-        print(document)
+        #print(document)
         file.write(document)
         file.write('\n')
         
-
+        # this should never it, so if you see ohno something went wrong
         if lastsent < firstsent:
            # MESSED UP NEED TO MAKE SURE DOCUMENTS DON"T MIX
            print("ohno", firstsent, lastsent, df["DocumentNumber"][ranges[0]], df["DocumentNumber"][ranges[1]])

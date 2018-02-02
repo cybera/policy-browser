@@ -1,11 +1,14 @@
 import hashlib
-class AnswerQuestions(TransformBase):
-    
-    
 
+
+class AnswerQuestions(TransformBase):
+
+    
 
     DESCRIPTION = "Adds (potentially) relevant segments in documents which (potentially) answer questions."
     METHOD_TAG = 'doc2vec-MonteCarlo'
+
+
     def sha256str(self, text):
         hash_sha256 = hashlib.sha256()
         hash_sha256.update(text.encode())
@@ -13,10 +16,24 @@ class AnswerQuestions(TransformBase):
 
 
     def preconditions(self):
-        
-        self.qref = "Q9"
-        self.answer_path = path.join(project_root.data, "Basic_Service_Question.txt")
-        self.check_file(self.answer_path)
+        # I think this is probably an all or nothing approach 
+        self.qref = ["Q4","Q9","Q12"]
+        self.answer_path = []
+     
+        self.answer_path.append(path.join(project_root.data.processed, "Market_Forces_Question.txt"))
+        self.answer_path.append(path.join(project_root.data.processed, "Basic_Service_Question.txt"))
+        self.answer_path.append(path.join(project_root.data.processed, "Subsity_Question.txt"))
+       
+
+        self.Qe = ["Can market forces and government funding be relied on to ensure that all Canadians have access to basic telecommunications services?",
+                    "Should broadband Internet service be defined as a basic telecommunications service (BTS)?",
+                    "Should some or all services that are considered to be basic telecommunications services be subsidized?"]
+       
+        for file in self.answer_path:     
+            self.check_file(file)
+       
+
+
 
     def insert_newlines(self,string, characters = 128):
         # break up the long sentence into a shorter one on spaces
@@ -38,35 +55,34 @@ class AnswerQuestions(TransformBase):
         refs = self.qref
         existing = neo4j_count("MATCH (q:Question) WHERE q.ref IN $ref", ref=refs)
         existing2 = neo4j_count("MATCH (d:Document)")
-        # So... this is probably a bad idea but let's work with it for now
-        return existing < len(refs) and existing2 > 0
+        # print(existing == len(refs), existing2 > 0, (existing <= len(refs)) is (existing2 > 0))
+       
+        
+        return (existing == len(refs)) is (existing2 > 0)
     
 
 
     def transform(self, data):
-        
         tx_results = []
         with neo4j() as tx:
-            with open(self.answer_path) as file:
-                for answer in file.readlines():
-                    text = str(answer.split(" OBVIOUS_DELIMITER ")[0])
-                    doc256 = str(answer.split(" OBVIOUS_DELIMITER ")[1]).strip()
-                    query = "Should broadband Internet service be defined as a basic telecommunications service (BTS)?"
-                    seg256 = self.sha256str(text)
-
-                    results = tx.run("""
-                        MATCH (doc:Document {sha256: $doc256})
-                        MATCH (Q:Question {ref: $qref})
-                        MERGE (Qe:Query {str: $query})
-                        MERGE (s:Segment {sha256: $seg256}) 
-                        MERGE (Q)-[:RELATED {method: $method}] -> (Qe) 
-                        MERGE (Qe) -[:MATCHES]->(s) 
-                        MERGE (s) -[:SEGMENT_OF] -> (doc)
-                        SET s.content =$content
-                    """, doc256=doc256, qref=self.qref, seg256=seg256, content=text, method=self.METHOD_TAG, query=query)
-                    tx_results.append(results)
+            for i, datafile in enumerate(self.answer_path):
+                with open(datafile) as file:
+                    for answer in file.readlines():
+                        text = str(answer.split(" OBVIOUS_DELIMITER ")[0])
+                        doc256 = str(answer.split(" OBVIOUS_DELIMITER ")[1]).strip()
+                        query = self.Qe[i]
+                        seg256 = self.sha256str(text)
+                        results = tx.run("""
+                            MATCH (doc:Document {sha256: $doc256})
+                            MATCH (Q:Question {ref: $qref})
+                            MERGE (Qe:Query {str: $query})
+                            MERGE (s:Segment {sha256: $seg256}) 
+                            MERGE (Q)<-[:ABOUT {method: $method}]-(Qe) 
+                            MERGE (Qe) <-[:MATCHES]- (s) 
+                            MERGE (s) -[:SEGMENT_OF] -> (doc)
+                            SET s.content =$content
+                        """, doc256=doc256, qref=self.qref[i], seg256=seg256, content=text, method=self.METHOD_TAG, query=query)
+                        tx_results.append(results)
 
         return neo4j_summary(tx_results)
 
-
-    # Segment.py
