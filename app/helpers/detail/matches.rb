@@ -9,7 +9,7 @@ module Sinatra
             MATCH (sub)-[r2:CONTAINING]->(d:Document)
             MATCH (q)<-[r4:MATCHES]-(s:Segment)-[r3:SEGMENT_OF]->(d)
             WHERE ID(q) = $query
-            RETURN q.str as query, o.name as organization, d.name as document,s.hlcontent as hlcontent
+            RETURN q.str as query, o.name as organization, d.name as document,s.hlcontent as hlcontent, s.content as content
           """, query:params[:query].to_i)
           { documents: segments.group_by { |s| s[:document] } }
         else
