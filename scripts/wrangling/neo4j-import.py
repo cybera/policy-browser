@@ -278,7 +278,7 @@ def doc_topic():
         #print(row[2],row[3])
         with transaction() as tx:
                 tx.run("""
-                       MATCH (d:Document {sha256:$sha256}), (t:topic {id:$topic_id})
+                       MATCH (d:Document {sha256:$sha256}), (t:Topic {id:$topic_id})
                        CREATE (d)-[:HAS_TOPIC]->(t)
                        """, sha256=row[2],topic_id=int(row[3]))
                
@@ -300,10 +300,18 @@ def doc_french():
 
 def cat_merge():
   print("Adding property for intervenor category")
-  with transaction() as tx:
-          tx.run("""LOAD CSV WITH HEADERS FROM "https://swift-yyc.cloud.cybera.ca:8080/v1/AUTH_ab5c2378570945ffb1b46cd9b62f5132/test_folder/intervenor_categories.csv" AS csvLine
-                    MATCH (o:Organization {name:csvLine.name})
-                    SET o.category=csvLine.Category""")
+  intervenor_categories = os.path.join(csvdir, 'intervenor_categories.csv')
+  with open(intervenor_categories) as csvfile:
+    readCSV = csv.reader(csvfile)
+    next(readCSV)
+    for row in readCSV:
+      with transaction() as tx:
+        tx.run("""MATCH (o:Organization {name:$name})
+                  SET o.category=$category
+                  """, name=row[1],category=row[2])
+    #      tx.run("""LOAD CSV WITH HEADERS FROM "https://swift-yyc.cloud.cybera.ca:8080/v1/AUTH_ab5c2378570945ffb1b46cd9b62f5132/test_folder/intervenor_categories.csv" AS csvLine
+    #                MATCH (o:Organization {name:csvLine.name})
+    #                SET o.category=csvLine.Category""")
 
 merge_core()
 merge_expert_knowledge()
