@@ -1,4 +1,3 @@
-import hashlib
 import os
 
 
@@ -24,7 +23,7 @@ class AnswerQuestionsSolr(TransformBase):
         existing_doc = neo4j_count("MATCH (d:Document)")
         ##existing_question = neo4j_count("MATCH (q:Question) WHERE q.ref IN $ref", ref=['Affordability']) need to check if question exists as well
 
-        return (existing_query==0) is (existing_doc > 0)
+        return ((existing_query==0) and (existing_doc > 0))
              
 
        

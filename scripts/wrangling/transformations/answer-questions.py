@@ -53,12 +53,14 @@ class AnswerQuestions(TransformBase):
 
     def match(self):
         refs = self.qref
+        qes = self.Qe
         existing = neo4j_count("MATCH (q:Question) WHERE q.ref IN $ref", ref=refs)
         existing2 = neo4j_count("MATCH (d:Document)")
+        existing3 = neo4j_count("MATCH (q:Query) WHERE q.str IN $qe", qe=qes)
         # print(existing == len(refs), existing2 > 0, (existing <= len(refs)) is (existing2 > 0))
        
         
-        return (existing == len(refs)) is (existing2 > 0)
+        return ((existing == len(refs)) and (existing2 > 0)and (existing3 == 0))
     
 
 
