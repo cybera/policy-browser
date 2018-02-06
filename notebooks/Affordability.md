@@ -1,4 +1,4 @@
-### Goal: 
+### Goal:
 understand the positions of intervenors on how affordable internet services should be if it mandated to be a basic service.
 
 ### Part1. ACORN members testimonials
@@ -94,7 +94,7 @@ Used  tidytext sentiment dictionaries -  afinn, nrc and Bing
 ![score_nrc](images/pie_bing.png)
 ![score_afinn](images/pie_nrc.png)
 
-*Distribution of scores*:
+Distribution of scores:
 
 ![bar_bing](images/bar_afinn.png)
 ![bar_nrc](images/bar_bing.png)
@@ -151,29 +151,68 @@ that the monies required to support any subsidy program should come from general
 example, may have difficulties for reasons of geography in ensuring that all households within an operating territory have access to speeds of at least 5 Mbps download and 1 Mbps upload. Similarly, a wireline operator may not be able to afford extending services delivered over FTTN or FTTP to some remote households in its operating territory. In such cases, without additional factors, it is hard to say that the discrimination or disadvantage suffered by those unable to access speeds of at least 5 Mbps download and 1 Mbps upload is unjust, undue, or unreasonable. For example, discrimination may not contravene subsection 27(2) of the Act if it is either founded on factors largely beyond the reasonable control of the Canadian carrier, or the effort required to remedy the discrimination 1 Broadcasting and Telecom Decision CRTC 2015-26, Complaint against Bell Mobility Inc. and Quebecor Media Inc., Videotron Ltd. and Videotron
 
 
-### My latest affordability solr queries + query that adds relationships between queries and question Q4 in neo4j:
+### Part3. Analysis by category
 
-bin/segment 'content:"internet, expensive"~10 OR content:"broadband, expensive"~10 OR content:"services, expensive"~10 OR content:"service, expensive"~10' --add --rows=117
+#### Statistics:
+`In general`:
+2575 documents in the database,
+1676 have organizations assigned,
+1665 have categories assigned,
+175 organization types,
+174 organizations have categories assigned.
 
-bin/segment 'content:"internet, cheap"~10 OR content:"broadband, cheap"~10 OR content:"services, cheap"~10 OR content:"service, cheap"~10' --add --rows=6
+`Search results`:
+2627 segments,
+699 documents,
+415 have organizations assigned,
+414 have categories assigned.
 
+`Stats by Category`
 
-bin/segment 'content:"internet, affordable"~10 OR content:"broadband, affordable"~10 OR content:"services, affordable"~10 OR content:"service, affordable"~10' --rows=372 --add
+Category| In database | Search results
+--- | --- | ---
+Advocacy organizations |  382 | 110
+Chamber of commerce/economic dev agency |    4 | 0
+Consumer advocacy organizations |    4  | 1
+Government  | 188 | 48
+Network operator - Cable companies | 137 | 41
+Network operator: other | 349 | 76
+Network operator: Telecom Incumbents | 400 | 88
+Other | 119 | 30
+Small incumbents  | 82  | 20   
 
-bin/segment 'content:"internet, affordability"~10 OR content:"broadband, affordability"~10 OR content:"services, affordability"~10 OR content:"service, affordability"~10' --add --rows=243
+*Top 10 most  common words*:
+- service  5980
+- services  4167
+- broadband  3885
+- internet  3018
+- access  2792
+- cost  2492
+- telecommunications  2175
+- canadians  1796
+- basic  1765
+- commission  1681
 
-bin/segment 'content:"internet, cost"~10 OR content:"broadband, cost"~10 OR content:"services, cost"~10 OR content:"service, cost"~10' --add --rows=499
+*Top 10 most  common word-pairs*:
+ -  service services  1355
+ -   service     cost  1187
+ - broadband  service  1175
+ -    access  service  1071
+ - broadband services  1052
+ -   service internet  1032
+ -    access services   982
+ - broadband   access   939
+ -  services     cost   934
+ -   service    basic   836
 
-bin/segment 'content:"internet, price"~10 OR content:"broadband, price"~10 OR content:"services, price"~10 OR content:"service, price"~10' --rows=405 --add
-
-
-MATCH 
-(qr:Query)  where qr.str in[
-'content:"internet, expensive"~10 OR content:"broadband, expensive"~10 OR content:"services, expensive"~10 OR content:"service, expensive"~10',
- 'content:"internet, cheap"~10 OR content:"broadband, cheap"~10 OR content:"services, cheap"~10 OR content:"service, cheap"~10',
-'content:"internet, affordable"~10 OR content:"broadband, affordable"~10 OR content:"services, affordable"~10 OR content:"service, affordable"~10' ,
-'content:"internet, affordability"~10 OR content:"broadband, affordability"~10 OR content:"services, affordability"~10 OR content:"service, affordability"~10' ,
-'content:"internet, cost"~10 OR content:"broadband, cost"~10 OR content:"services, cost"~10 OR content:"service, cost"~10',
-'content:"internet, price"~10 OR content:"broadband, price"~10 OR content:"services, price"~10 OR content:"service, price"~10']
-MATCH (qs:Question {ref:'Q4'}) 
-CREATE UNIQUE (qr)-[:RELATED]->(qs)
+ *Top 10 most  correlated word-pairs*:
+-     funding    mechanism   0.8284962
+-       notice consultation   0.8023777
+-   obligation        serve   0.7114522
+-       income          low   0.7099526
+-       market       forces   0.6640255
+-    mechanism   deployment   0.6438167
+- contribution     revenues   0.6398661
+-     wireline     wireless   0.6188201
+-      funding   deployment   0.6124279
+-     wireless       mobile   0.6115148
