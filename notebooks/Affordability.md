@@ -131,7 +131,7 @@ that the monies required to support any subsidy program should come from general
 example, may have difficulties for reasons of geography in ensuring that all households within an operating territory have access to speeds of at least 5 Mbps download and 1 Mbps upload. Similarly, a wireline operator may not be able to afford extending services delivered over FTTN or FTTP to some remote households in its operating territory. In such cases, without additional factors, it is hard to say that the discrimination or disadvantage suffered by those unable to access speeds of at least 5 Mbps download and 1 Mbps upload is unjust, undue, or unreasonable. For example, discrimination may not contravene subsection 27(2) of the Act if it is either founded on factors largely beyond the reasonable control of the Canadian carrier, or the effort required to remedy the discrimination 1 Broadcasting and Telecom Decision CRTC 2015-26, Complaint against Bell Mobility Inc. and Quebecor Media Inc., Videotron Ltd. and Videotron
 
 
-#### Summary stats:
+### Summary stats:
 
 
 `In database`:
@@ -176,16 +176,17 @@ example, may have difficulties for reasons of geography in ensuring that all hou
  -   service    basic   836
 
 *Top 10 most  correlated word-pairs*:
--     funding    mechanism   0.8284962
--       notice consultation   0.8023777
--   obligation        serve   0.7114522
--       income          low   0.7099526
--       market       forces   0.6640255
--    mechanism   deployment   0.6438167
+
+- funding    mechanism    0.8284962
+- notice consultation   0.8023777
+- obligation        serve   0.7114522
+- income          low   0.7099526
+- market       forces   0.6640255
+- mechanism   deployment   0.6438167
 - contribution     revenues   0.6398661
--     wireline     wireless   0.6188201
--      funding   deployment   0.6124279
--     wireless       mobile   0.6115148
+- wireline     wireless   0.6188201
+- funding   deployment   0.6124279
+- wireless       mobile   0.6115148
 
 Co-occurence plot:
 
@@ -213,7 +214,7 @@ Sentiment-associated words that most often followed words:
 ![sent_as](images/sent_as.png)
 
 
-#### By category
+### By category (excluded documents that don't have category attached)
 
 Category| In database | Search results
 --- | --- | ---
