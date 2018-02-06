@@ -214,7 +214,7 @@ Sentiment-associated words that most often followed words:
 ![sent_as](images/sent_as.png)
 
 
-### By category
+### By category (excluded documents that don't have category attached)
 
 Category| In database | Search results
 --- | --- | ---
