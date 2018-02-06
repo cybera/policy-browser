@@ -1,9 +1,13 @@
 #!/usr/bin/env python
 
+import sys
+
+if __name__ == "__main__":
+  sys.path.append("scripts")
+
 from glob import glob
 from os import path
-import util
-import transform_base
+from wrangling import util, transform_base
 import inspect
 
 
@@ -45,48 +49,52 @@ if path.exists(skipfile_path):
   for t in force_skip_transforms:
     t.status.append("Entry in .skip-transforms file")
 
-cycles = 0
-max_cycles = 20
-completed_transformations = []
-skipped_transformations = []
+def run():
+  cycles = 0
+  max_cycles = 20
+  completed_transformations = []
+  skipped_transformations = []
 
-print("\n")
-print("Running transformations:")
-print("========================\n")
+  print("\n")
+  print("Running transformations:")
+  print("========================\n")
 
-while cycles < max_cycles:
-  transform_count = 0
+  while cycles < max_cycles:
+    transform_count = 0
 
-  for t in transformations:
-    if t not in force_skip_transforms and t.process():
-      transform_count = transform_count + 1
-      completed_transformations.append(t)
-  
-  if transform_count == 0:
-    break
+    for t in transformations:
+      if t not in force_skip_transforms and t.process():
+        transform_count = transform_count + 1
+        completed_transformations.append(t)
+    
+    if transform_count == 0:
+      break
 
-  cycles = cycles + 1
+    cycles = cycles + 1
 
-skipped_transformations = [t for t in transformations if t not in completed_transformations]
+  skipped_transformations = [t for t in transformations if t not in completed_transformations]
 
-print("\n")
+  print("\n")
 
-print("Completed transformations:")
-print("==========================\n")
+  print("Completed transformations:")
+  print("==========================\n")
 
-step = 1
-for t in completed_transformations:
-  print(f"[{'%03d' % step}] {t.DESCRIPTION}:")
-  print(util.itemize(t.status, prefix="      - "))
-  print("")
-  step = step + 1
+  step = 1
+  for t in completed_transformations:
+    print(f"[{'%03d' % step}] {t.DESCRIPTION}:")
+    print(util.itemize(t.status, prefix="      - "))
+    print("")
+    step = step + 1
 
-print("Skipped transformations:")
-print("========================\n")
+  print("Skipped transformations:")
+  print("========================\n")
 
-for t in skipped_transformations:
-  print(f"{t.DESCRIPTION}:")
-  print(util.itemize(t.status, prefix="  - "))
-  print("")
+  for t in skipped_transformations:
+    print(f"{t.DESCRIPTION}:")
+    print(util.itemize(t.status, prefix="  - "))
+    print("")
 
-print(f"\n(Transformation cycles: {cycles})")
+  print(f"\n(Transformation cycles: {cycles})")
+
+if __name__ == "__main__":
+  run()
