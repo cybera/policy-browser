@@ -68,27 +68,9 @@ Word co-occurence :
 
 ### Part2. Other documents
 
-**Solr queries**:
+#### Sentiment analysis - all documents together
 
-(hl.method=original)
-
-- bin/segment --add  --rows=158 '{!surround}content:3N(internet OR broadband,cost*)'
-- bin/segment --add --rows=129  '{!surround}content:3N(services,cost*)'
-- bin/segment --add --rows=272 '{!surround}content:3N(service,cost*)'
-- bin/segment  --rows=76 --add '{!surround}content:5N(internet OR broadband OR service*,expensive)'
-- bin/segment --add --rows=28  '{!surround}content:5N(internet OR broadband OR service*,cheap*)'
-- bin/segment --add --rows=148 '{!surround}content:3N(internet OR broadband,price*)'
-- bin/segment --add --rows=207 '{!surround}content:3N(service,price*)'
-- bin/segment --add --rows=103 '{!surround}content:3N(services,price*)'
-- bin/segment --rows=234 --add '{!surround}content:3N(internet OR broadband,afford*)'
-- bin/segment --add --rows=149 '{!surround}content:3N(service,afford*)'
-- bin/segment --add --rows=221 '{!surround}content:3N(services,afford*)'
-
-
-647 Documents
-2567 Segments
-
-Used  tidytext sentiment dictionaries -  afinn, nrc and Bing
+Comparing  tidytext sentiment dictionaries -  afinn, nrc and Bing
 
 ![score_bing](images/pie_afinn.png)
 ![score_nrc](images/pie_bing.png)
@@ -125,8 +107,6 @@ three levels factors in technology adoption in northern and remote Indigenous co
 enhance the efficiency and competitiveness, at the national and international levels, of Canadian telecommunications; (f) to foster increased reliance on market forces for the provision of telecommunications services and to ensure that regulation, where required, is efficient and effective; (h) to respond to the economic and social requirements of users of telecommunications services; Mandated wholesale access to subsidized facilities will also enable consumers to enjoy benefits beyond those provided solely by access to broadband Internet service at specified target speeds and similar to those available by end-users residing in more accessible and competitive markets. These benefits include, for example, competitive offers and access to innovative and differentiated services. 1 Section 7(b) of the Telecommunications Act states, “to render reliable and affordable telecommunications services of high quality
 
 
-
-
 **Most negative segments**
 
 *Afinn*
@@ -151,35 +131,25 @@ that the monies required to support any subsidy program should come from general
 example, may have difficulties for reasons of geography in ensuring that all households within an operating territory have access to speeds of at least 5 Mbps download and 1 Mbps upload. Similarly, a wireline operator may not be able to afford extending services delivered over FTTN or FTTP to some remote households in its operating territory. In such cases, without additional factors, it is hard to say that the discrimination or disadvantage suffered by those unable to access speeds of at least 5 Mbps download and 1 Mbps upload is unjust, undue, or unreasonable. For example, discrimination may not contravene subsection 27(2) of the Act if it is either founded on factors largely beyond the reasonable control of the Canadian carrier, or the effort required to remedy the discrimination 1 Broadcasting and Telecom Decision CRTC 2015-26, Complaint against Bell Mobility Inc. and Quebecor Media Inc., Videotron Ltd. and Videotron
 
 
-### Part3. Analysis by category
+#### Summary stats:
 
-#### Statistics:
-`In general`:
-2575 documents in the database,
-1676 have organizations assigned,
-1665 have categories assigned,
-175 organization types,
-174 organizations have categories assigned.
+
+`In database`:
+
+- 2235 documents in the database,
+- 1335 have organizations assigned,
+- 1331 have categories assigned,
+- 175 organization types,
+- 174 organizations have categories assigned.
 
 `Search results`:
-2627 segments,
-699 documents,
-415 have organizations assigned,
-414 have categories assigned.
+- 2627 segments,
+- 699 documents,
+- 415 have organizations assigned,
+- 414 have categories assigned.
 
-`Stats by Category`
-
-Category| In database | Search results
---- | --- | ---
-Advocacy organizations |  382 | 110
-Chamber of commerce/economic dev agency |    4 | 0
-Consumer advocacy organizations |    4  | 1
-Government  | 188 | 48
-Network operator - Cable companies | 137 | 41
-Network operator: other | 349 | 76
-Network operator: Telecom Incumbents | 400 | 88
-Other | 119 | 30
-Small incumbents  | 82  | 20   
+`My stop words`:
+("1", "2", "100","25", "0", "document", "2015","134","14", "2011", "2013", "2014") - what else?
 
 *Top 10 most  common words*:
 - service  5980
@@ -205,7 +175,7 @@ Small incumbents  | 82  | 20
  -  services     cost   934
  -   service    basic   836
 
- *Top 10 most  correlated word-pairs*:
+*Top 10 most  correlated word-pairs*:
 -     funding    mechanism   0.8284962
 -       notice consultation   0.8023777
 -   obligation        serve   0.7114522
@@ -216,3 +186,71 @@ Small incumbents  | 82  | 20
 -     wireline     wireless   0.6188201
 -      funding   deployment   0.6124279
 -     wireless       mobile   0.6115148
+
+Co-occurence plot:
+
+![cooc](images/co_all.png)
+
+Corellation plot:
+
+![coor](images/coor_all.png)
+
+Wordcloud:
+
+![cloud](images/cloud_all.png)
+
+Sentiment cloud:
+
+![s_cloud](images/scloud_all.png)
+
+Which words had the most effect on sentiment scores overall(Afinn):
+
+![sent_all](images/sent_all.png)
+
+Sentiment-associated words that most often followed words:
+"internet", "cost", "price", "affordable", "expensive", "broadband", "affordability"
+
+![sent_as](images/sent_as.png)
+
+
+#### By category
+
+Category| In database | Search results
+--- | --- | ---
+Advocacy organizations |  289 | 110
+Chamber of commerce/economic dev agency |    4 | 0
+Consumer advocacy organizations |    3  | 1
+Government  | 134 | 48
+Network operator - Cable companies | 118 | 41
+Network operator: other | 271 | 76
+Network operator: Telecom Incumbents | 339 | 88
+Other | 107 | 30
+Small incumbents  | 66  | 20   
+
+*Summary by category*:
+
+![cat](images/cat.png)
+
+*Tf-idf by catgory*:
+
+![tf_idf](images/tf_idf.png)
+
+*Category correlation*:
+
+![cat_cor](images/cat_cor.png)
+
+*LDA 4 topics*:
+
+![cat_lda](images/cat_lda.png)
+
+*Topics distribution across categories*:
+
+![lda_dist](images/lda_dist.png)
+
+*Average sentiment score (Afinn)*:
+
+![avg_sent](images/avg_sent.png)
+
+*Top sentiment words*:
+
+![top_sent](images/top_sent.png)
