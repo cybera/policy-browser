@@ -10,16 +10,17 @@ Should some or all services that are considered to be basic telecommunications s
 - bin/segment 'content:"internet, basic telecommunications service"~10 OR "broadband, basic telecommunications service"~10' --add --rows=82
 - bin/segment 'content: "Should broadband Internet service be defined as a basic telecommunications service? What other services, if any, should be defined as basic telecommunications services?"' --add --rows=27
 
-`Doc2VecSearch`
+`Doc2VecSearch` 
 Should broadband Internet services be considered basic telecommunications services BTS?
+
 
 `Results`
 
-Category| In database | Search results | Doc2Vec |   
+Category| In database | Search results | Doc2Vec (Numbers subject to change) |   
 --- | --- | --- | --- |  
 Advocacy organizations |  289 | 119 | 228 |  
 Chamber of commerce/economic dev agency |  4 | 0 | 0 |  
-Consumer advocacy organizations | 3 | 6  |  
+Consumer advocacy organizations | 3 | 6  |  6 |
 Government  | 134 | 44 | 43  |  
 Network operator - Cable companies | 118 | 66 | 48  |  
 Network operator: other | 271 | 92 | 88  |   
