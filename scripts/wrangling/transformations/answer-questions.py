@@ -17,17 +17,20 @@ class AnswerQuestions(TransformBase):
 
     def preconditions(self):
         # I think this is probably an all or nothing approach 
-        self.qref = ["Q4","Q9","Q12"]
+        self.qref = ["Q4","Q9","Q12","Q?"]
         self.answer_path = []
      
-        self.answer_path.append(path.join(project_root.data.processed, "Market_Forces_Question.txt"))
-        self.answer_path.append(path.join(project_root.data.processed, "Basic_Service_Question.txt"))
-        self.answer_path.append(path.join(project_root.data.processed, "Subsity_Question.txt"))
-       
+        self.answer_path.append(path.join(project_root.data.processed, "Market_Forces_Question_1500_2.txt"))
+        self.answer_path.append(path.join(project_root.data.processed, "Basic_Service_Question_1500_2.txt"))
+        self.answer_path.append(path.join(project_root.data.processed, "Subsity_Question_1500_2.txt"))
+        self.answer_path.append(path.join(project_root.data.processed, "Affordability_Question_1500_2.txt"))
 
+
+       
         self.Qe = ["Can market forces and government funding be relied on to ensure that all Canadians have access to basic telecommunications services?",
                     "Should broadband Internet service be defined as a basic telecommunications service (BTS)?",
-                    "Should some or all services that are considered to be basic telecommunications services be subsidized?"]
+                    "Should some or all services that are considered to be basic telecommunications services be subsidized?",
+                    "Affordability of broadband internet access"]
        
         for file in self.answer_path:     
             self.check_file(file)
@@ -57,10 +60,8 @@ class AnswerQuestions(TransformBase):
         existing = neo4j_count("MATCH (q:Question) WHERE q.ref IN $ref", ref=refs)
         existing2 = neo4j_count("MATCH (d:Document)")
         existing3 = neo4j_count("MATCH (q:Query) WHERE q.str IN $qe", qe=qes)
-        # print(existing == len(refs), existing2 > 0, (existing <= len(refs)) is (existing2 > 0))
-       
         
-        return ((existing == len(refs)) and (existing2 > 0)and (existing3 == 0))
+        return ((existing == len(refs)) and (existing2 > 0) and (existing3 == 0))
     
 
 
@@ -69,22 +70,34 @@ class AnswerQuestions(TransformBase):
         with neo4j() as tx:
             for i, datafile in enumerate(self.answer_path):
                 with open(datafile) as file:
+                    print("Adding relationships of ", datafile)
                     for answer in file.readlines():
                         text = str(answer.split(" OBVIOUS_DELIMITER ")[0])
                         doc256 = str(answer.split(" OBVIOUS_DELIMITER ")[1]).strip()
+                        counts = int(str(answer.split(" OBVIOUS_DELIMITER ")[2].strip()))
+                        
+                       
                         query = self.Qe[i]
                         seg256 = self.sha256str(text)
-                        results = tx.run("""
-                            MATCH (doc:Document {sha256: $doc256})
+                        results = tx.run(
+                            """ MATCH (doc:Document {sha256: $doc256})
                             MATCH (Q:Question {ref: $qref})
                             MERGE (Qe:Query {str: $query})
                             MERGE (s:Segment {sha256: $seg256}) 
                             MERGE (Q)<-[:ABOUT {method: $method}]-(Qe) 
                             MERGE (Qe) <-[:MATCHES]- (s) 
                             MERGE (s) -[:SEGMENT_OF] -> (doc)
-                            SET s.content =$content
-                        """, doc256=doc256, qref=self.qref[i], seg256=seg256, content=text, method=self.METHOD_TAG, query=query)
+                            SET s.frequency = $counts
+                            SET s.content = $content """, 
+                            doc256=doc256, 
+                            qref=self.qref[i], 
+                            seg256=seg256, 
+                            content=text, 
+                            method=self.METHOD_TAG, 
+                            query=query,
+                            counts=int(counts))
                         tx_results.append(results)
-
+            print("Doin' somethin' slow...")
+        #print("OOGA BOOGA")
         return neo4j_summary(tx_results)
 
