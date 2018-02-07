@@ -11,7 +11,11 @@ module Sinatra
       end
 
       def count_all_organizations
-        graph_query("MATCH (o:Organization) RETURN COUNT(o)").rows.first[0]
+        graph_query("""
+          MATCH (o:Organization) 
+          WHERE NOT (o)-[:ALIAS_OF]->()
+          RETURN COUNT(o)
+        """).rows.first[0]
       end
 
       def count_observed_organizations
@@ -22,8 +26,6 @@ module Sinatra
       end
 
       def missing_organizations
-        []
-
         graph_query("""
           #{related_organization_clause(true)}
           RETURN DISTINCT o.name AS name
@@ -37,11 +39,10 @@ module Sinatra
 
         """
           MATCH (o:Organization)
-          MATCH (s:Segment)-->(query:Query)
-          MATCH (query)-->(q:Question)
-          MATCH (s)-[:SEGMENT_OF]->(d:Document)
+          MATCH (q:Question)<--(query:Query)<--(s:Segment)-[:SEGMENT_OF]->(d:Document)
           WHERE ID(q) = $question AND
-            #{missing_str}(o)-[:SUBMITTED]->(d)
+            #{missing_str}(o)<-[:ALIAS_OF*0..1]-()-[:SUBMITTED]->(d) AND
+            NOT (o)-[:ALIAS_OF]->()
         """
       end
     end

@@ -3,8 +3,11 @@ module Sinatra
     class Organizations < NavigationHelper
       def data
         submissions = graph_query("""
-          MATCH (o:Organization)-[:SUBMITTED]->(:Document)<--(s:Submission)<-[:INVOLVING]-(i:Intervention)-[:SUBMITTED_TO]->(p:PublicProcess { ppn: $ppn })
-          WHERE EXISTS(s.date_arrived)
+          MATCH (o:Organization)<-[:ALIAS_OF*0..1]-()-[:SUBMITTED]->(d:Document)
+          MATCH (d)<--(s:Submission)<-[:INVOLVING]-(i:Intervention)
+          MATCH (i)-[:SUBMITTED_TO]->(p:PublicProcess { ppn: $ppn })
+          WHERE EXISTS(s.date_arrived) AND
+            NOT (o)-[:ALIAS_OF]->()
           RETURN DISTINCT o.name as organization, ID(o) as orgid, s.date_arrived AS date_arrived, 
                  i.case AS case, s.name AS name, ID(s) AS id
           ORDER BY date_arrived
