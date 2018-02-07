@@ -15,17 +15,17 @@ Should broadband Internet services be considered basic telecommunications servic
 
 `Results`
 
-Category| In database | Search results | Doc2Vec . 
+Category| In database | Search results | Doc2Vec  
 --- | --- | ---  
 Advocacy organizations |  289 | 119 | 228 . 
-Chamber of commerce/economic dev agency |  4 | 0 | 0 . 
+Chamber of commerce/economic dev agency |  4 | 0 | 0  
 Consumer advocacy organizations | 3 | 6  
-Government  | 134 | 44 | 43 . 
-Network operator - Cable companies | 118 | 66 | 48 . 
-Network operator: other | 271 | 92 | 88 . 
-Network operator: Telecom Incumbents | 339 | 90 | 111 . 
-Other | 107 | 35 | 54 . 
-Small incumbents  | 66  | 25 | 15 . 
+Government  | 134 | 44 | 43  
+Network operator - Cable companies | 118 | 66 | 48  
+Network operator: other | 271 | 92 | 88  
+Network operator: Telecom Incumbents | 339 | 90 | 111  
+Other | 107 | 35 | 54  
+Small incumbents  | 66  | 25 | 15 
 
 - 665 documents
 - 474 - have organization
