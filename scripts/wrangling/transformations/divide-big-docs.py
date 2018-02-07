@@ -34,7 +34,7 @@ class DivideBigDocs(TransformBase):
     with neo4j() as tx:
       results = tx.run(query, sha256s=sha256list)
 
-    return results
+    return [r for r in results]
 
   def transform(self, data):
     tx_results = []
