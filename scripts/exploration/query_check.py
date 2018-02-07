@@ -20,12 +20,12 @@ model = gensim.models.Doc2Vec.load(netname)
 # 'not in dictionary' errors. 
 tokenizer = RegexpTokenizer(r'\w+')
 EnglishStopWords = get_stop_words('en')
-remove = EnglishStopWords.index("not")
-del EnglishStopWords[remove]
+#remove = EnglishStopWords.index("not")
+#del EnglishStopWords[remove]
 Stemmer = PorterStemmer()
 
 # define the sentence you want to look for
-sentence = "define the internet as a basic service".lower()
+sentence = "internet is affordable".lower()
 tokens = tokenizer.tokenize(sentence)
 stopped_tokens =  [sentence for sentence in tokens if sentence not in EnglishStopWords]
 

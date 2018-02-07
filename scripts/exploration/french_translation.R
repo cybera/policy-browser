@@ -64,6 +64,7 @@ data_french <-data_french[-exceptions,]
 
 n_french <- dim(data_french)[1]
 #my_key <- '' #api key needs to be set here https://console.cloud.google.com
+dim(data_english)
 
 data_french$translated <-""
 
