@@ -4,8 +4,8 @@ class MakeDirectOrganizationConnection(TransformBase):
 
   def match(self):
     return neo4j_count("""
-      MATCH (o:Organization)-->(:Participant { role: 'Client'})-->(:Submission)-->(d:Document)
-      WHERE NOT (o)-[:SUBMITTED {method: $method }]->(d)
+      MATCH (o:Organization)-->(:Participant { role: 'Client'})-->(s:Submission)-->(d:Document)
+      WHERE NOT ((o)-[:SUBMITTED {method: $method }]->(d) OR s.name STARTS WITH 'Response')
     """, method=self.METHOD_TAG)
     
   def transform(self, data):
