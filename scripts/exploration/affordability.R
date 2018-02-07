@@ -382,7 +382,7 @@ data_bigram_counts %>%
 ### By category
 data_org <- data_q[!is.na(data_q$organization_category),]
 
-data_test <-data_test %>% 
+data_test <-data_org %>% 
   unnest_tokens(word, content) %>% 
   anti_join(stop_words)  %>%
   anti_join(my_stopwords) 
@@ -479,7 +479,7 @@ category_sentiments <- words_by_category %>%
 
 category_sentiments %>%
   mutate(organization_category = reorder(organization_category, score)) %>%
-  ggplot(aes(organization_category, score, fill = score > 0)) +
+  ggplot(aes(organization_category, score, fill = (score > 0))) +
   geom_col(show.legend = FALSE) +
   coord_flip() +
   ylab("Average sentiment score")

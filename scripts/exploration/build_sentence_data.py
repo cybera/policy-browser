@@ -35,7 +35,7 @@ for i, files in enumerate(glob.glob(datadir + "*.txt")):
         
         #Arbitrarily remove short irrelevant sentences.
         if len(sentence) < 15:
-            # print(sentence)
+            #print(sentence)
             pass
         else:
             # Note that this scrubadub really slows things down, so if it's not required

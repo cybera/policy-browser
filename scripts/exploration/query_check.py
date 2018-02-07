@@ -25,7 +25,7 @@ del EnglishStopWords[remove]
 Stemmer = PorterStemmer()
 
 # define the sentence you want to look for
-sentence = "define the internet as a basic service".lower()
+sentence =  "define the internet as a basic service".lower()
 tokens = tokenizer.tokenize(sentence)
 stopped_tokens =  [sentence for sentence in tokens if sentence not in EnglishStopWords]
 
