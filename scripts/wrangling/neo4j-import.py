@@ -278,7 +278,7 @@ def doc_topic():
         #print(row[2],row[3])
         with transaction() as tx:
                 tx.run("""
-                       MATCH (d:Document {sha256:$sha256}), (t:topic {id:$topic_id})
+                       MATCH (d:Document {sha256:$sha256}), (t:Topic {id:$topic_id})
                        CREATE (d)-[:HAS_TOPIC]->(t)
                        """, sha256=row[2],topic_id=int(row[3]))
                
@@ -298,13 +298,6 @@ def doc_french():
                        SET d.translated = $translated
                        """, sha256=row[1],translated=row[3])
 
-def cat_merge():
-  print("Adding property for intervenor category")
-  with transaction() as tx:
-          tx.run("""LOAD CSV WITH HEADERS FROM "https://swift-yyc.cloud.cybera.ca:8080/v1/AUTH_ab5c2378570945ffb1b46cd9b62f5132/test_folder/intervenor_categories.csv" AS csvLine
-                    MATCH (o:Organization {name:csvLine.name})
-                    SET o.category=csvLine.Category""")
-
 merge_core()
 merge_expert_knowledge()
 merge_raw_text()
@@ -319,4 +312,3 @@ merge_dates()
 topics()
 doc_topic()
 doc_french()
-cat_merge()

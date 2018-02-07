@@ -35,8 +35,19 @@ search_config = {
   'hl.tag.pre': '<em>', 
   'hl.tag.post': '</em>', 
   'hl.snippets': 200, 
-  #'hl.method': 'unified', 
-  'fq' : '-id:8b86f13c-3a01-45de-9668-b9ffdab7dee9 -id:152ef2a2-0cb4-4cdc-947d-c32fc0d09111',
+  'hl.method': 'unified', 
+  'fq' : 
+  '-name:"2015-134.224035.2409354.Intervention(1fn2$01!).pdf" ' +
+  '-name:"2015-134.224035.2409353.Intervention(1fn2h01!).pdf" ' +
+  '-name:"2015-134.224035.2409355.Intervention(1fn2j01!).pdf" ' +
+  '-name:"2015-134.224035.2398004.Intervention(1f#b801!).html" ' +
+  '-name:"2015-134.223963.2394421.Intervention Submission 6401 to 9600(1fbjp01!).pdf" ' + 
+  '-name:"2015-134.223963.2394419.Intervention Submission 1 to 3200 (1fbjn01!).pdf" ' +
+  '-name:"2015-134.223963.2394424.Intervention Submission 16001 to 19200 (1fbjs01!).pdf" ' +
+  '-name:"2015-134.223963.2394423.Intervention Submission 12801 to 16000(1fbjr01!).pdf" ' +
+  '-name:"2015-134.223963.2394422.Intervention Submission 9601 to 12800(1fbjq01!).pdf" ' +
+  '-name:"2015-134.223963.2394420.Intervention Submission 3201 to 6400(1fbj_01!).pdf" ' +
+  '-name:"2015-134.223963.2394425.Intervention Submission 19201 to 22386(1fbjt01!).pdf"',
   'fl':['id','sha256','name'],
   'rows':options.maxrows
 }
