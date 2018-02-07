@@ -5,9 +5,9 @@
 
 `Solr searches`
 
-bin/segment 'content:"services, subsidies"~10 OR "service, subsidies"' --add --rows=113
-bin/segment 'content:"services, subsidy"~10 OR "service, subsidy"' --rows=141 --add
-bin/segment 'content:"services, subsidized"~10 OR "service, subsidized"~10' --add --rows=92
+- bin/segment 'content:"services, subsidies"~10 OR "service, subsidies"' --add --rows=113
+- bin/segment 'content:"services, subsidy"~10 OR "service, subsidy"' --rows=141 --add
+- bin/segment 'content:"services, subsidized"~10 OR "service, subsidized"~10' --add --rows=92
 
 `Results`
 
