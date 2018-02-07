@@ -4,6 +4,7 @@ from contextlib import contextmanager
 from os import path
 import importlib.util
 import inspect
+import re
 
 def sha256(path, open_func=open, open_flags='rb'):
   hash_sha256 = hashlib.sha256()
@@ -82,6 +83,33 @@ def classes(mod, subclassof=None, exclude=[]):
 def itemize(strlist, prefix):
   prefixed_strs = [f"{prefix}{str}" for str in strlist]
   return "\n".join(prefixed_strs)
+
+is_capital = re.compile(r"^[A-Z]")
+
+def proper_noun_fragments_to_str(fragments):
+  proper_noun = ""
+  for f in fragments:
+    if is_capital.match(f):
+      proper_noun = proper_noun + " " + f
+    else:
+      proper_noun = proper_noun + f
+  return proper_noun.strip()
+
+PROVINCE_NAMES = ["Newfoundland and Labrador", "Prince Edward Island", "Nova Scotia", "New Brunswick", "Quebec", "Ontario", "Manitoba", "Saskatchewan", "Alberta", "British Columbia", "Yukon", "Northwest Territories", "Nunavut"]
+PROVINCE_ABBREVIATIONS = ["NL", "PE", "NS", "NB", "QC", "ON", "MB", "SK", "AB", "BC", "YT", "NT", "NU"]
+
+def separate_province(location):
+  stripped_location = location.strip()
+  normalized_location = stripped_location.lower()
+
+  for province in (PROVINCE_NAMES + PROVINCE_ABBREVIATIONS):
+    normalized_province = province.lower()
+    
+    if normalized_location.endswith(" " + normalized_province):
+      idx = normalized_location.rfind(normalized_province)
+      return stripped_location[:idx].strip(), province
+
+  return location, None
 
 class PathBuilder(str):
   def __init__(self, rootpath):
