@@ -16,7 +16,7 @@ Should broadband Internet services be considered basic telecommunications servic
 `Results`
 
 Category| In database | Search results | Doc2Vec |   
---- | --- | --- |   
+--- | --- | --- | --- |  
 Advocacy organizations |  289 | 119 | 228 |  
 Chamber of commerce/economic dev agency |  4 | 0 | 0 |  
 Consumer advocacy organizations | 3 | 6  |  
