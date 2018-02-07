@@ -25,7 +25,7 @@ Network operator: Telecom Incumbents | 339 | 90
 Other | 107 | 35
 Small incumbents  | 66  | 25   
 
-665 documents
-474 - have organization
-473 - have category
-95 organizations out of 175 covered
+- 665 documents
+- 474 - have organization
+- 473 - have category
+- 95 organizations out of 175 covered
