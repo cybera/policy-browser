@@ -216,17 +216,17 @@ Sentiment-associated words that most often followed words:
 
 ### By category (excluded documents that don't have category attached)
 
-Category| In database | Search results
---- | --- | ---
-Advocacy organizations |  289 | 110
-Chamber of commerce/economic dev agency |    4 | 0
-Consumer advocacy organizations |    3  | 1
-Government  | 134 | 48
-Network operator - Cable companies | 118 | 41
-Network operator: other | 271 | 76
-Network operator: Telecom Incumbents | 339 | 88
-Other | 107 | 30
-Small incumbents  | 66  | 20   
+Category| In database | Search results | doc2vec segments (frequency > 1)|
+--- | --- | --- | --- |
+Advocacy organizations |  289 | 110 | 687 |
+Chamber of commerce/economic dev agency |    4 | 0 | 0 |
+Consumer advocacy organizations |    3  | 1 | 0 |
+Government  | 134 | 48 | 92 |
+Network operator - Cable companies | 118 | 41 | 65 |
+Network operator: other | 271 | 76 | 138 | 
+Network operator: Telecom Incumbents | 339 | 88 | 139 |
+Other | 107 | 30 | 98 |
+Small incumbents  | 66  | 20  | 31 | 
 
 *Summary by category*:
 
