@@ -1,7 +1,8 @@
 
-#### Question:
+#### Question9:
 
-Should some or all services that are considered to be basic telecommunications services be subsidized? Explain, with supporting details, which services should be subsidized and under what circumstances.
+Should broadband Internet service be defined as a basic telecommunications service? What other services, if any, should be defined as basic telecommunications services?
+
 
 `Solr searches`
 
