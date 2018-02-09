@@ -8,7 +8,7 @@ import scrubadub
 
 # this is used to make a pandas dataframe of all the sentences from each document. 
 
-datadir = '/Users/alextennant/CIRA/hey-cira/data/processed/raw_text/'
+datadir = '/Users/tatianameleshko/DS/hey-cira/data/processed/raw_text/'
 
 # here Sentence Number is the TOTAL sentence number. Cumulative over all documents.
 
@@ -35,12 +35,20 @@ for i, files in enumerate(glob.glob(datadir + "*.txt")):
         
         #Arbitrarily remove short irrelevant sentences.
         if len(sentence) < 15:
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
             #print(sentence)
+=======
+            print(sentence)
+>>>>>>> Stashed changes
+=======
+            print(sentence)
+>>>>>>> Stashed changes
             pass
         else:
             # Note that this scrubadub really slows things down, so if it's not required
             # probably don't do it. 
-            # sentence = scrubadub.clean(sentence)
+            sentence = scrubadub.clean(sentence)
             AllSentences.append(sentence)
             AllDocuments.append(files)
             AllDocumentNumbers.append(i)

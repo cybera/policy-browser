@@ -17,7 +17,7 @@ class AnswerQuestions(TransformBase):
 
     def preconditions(self):
         # I think this is probably an all or nothing approach 
-        self.qref = ["Q4","Q9","Q12","Q?"]
+        self.qref = ["Q4","Q9","Q12","Q1"]
         self.answer_path = []
      
         self.answer_path.append(path.join(project_root.data.processed, "Market_Forces_Question_1500_2.txt"))

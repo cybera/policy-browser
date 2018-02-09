@@ -30,7 +30,7 @@ search_config = {
   'hl.fl': 'content', 
   'hl': 'on', 
   'wt': 'json', 
-  'hl.fragsize': 1000, 
+  'hl.fragsize': 500, 
   'hl.encoder': '', 
   'hl.tag.pre': '<em>', 
   'hl.tag.post': '</em>', 
