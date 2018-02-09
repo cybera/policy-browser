@@ -20,10 +20,10 @@ class AnswerQuestions(TransformBase):
         self.qref = ["Q4","Q9","Q12","Q1"]
         self.answer_path = []
      
-        self.answer_path.append(path.join(project_root.data.processed, "Market_Forces_Question_1500_2.txt"))
-        self.answer_path.append(path.join(project_root.data.processed, "Basic_Service_Question_1500_2.txt"))
-        self.answer_path.append(path.join(project_root.data.processed, "Subsity_Question_1500_2.txt"))
-        self.answer_path.append(path.join(project_root.data.processed, "Affordability_Question_1500_2.txt"))
+        self.answer_path.append(path.join(project_root.data.processed, "Market_Forces_Question_1500_LT.txt"))
+        self.answer_path.append(path.join(project_root.data.processed, "Basic_Service_Question_1500_LT.txt"))
+        self.answer_path.append(path.join(project_root.data.processed, "Subsity_Question_1500_LT.txt"))
+        self.answer_path.append(path.join(project_root.data.processed, "Affordability_Question_1500_LT.txt"))
 
 
        
