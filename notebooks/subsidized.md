@@ -1,5 +1,5 @@
 
-#### Question:
+#### Question12:
 
  Should some or all services that are considered to be basic telecommunications services be subsidized? Explain, with supporting details, which services should be subsidized and under what circumstances.
 
@@ -23,6 +23,7 @@ Network operator: Telecom Incumbents | 339 | 30 | 53 |
 Other | 107 | 4 | 23 | 
 Small incumbents  | 66  | 8  | 18 |  
 
+*Solr search results*:
 - 205 documents
 - 134 - have organization
 - 134 - have category
