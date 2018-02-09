@@ -19,7 +19,11 @@ class CreateQuestions(TransformBase):
     {
       "ref": "Q12",
       "content": "Should some or all services that are considered to be basic telecommunications services be subsidized? Explain, with supporting details, which services should be subsidized and under what circumstances."
-    }
+    },
+    {
+     "ref": "Q1",
+     "content": "What positions on affordability are being taken by different types of intervenors?" 
+     }
   ]
 
   def match(self):
