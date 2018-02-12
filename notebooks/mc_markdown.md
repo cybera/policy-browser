@@ -161,6 +161,7 @@ RETURN s.content AS Segment, o.name as Organization
 
 
 ![Alt Text](images/OtherNetworkOpAfford.png)
+
 |Organization                               |Sentiment_Mean |Sentiment_SD |Number_of_points |
 |:------------------------------------------|:--------------|:------------|:----------------|
 |Axia                                       |0.73           |1.19         |11               |
@@ -193,6 +194,7 @@ RETURN s.content AS Segment, o.name as Organization
 
 
 ![Alt Text](images/GovernmentAfford.png)
+
 |Organization                                                            |Sentiment_Mean |Sentiment_SD |Number_of_points |
 |:-----------------------------------------------------------------------|:--------------|:------------|:----------------|
 |Cree Nation Government                                                  |0.61           |1.53         |77               |
@@ -219,6 +221,7 @@ RETURN s.content AS Segment, o.name as Organization
 
 
 ![Alt Text](images/AdvocacyOrgsAfford.png)
+
 |Organization                                                      |Sentiment_Mean |Sentiment_SD |Number_of_points |
 |:-----------------------------------------------------------------|:--------------|:------------|:----------------|
 |ACORN Canada                                                      |-0.03          |1.99         |123              |
@@ -249,6 +252,7 @@ RETURN s.content AS Segment, o.name as Organization
 
 
 ![Alt Text](images/OtherAfford.png)
+
 |Organization                                                                          |Sentiment_Mean |Sentiment_SD |Number_of_points |
 |:-------------------------------------------------------------------------------------|:--------------|:------------|:----------------|
 |664947 AB LTD                                                                         |-0.8           |1.64         |5                |
@@ -283,6 +287,7 @@ RETURN s.content AS Segment, o.name as Organization
 
 
 ![Alt Text](images/CableAfford.png)
+
 |Organization                         |Sentiment_Mean |Sentiment_SD |Number_of_points |
 |:------------------------------------|:--------------|:------------|:----------------|
 |Canadian Cable Systems Alliance Inc. |1.5            |0.71         |2                |
@@ -298,6 +303,7 @@ RETURN s.content AS Segment, o.name as Organization
 
 
 ![Alt Text](images/TelecomAfford.png)
+
 |Organization                              |Sentiment_Mean |Sentiment_SD |Number_of_points |
 |:-----------------------------------------|:--------------|:------------|:----------------|
 |Bell                                      |-0.02          |1.84         |87               |
@@ -312,11 +318,13 @@ RETURN s.content AS Segment, o.name as Organization
 
 
 ![Alt Text](images/ConsumerAdvAfford.png)
+
 |Organization                    |Sentiment_Mean |Sentiment_SD |Number_of_points |
 |:-------------------------------|:--------------|:------------|:----------------|
 |BC Broadband Association (BCBA) |1.08           |1.34         |38               |
 
 ![Alt Text](images/SmallIncAfford.png)
+
 |Organization     |Sentiment_Mean |Sentiment_SD |Number_of_points |
 |:----------------|:--------------|:------------|:----------------|
 |ACTQ             |0.53           |1.44         |49               |
@@ -341,6 +349,7 @@ RETURN s.content AS Segment, o.category as Organization
 where that returns all organizations, if you need subsets an additional `AND o.category = 'Desired Category'` is applied. The figures are below, and a summary table is provided below each box plot of the mean, standard deviation, and number of points used to calculate sentiments.
 
 ![Alt Text](images/AllOrgsBTS.png)
+
 |Organization                         |Sentiment_Mean |Sentiment_SD |Number_of_points |
 |:------------------------------------|:--------------|:------------|:----------------|
 |Advocacy organizations               |-0.23          |2.01         |665              |
@@ -385,6 +394,7 @@ where that returns all organizations, if you need subsets an additional `AND o.c
 |Yak Communications                         |0.23           |1.59         |13               |
 
 ![Alt Text](images/GovernmentBTS.png)
+
 |Organization                                                            |Sentiment_Mean |Sentiment_SD |Number_of_points |
 |:-----------------------------------------------------------------------|:--------------|:------------|:----------------|
 |Cree Nation Government                                                  |0.69           |1.45         |81               |
@@ -440,6 +450,7 @@ where that returns all organizations, if you need subsets an additional `AND o.c
 |Vaxination Informatique                                           |1.03           |1.15         |35               |
 
 ![Alt Text](images/OtherBTS.png)
+
 |Organization                                                                          |Sentiment_Mean |Sentiment_SD |Number_of_points |
 |:-------------------------------------------------------------------------------------|:--------------|:------------|:----------------|
 |ADISQ                                                                                 |2.5            |0.71         |2                |
@@ -467,6 +478,7 @@ where that returns all organizations, if you need subsets an additional `AND o.c
 
 ![Alt Text](images/CableBTS.png)
 
+
 |Organization             |Sentiment_Mean |Sentiment_SD |Number_of_points |
 |:------------------------|:--------------|:------------|:----------------|
 |Cogeco                   |0.79           |1.49         |56               |
@@ -479,6 +491,7 @@ where that returns all organizations, if you need subsets an additional `AND o.c
 |Shaw Communications Inc. |1              |NA           |1                |
 
 ![Alt Text](images/TelecomBTS.png)
+
 |Organization                              |Sentiment_Mean |Sentiment_SD |Number_of_points |
 |:-----------------------------------------|:--------------|:------------|:----------------|
 |Bell                                      |-0.04          |1.89         |83               |
@@ -490,11 +503,13 @@ where that returns all organizations, if you need subsets an additional `AND o.c
 |TELUS Communications Company              |0.68           |1.55         |98               |
 
 ![Alt Text](images/ConsumerAdvBTS.png)
+
 |Organization                    |Sentiment_Mean |Sentiment_SD |Number_of_points |
 |:-------------------------------|:--------------|:------------|:----------------|
 |BC Broadband Association (BCBA) |1.11           |1.45         |36               |
 
 ![Alt Text](images/SmallIncBTS.png)
+
 |Organization     |Sentiment_Mean |Sentiment_SD |Number_of_points |
 |:----------------|:--------------|:------------|:----------------|
 |ACTQ             |0.69           |1.37         |52               |
