@@ -30,8 +30,7 @@ model = gensim.models.Doc2Vec(tagged,
 where `tagged` are the tokenized and labeled word vectors that were cleaned from the raw text documents, `dm` is the word model. In this case, `dm=0` implies the distributed bag of words model. `alpha` is the standard initial learning rate, `size` is the size of the word vector and the hidden layer of neurons. `min_alpha` is the smallest training rate. `sample` down-samples frequently used words, `workers` is the number of cores to use, `dbow_words` tells `doc2vec` to also train word vectors as well as document vectors. However, this does tend to slow down training, but I found it worked a little better for shorter search terms. `iter` is how many training epochs to go through, were typical values reported in the literature are between 10 and 20, `window` is how many words apart to calculate word probabilities for each token and finally `hs=0` tells `doc2vec` to use negative sampling instead of hierarchical softmax for training.
 
 Once the model is trained, you can ask `doc2vec` to return to you 'semantically similar' statements to a statement you provide yourself. To do this, we envoke the `infer_vector` and `most_similar` methods as follows
-```
-python
+```python
 infer_vector = model.infer_vector(stemmed_tokens, steps=20, alpha=0.025)
 similars = model.docvecs.most_similar(positive=[infer_vector], topn=num_return)
 ```
@@ -52,11 +51,12 @@ the `infer_vector` method, the weights in the neural network of that vector are 
 For `doc2vec` the result of overtraining can cause the network to "memorize" a set of documents, and perform poorly on searches that aren't already contained within your corpus. This (maybe, I have no non-emperical proof) evident with a Monte Carlo histogram. An example of overtraining can be seen below for the basic service quesion.
 
 
-![Alt text](MC_bad.png?raw=true "MC Bad")
+![Screenshot](/Users/alextennant/CIRA/Word2VecAnalysis/MC_bad.png)
+
 
 From the first figure we can see that the `doc2vec` network (here trained through 50 epochs) is getting hung up on the same ~200 sentences. These 200 sentences are not necessarily interesting as we're actually interested in _all_ the sentences that may be interesting. Not to mention the CDF is kind of "chunky" indicating multi-modal behavior, which is typically a bad sign unless there's a good reason for it. Not just these few that seem to fit the bill. Comparing these results to those of a network trained through only 20 epochs below
 
-![Alt text](MC_good.png?raw=true "MC Good")
+![Alt text](/Users/alextennant/CIRA/Word2VecAnalysis/MC_good.png)
 
 Where now we see that the network is frequently finding approximately 500 (hopefully highly relevant) sentences, as well as a long tail of "one hitters" or sentences that only appear once. Typically the one hitters are often noise, but sometimes there's a "diamond in the rough" where it answers the question, but in a highly idiosyncratic (and often angry) fashion from the the individual submissions. As well, the CDF of this function indicates that this histogram is unimodal, if you can consider a exponential curve to be unimodal.
 
@@ -141,15 +141,15 @@ AND o.category = 'Network operator: other'
 RETURN s.content AS Segment, o.name as Organization
 ```
 
-![Alt Text](/Users/alextennant/CIRA/Word2VecAnalysis/AllOrgsAfford.png?raw=true "AllOrgs")
+![Alt Text](/Users/alextennant/CIRA/Word2VecAnalysis/AllOrgsAfford.png)
 
-![Alt Text](/Users/alextennant/CIRA/Word2VecAnalysis/OtherNetworkOpAfford.png?raw=true "Other Networks")
+![Alt Text](/Users/alextennant/CIRA/Word2VecAnalysis/OtherNetworkOpAfford.png)
 
-![Alt Text](/Users/alextennant/CIRA/Word2VecAnalysis/GovernmentAfford.png?raw=true "Gov")
+![Alt Text](/Users/alextennant/CIRA/Word2VecAnalysis/GovernmentAfford.png)
 
-![Alt Text](/Users/alextennant/CIRA/Word2VecAnalysis/AdvocacyOrgsAfford.png?raw=true "Advo")
+![Alt Text](/Users/alextennant/CIRA/Word2VecAnalysis/AdvocacyOrgsAfford.png)
 
-![Alt Text](/Users/alextennant/CIRA/Word2VecAnalysis/OtherAfford.png?raw=true "Other")
+![Alt Text](/Users/alextennant/CIRA/Word2VecAnalysis/OtherAfford.png)
 
 ![Alt Text](/Users/alextennant/CIRA/Word2VecAnalysis/CableAfford.png)
 
