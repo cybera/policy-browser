@@ -132,6 +132,9 @@ Here the data is pulled form the data base using a provided Query and pre-define
 
 See below for a dump of sentiment pdfs for each subset of groups. My next step will be to display the number of words counted in the sentiment analysis, but so far I haven't found an easy way to do that. However, the ones that have very few tend to be the ones where the mean or the 68% confidence region is out of the box. I think I'll implement a filter so we don't display results with very few sentiment words. I note that I tried violin plots, but they didn't really add anything that the mean and quantile confidence region didn't do more simply. A word of caution however: quartiles are calculated by sorting the data, and because we have identical integer data these also aren't that informative. However these bars are calculated exactly the same as they would be in a violin plot. I might try a bean plot shortly, but I still don't know how great those would be.
 
+UPDATE: I have removed quartiles as they're misleading with tightly packed integer-spaced data in favor of jitter. Now it's a lot easier to judge if the box had enough data at a simple glance, and how that data is distributed.
+
+
 I note however that each of these were made with a `Neo4j` query that looked similar to the following
 ```
 cypher
@@ -143,20 +146,183 @@ RETURN s.content AS Segment, o.name as Organization
 ```
 
 ![Alt Text](images/AllOrgsAfford.png)
+|Organization                         |Sentiment_Mean |Sentiment_SD |Number_of_points |
+|:------------------------------------|:--------------|:------------|:----------------|
+|Advocacy organizations               |-0.24          |2.03         |789              |
+|Consumer advocacy organizations      |1.08           |1.34         |38               |
+|Government                           |0.28           |1.83         |278              |
+|Network operator - Cable companies   |0.38           |1.69         |195              |
+|Network operator: other              |0.53           |1.73         |276              |
+|Network operator: Telecom Incumbents |0.08           |1.83         |299              |
+|Other                                |0.25           |1.86         |269              |
+|Small incumbents                     |0.36           |1.71         |116              |
+|NA                                   |0.66           |1.64         |44               |
+
 
 ![Alt Text](images/OtherNetworkOpAfford.png)
+|Organization                               |Sentiment_Mean |Sentiment_SD |Number_of_points |
+|:------------------------------------------|:--------------|:------------|:----------------|
+|Axia                                       |0.73           |1.19         |11               |
+|BC Broadband Association                   |1.4            |1.52         |5                |
+|Bragg Communications Inc.                  |1.04           |1.57         |25               |
+|Canadian Network Operators Consortium      |1              |1.34         |21               |
+|Canadian Network Operators Consortium Inc. |0.78           |1.53         |50               |
+|CanWISP                                    |0.89           |1.36         |54               |
+|Chebucto Community Net Society             |2              |NA           |1                |
+|Distributel                                |-1             |0            |2                |
+|Eastlink                                   |0.78           |1.67         |51               |
+|Harewaves Wireless                         |0              |1.73         |3                |
+|Ice Wireless                               |0.4            |1.34         |5                |
+|Iristel                                    |0.88           |1.64         |8                |
+|National Capital FreeNet                   |0.83           |1.83         |6                |
+|OneWeb                                     |0.67           |1.64         |18               |
+|Primus Telecommunications Canada           |-0.5           |1.64         |6                |
+|Ruralwave                                  |3              |NA           |1                |
+|SANNY Internet Service                     |1.33           |0.58         |3                |
+|SANNY Internet Services                    |1              |NA           |1                |
+|SSi                                        |0.8            |1.63         |147              |
+|SSi Group of Companies                     |0.53           |1.66         |17               |
+|TekSavvy                                   |1              |1.34         |21               |
+|TekSavvy Solutions Inc.                    |0.97           |1.38         |29               |
+|Telesat                                    |0.62           |1.61         |13               |
+|WIND Mobile Corp.                          |1.35           |1.27         |17               |
+|Xplornet                                   |0.39           |1.69         |137              |
+|Xplornet Communications Inc.               |0.41           |1.46         |17               |
+|Yak Communications                         |0.6            |1.43         |10               |
+
 
 ![Alt Text](images/GovernmentAfford.png)
+|Organization                                                            |Sentiment_Mean |Sentiment_SD |Number_of_points |
+|:-----------------------------------------------------------------------|:--------------|:------------|:----------------|
+|Cree Nation Government                                                  |0.61           |1.53         |77               |
+|Cree Nation Government and Eeyou Communications Network                 |2              |1            |3                |
+|Federation of Canadian Municipalities                                   |0.63           |1.5          |30               |
+|Federation of Canadian Municipalities (FCM)                             |0.6            |1.9          |10               |
+|Government of British Columbia                                          |1.2            |1.29         |61               |
+|Government of the Northwest Territories                                 |0.78           |1.6          |54               |
+|Government of Yukon                                                     |0.7            |1.7          |37               |
+|Kativik Regional Government                                             |0.8            |1.62         |10               |
+|Manitoba Keewatinowi Okimakinak                                         |0.58           |1.53         |78               |
+|Milton Councillor,  Ward 3 (Nassagaweya)                                |-0.44          |1.98         |99               |
+|Ministère de la Culture et des Communications, Gouvernement du Québec   |2              |NA           |1                |
+|Northwest Territories Finance                                           |0.76           |1.67         |45               |
+|Ontario Ministry of Economic Development, Employment and Infrastructure |0              |1.83         |4                |
+|Powell River Regional District                                          |0.45           |1.8          |29               |
+|Province of BC                                                          |1.43           |1.24         |23               |
+|Province of British Columbia                                            |1.07           |1.23         |44               |
+|Region of Queens Municipality                                           |NaN            |NA           |0                |
+|Rimouski-Neigette--Témiscouata--Les Basques                             |-1             |1.73         |3                |
+|The Alberta Association of Municipal Districts and Counties             |0.92           |1.32         |24               |
+|Yukon Economic Development                                              |1.24           |1.2          |25               |
+|Yukon Government                                                        |0.42           |1.72         |26               |
+
 
 ![Alt Text](images/AdvocacyOrgsAfford.png)
+|Organization                                                      |Sentiment_Mean |Sentiment_SD |Number_of_points |
+|:-----------------------------------------------------------------|:--------------|:------------|:----------------|
+|ACORN Canada                                                      |-0.03          |1.99         |123              |
+|ACORN Members Testimonials                                        |-0.03          |1.99         |123              |
+|Canadian Association of the Deaf-Association des Sourds du Canada |-0.16          |1.64         |19               |
+|CCSA                                                              |0.38           |1.69         |37               |
+|CNIB                                                              |0.5            |2.12         |2                |
+|Cybera                                                            |0.59           |1.67         |222              |
+|Deaf Wireless Canada Committee                                    |0.6            |1.69         |78               |
+|First Mile Connectivity Consortium                                |0.73           |1.54         |172              |
+|FRPC                                                              |0.38           |1.84         |77               |
+|i-CANADA                                                          |1.09           |1.69         |32               |
+|Manitoba Keewatinowi Okimakinak Inc.                              |0.73           |1.52         |56               |
+|Media Access Canada                                               |0.7            |1.6          |37               |
+|Media Access Canada / Access 2020                                 |0.92           |1.44         |12               |
+|MediaSmarts                                                       |1.1            |1.52         |10               |
+|MKO                                                               |-0.33          |1.51         |6                |
+|Nunavut Broadband Development Corporation                         |0.78           |1.51         |40               |
+|Open Media                                                        |0.62           |1.62         |76               |
+|OpenMedia                                                         |0.76           |1.55         |29               |
+|Public Interest Advocacy Centre                                   |0.41           |1.74         |105              |
+|Public Interest Law Centre                                        |1.33           |0.58         |3                |
+|The Affordable Access Coalition                                   |0.54           |1.76         |210              |
+|Union des consommateurs                                           |-0.4           |2.3          |5                |
+|Union des Consommateurs                                           |-0.17          |2.14         |6                |
+|Unknown                                                           |-0.37          |2.05         |600              |
+|Vaxination Informatique                                           |0.97           |1.22         |34               |
+
 
 ![Alt Text](images/OtherAfford.png)
+|Organization                                                                          |Sentiment_Mean |Sentiment_SD |Number_of_points |
+|:-------------------------------------------------------------------------------------|:--------------|:------------|:----------------|
+|664947 AB LTD                                                                         |-0.8           |1.64         |5                |
+|ADISQ                                                                                 |0.6            |2.41         |5                |
+|Ajungi Arctic Consulting                                                              |-0.6           |2.07         |5                |
+|Allstream Inc. and MTS Inc.                                                           |1.24           |1.23         |25               |
+|Benjamin Klass and Marc Nanni                                                         |0.5            |2.12         |2                |
+|BizSkits Inc.                                                                         |2              |NA           |1                |
+|Canadian Federation of Agriculture                                                    |-0.03          |1.88         |87               |
+|Canadian Media Concentration Research Project                                         |0.22           |1.66         |45               |
+|CAV-ACS                                                                               |0.5            |2.12         |2                |
+|Cisco Systems                                                                         |0.5            |1.64         |6                |
+|Cisco Systems Inc.                                                                    |0.33           |1.66         |9                |
+|CPC                                                                                   |0.6            |1.65         |10               |
+|Eastern Ontario Wardens Caucus (EOWC) and the Eastern Ontario Regional Network (EORN) |0.67           |1.53         |21               |
+|Forum for Research and Policy in Communications                                       |0.33           |1.83         |66               |
+|Gerry Curry Photography                                                               |-1.5           |0.71         |2                |
+|Lobo Iberico Restaraunt                                                               |1              |1.22         |5                |
+|NERA Economic Consulting                                                              |1              |1.21         |38               |
+|NWT Association of Communities                                                        |1.78           |0.44         |9                |
+|OneWeb, Ltd.                                                                          |0.67           |1.64         |18               |
+|Palliser Regional Park                                                                |-1             |1.73         |5                |
+|private citizen                                                                       |-1             |2.65         |3                |
+|Roslyn Layton                                                                         |0.38           |1.54         |45               |
+|Second Flux Information Services                                                      |0.45           |1.8          |29               |
+|Seenov Inc.                                                                           |0.5            |1.91         |4                |
+|Smartstuff Enterprises                                                                |1              |NA           |1                |
+|Unifor                                                                                |0.6            |1.43         |10               |
+|Wehlend Consulting Inc.                                                               |-0.14          |2.35         |14               |
+|West Beg Services Ltd.                                                                |2              |NA           |1                |
+|Yellow Pages Limited                                                                  |1.15           |1.23         |33               |
+
 
 ![Alt Text](images/CableAfford.png)
+|Organization                         |Sentiment_Mean |Sentiment_SD |Number_of_points |
+|:------------------------------------|:--------------|:------------|:----------------|
+|Canadian Cable Systems Alliance Inc. |1.5            |0.71         |2                |
+|Cogeco                               |0.91           |1.43         |45               |
+|Cogeco Cable Inc.                    |1.04           |1.16         |24               |
+|Québecor Média inc.                  |2              |NA           |1                |
+|Rogers                               |0.5            |1.56         |78               |
+|Rogers Communications                |0.51           |1.63         |41               |
+|Shaw Cablesystems G.P.               |0.9            |1.18         |21               |
+|Shaw Communications                  |0.34           |1.69         |129              |
+|Shaw Communications Inc.             |1.67           |0.58         |3                |
+|Videotron                            |-3             |NA           |1                |
+
 
 ![Alt Text](images/TelecomAfford.png)
+|Organization                              |Sentiment_Mean |Sentiment_SD |Number_of_points |
+|:-----------------------------------------|:--------------|:------------|:----------------|
+|Bell                                      |-0.02          |1.84         |87               |
+|Bell Canada                               |0.6            |1.66         |84               |
+|NorthwesTel                               |0.69           |1.81         |26               |
+|Saskatchewan Telecommunications (SaskTel) |-0.04          |1.82         |92               |
+|SaskTel                                   |0.43           |2.28         |14               |
+|Telus Communications                      |0.27           |1.79         |208              |
+|TELUS Communications Company              |0.67           |1.63         |86               |
+
+
+
+
+![Alt Text](images/ConsumerAdvAfford.png)
+|Organization                    |Sentiment_Mean |Sentiment_SD |Number_of_points |
+|:-------------------------------|:--------------|:------------|:----------------|
+|BC Broadband Association (BCBA) |1.08           |1.34         |38               |
 
 ![Alt Text](images/SmallIncAfford.png)
+|Organization     |Sentiment_Mean |Sentiment_SD |Number_of_points |
+|:----------------|:--------------|:------------|:----------------|
+|ACTQ             |0.53           |1.44         |49               |
+|CITC-JTF         |0.49           |1.7          |73               |
+|Joint Task Force |-0.03          |1.7          |36               |
+|tbaytel          |2              |0            |2                |
+
 
 However on closer inspection there might be a few interesting things here. We see  that on the whole, most categories of organizations are predominantly neutral when it comes to affordability, with the exception of advocacy organizations which are slightly negative. Saying anything further about the individual named organizations may be difficult until I get the number of words used pasted on these graphs as well. But regardless, everyone is pretty neutral until you get into the "other" groups category, but I'm not convinces that isn't heavily biased by short snippets of text that are out of context and very negative. Anyways, I'll create more complete figures and hopefully there will be something else there
 
@@ -164,7 +330,189 @@ However on closer inspection there might be a few interesting things here. We se
 
 
 ### Sentiment of Basic Service Question
-Coming soon. ETA: 11:00 on Monday.
+Below are box plots summarizing the sentiment of filtered organizations and groups using a `Neo4j` query similar to the following
+```neo4j
+MATCH (Qu:Query) <-[:MATCHES]-(s:Segment)-[:SEGMENT_OF]->(d:Document)<-[:SUBMITTED]-(o:Organization)
+WHERE ID(Qu) = 140612
+AND s.frequency > 0
+RETURN s.content AS Segment, o.category as Organization
+```
+where that returns all organizations, if you need subsets an additional `AND o.category = 'Desired Category'` is applied. The figures are below, and a summary table is provided below each box plot of the mean, standard deviation, and number of points used to calculate sentiments.
+
+![Alt Text](images/AllOrgsBTS.png)
+|Organization                         |Sentiment_Mean |Sentiment_SD |Number_of_points |
+|:------------------------------------|:--------------|:------------|:----------------|
+|Advocacy organizations               |-0.23          |2.01         |665              |
+|Consumer advocacy organizations      |1.11           |1.45         |36               |
+|Government                           |0.5            |1.68         |229              |
+|Network operator - Cable companies   |0.52           |1.63         |178              |
+|Network operator: other              |0.51           |1.75         |247              |
+|Network operator: Telecom Incumbents |0.07           |1.87         |303              |
+|Other                                |0.47           |1.76         |216              |
+|Small incumbents                     |0.47           |1.67         |121              |
+|NA                                   |0.67           |1.74         |36               |
+
+
+![Alt Text](images/OtherNetworkBTS.png)
+|Organization                               |Sentiment_Mean |Sentiment_SD |Number_of_points |
+|:------------------------------------------|:--------------|:------------|:----------------|
+|Axia                                       |1.5            |0.58         |4                |
+|BC Broadband Association                   |1.5            |1.38         |6                |
+|Bragg Communications Inc.                  |1              |1.41         |39               |
+|Canadian Network Operators Consortium      |0.79           |1.69         |19               |
+|Canadian Network Operators Consortium Inc. |0.72           |1.56         |57               |
+|CanWISP                                    |0.97           |1.24         |37               |
+|Distributel                                |-1             |0            |2                |
+|Eastlink                                   |0.87           |1.56         |62               |
+|Harewaves Wireless                         |0              |1.73         |3                |
+|Harewaves Wireless Inc.                    |1              |NA           |1                |
+|Ice Wireless                               |NaN            |NA           |0                |
+|Iristel                                    |0.2            |2.17         |5                |
+|National Capital FreeNet                   |0.83           |1.83         |6                |
+|OneWeb                                     |0.57           |1.62         |23               |
+|Primus Telecommunications Canada           |-0.67          |1.53         |3                |
+|Ruralwave                                  |3              |NA           |1                |
+|SANNY Internet Services                    |NaN            |NA           |0                |
+|SSi                                        |0.93           |1.6          |129              |
+|SSi Group of Companies                     |0.5            |1.71         |16               |
+|TekSavvy                                   |0.86           |1.29         |14               |
+|TekSavvy Solutions Inc.                    |0.25           |1.55         |20               |
+|Telesat                                    |0              |1.41         |2                |
+|WIND Mobile Corp.                          |1.2            |1.32         |10               |
+|Xplornet                                   |0.31           |1.75         |119              |
+|Xplornet Communications Inc.               |0.26           |1.66         |19               |
+|Yak Communications                         |0.23           |1.59         |13               |
+
+![Alt Text](images/GovernmentBTS.png)
+|Organization                                                            |Sentiment_Mean |Sentiment_SD |Number_of_points |
+|:-----------------------------------------------------------------------|:--------------|:------------|:----------------|
+|Cree Nation Government                                                  |0.69           |1.45         |81               |
+|Cree Nation Government and Eeyou Communications Network                 |2              |NA           |1                |
+|Federation of Canadian Municipalities                                   |1              |1.21         |23               |
+|Federation of Canadian Municipalities (FCM)                             |1.33           |0.58         |3                |
+|Government of British Columbia                                          |1.08           |1.22         |63               |
+|Government of Nunavut                                                   |2              |NA           |1                |
+|Government of the Northwest Territories                                 |0.61           |1.58         |51               |
+|Government of Yukon                                                     |1.24           |1.33         |34               |
+|Kativik Regional Government                                             |1.71           |0.76         |7                |
+|Manitoba Keewatinowi Okimakinak                                         |0.63           |1.46         |63               |
+|Milton Councillor,  Ward 3 (Nassagaweya)                                |-0.1           |1.89         |58               |
+|Ministère de la Culture et des Communications, Gouvernement du Québec   |2              |NA           |1                |
+|Northwest Territories Finance                                           |0.74           |1.63         |46               |
+|Ontario Ministry of Economic Development, Employment and Infrastructure |2              |NA           |1                |
+|Powell River Regional District                                          |0.88           |1.63         |16               |
+|Province of BC                                                          |1.27           |0.98         |22               |
+|Province of British Columbia                                            |1              |1.26         |46               |
+|Region of Queens Municipality                                           |NaN            |NA           |0                |
+|Rimouski-Neigette--Témiscouata--Les Basques                             |NaN            |NA           |0                |
+|The Alberta Association of Municipal Districts and Counties             |1.16           |1.38         |19               |
+|Yukon Economic Development                                              |1.44           |1.12         |27               |
+|Yukon Government                                                        |0.95           |1.29         |22               |
+
+![Alt Text](images/AdvocacyOrgsBTS.png)
+
+|Organization                                                      |Sentiment_Mean |Sentiment_SD |Number_of_points |
+|:-----------------------------------------------------------------|:--------------|:------------|:----------------|
+|ACORN Canada                                                      |0.09           |1.99         |90               |
+|ACORN Members Testimonials                                        |0.09           |1.99         |90               |
+|Canadian Association of the Deaf-Association des Sourds du Canada |-0.41          |1.54         |17               |
+|CCSA                                                              |0.57           |1.6          |28               |
+|CNIB                                                              |0.8            |1.1          |5                |
+|Cybera                                                            |0.55           |1.64         |178              |
+|Deaf Wireless Canada Committee                                    |0.49           |1.82         |63               |
+|First Mile Connectivity Consortium                                |0.62           |1.56         |138              |
+|FRPC                                                              |0.62           |1.72         |80               |
+|i-CANADA                                                          |1.13           |1.55         |15               |
+|Manitoba Keewatinowi Okimakinak Inc.                              |0.83           |1.46         |48               |
+|Media Access Canada                                               |0.75           |1.37         |20               |
+|Media Access Canada / Access 2020                                 |0.73           |1.39         |30               |
+|MediaSmarts                                                       |0.6            |2.07         |5                |
+|MKO                                                               |-0.6           |1.52         |5                |
+|Nunavut Broadband Development Corporation                         |0.88           |1.43         |32               |
+|Open Media                                                        |0.63           |1.59         |70               |
+|OpenMedia                                                         |0.56           |1.62         |34               |
+|Public Interest Advocacy Centre                                   |0.37           |1.82         |113              |
+|The Affordable Access Coalition                                   |0.42           |1.77         |219              |
+|Union des consommateurs                                           |-2             |NA           |1                |
+|Union des Consommateurs                                           |-0.5           |2.12         |2                |
+|Unknown                                                           |-0.4           |2.03         |452              |
+|Vaxination Informatique                                           |1.03           |1.15         |35               |
+
+![Alt Text](images/OtherBTS.png)
+|Organization                                                                          |Sentiment_Mean |Sentiment_SD |Number_of_points |
+|:-------------------------------------------------------------------------------------|:--------------|:------------|:----------------|
+|ADISQ                                                                                 |2.5            |0.71         |2                |
+|Allstream Inc. and MTS Inc.                                                           |1.04           |1.4          |27               |
+|Benjamin Klass and Marc Nanni                                                         |0.5            |2.12         |2                |
+|Canadian Federation of Agriculture                                                    |0.31           |1.82         |52               |
+|Canadian Media Concentration Research Project                                         |0.16           |1.68         |44               |
+|CAV-ACS                                                                               |0.29           |1.98         |7                |
+|Cisco Systems                                                                         |0.5            |1.64         |6                |
+|Cisco Systems Inc.                                                                    |0.14           |1.86         |7                |
+|CPC                                                                                   |0.71           |1.54         |14               |
+|Eastern Ontario Wardens Caucus (EOWC) and the Eastern Ontario Regional Network (EORN) |0.77           |1.48         |13               |
+|Forum for Research and Policy in Communications                                       |0.7            |1.66         |60               |
+|Gerry Curry Photography                                                               |-1.5           |0.71         |2                |
+|NERA Economic Consulting                                                              |1.19           |1.01         |36               |
+|NWT Association of Communities                                                        |1.6            |0.55         |5                |
+|OneWeb, Ltd.                                                                          |0.57           |1.62         |23               |
+|private citizen                                                                       |-1             |2.65         |3                |
+|Roslyn Layton                                                                         |0.61           |1.62         |28               |
+|Second Flux Information Services                                                      |0.88           |1.63         |16               |
+|Seenov Inc.                                                                           |1              |2            |3                |
+|Unifor                                                                                |0.7            |1.25         |10               |
+|Wehlend Consulting Inc.                                                               |1.14           |1.86         |7                |
+|Yellow Pages Limited                                                                  |1              |1.2          |30               |
+
+![Alt Text](images/CableBTS.png)
+
+|Organization             |Sentiment_Mean |Sentiment_SD |Number_of_points |
+|:------------------------|:--------------|:------------|:----------------|
+|Cogeco                   |0.79           |1.49         |56               |
+|Cogeco Cable Inc.        |0.73           |1.25         |26               |
+|Québecor Média inc.      |2              |0            |2                |
+|Rogers                   |0.58           |1.58         |77               |
+|Rogers Communications    |0.16           |1.65         |32               |
+|Shaw Cablesystems G.P.   |0.92           |1.24         |12               |
+|Shaw Communications      |0.69           |1.59         |120              |
+|Shaw Communications Inc. |1              |NA           |1                |
+
+![Alt Text](images/TelecomBTS.png)
+|Organization                              |Sentiment_Mean |Sentiment_SD |Number_of_points |
+|:-----------------------------------------|:--------------|:------------|:----------------|
+|Bell                                      |-0.04          |1.89         |83               |
+|Bell Canada                               |0.61           |1.66         |72               |
+|NorthwesTel                               |0.8            |1.62         |10               |
+|Saskatchewan Telecommunications (SaskTel) |-0.09          |1.81         |75               |
+|SaskTel                                   |0.58           |2.35         |12               |
+|Telus Communications                      |0.26           |1.81         |231              |
+|TELUS Communications Company              |0.68           |1.55         |98               |
+
+![Alt Text](images/ConsumerAdvBTS.png)
+|Organization                    |Sentiment_Mean |Sentiment_SD |Number_of_points |
+|:-------------------------------|:--------------|:------------|:----------------|
+|BC Broadband Association (BCBA) |1.11           |1.45         |36               |
+
+![Alt Text](images/SmallIncBTS.png)
+|Organization     |Sentiment_Mean |Sentiment_SD |Number_of_points |
+|:----------------|:--------------|:------------|:----------------|
+|ACTQ             |0.69           |1.37         |52               |
+|CITC-JTF         |0.59           |1.65         |83               |
+|Joint Task Force |0.16           |1.73         |31               |
+|tbaytel          |2              |0            |2                |
+
+
+
+
+These plots are a little more interesting than the affordability question in the sense that there seems to be slightly more positive sentiment in the language used in segments pulled around the basic service question. Interestingly though, Advocacy organizations, a group which you'd expect to use very positive language around the basic service question are still slightly negative leaning. However, that could be related to the sentences chosen in each segment. Perhaps a symmetric segment of 3 sentences above and 3 sentences below is a poor choice? Although I'm not sure how to improve it.
+
+
+
+
+
+
+
+
 ## Potential Issues
 ### Irrelevance/Noise
 With `doc2vec` there's no way to be sure that the document fragments recovered are relevant to the inferred vector. In which case, the above analysis may contain sentiment from sentence fragments that are not at all relevant to either question which could lead us to misleading results. There are a few possible solutions:
