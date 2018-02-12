@@ -146,6 +146,7 @@ RETURN s.content AS Segment, o.name as Organization
 ```
 
 ![Alt Text](images/AllOrgsAfford.png)
+
 |Organization                         |Sentiment_Mean |Sentiment_SD |Number_of_points |
 |:------------------------------------|:--------------|:------------|:----------------|
 |Advocacy organizations               |-0.24          |2.03         |789              |
@@ -504,7 +505,7 @@ where that returns all organizations, if you need subsets an additional `AND o.c
 
 
 
-These plots are a little more interesting than the affordability question in the sense that there seems to be slightly more positive sentiment in the language used in segments pulled around the basic service question. Interestingly though, Advocacy organizations, a group which you'd expect to use very positive language around the basic service question are still slightly negative leaning. However, that could be related to the sentences chosen in each segment. Perhaps a symmetric segment of 3 sentences above and 3 sentences below is a poor choice? Although I'm not sure how to improve it.
+These plots are a little more interesting than the affordability question in the sense that there seems to be slightly more positive sentiment in the language used in segments pulled around the basic service question. Interestingly though, Advocacy organizations, a group which you'd expect to use very positive language around the basic service question are still slightly negative leaning. However, that could be related to the sentences chosen in each segment. Perhaps a symmetric segment of 3 sentences above and 3 sentences below the `doc2vec` tagged sentence is a poor choice?
 
 
 
