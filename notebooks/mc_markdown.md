@@ -64,8 +64,7 @@ I should note I have no real test to claim that the results of the second histog
 
 ##Neo4j
 The `doc2vec` tagged sentences as well as 3 sentences above and 3 sentences below (more if there were tagged sentences in close proximity) were all added into the `Neo4j` data base using the following
-```
-Cypher(?)
+```Cypher
 MATCH (doc:Document {sha256: $doc256})
 MATCH (Q:Question {ref: $qref})
 MERGE (Qe:Query {str: $query})
@@ -83,8 +82,7 @@ Here all segments are being matched to pre-existing documents within the data ba
 
 Once the segments were merged into the database, it was possible to perform sentiment analysis for both the affordability and basic service questions for each respondent group. This was done in `R` with the following snipped of code.
 
-```
-R
+```R
 QuerySentiment <- function(query,graph, sentiment_library)
 {
     data_raw <- cypher(graph, query)
