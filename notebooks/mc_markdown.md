@@ -57,7 +57,7 @@ For `doc2vec` the result of overtraining can cause the network to "memorize" a s
 ![Alt Text](images/MC_bad.png)
 
 
-From the first figure we can see that the `doc2vec` network (here trained through 50 epochs) is getting hung up on the same ~200 sentences. These 200 sentences are not necessarily interesting as we're actually interested in _all_ the sentences that may be interesting. Not to mention the CDF is kind of "chunky" indicating multi-modal behavior, which is typically a bad sign unless there's a good reason for it. Not just these few that seem to fit the bill. Comparing these results to those of a network trained through only 20 epochs below
+From the first figure we can see that the `doc2vec` network (here trained through 50 epochs) is getting hung up on the same ~200 sentences. These 200 sentences are not necessarily interesting as we're actually interested in _all_ the sentences that may be interesting. Not to mention the CDF is kind of "chunky" indicating multi-modal behavior, which is typically a bad sign unless there's a good reason for it. Comparing these results to those of a network trained through only 20 epochs below
 
 ![Alt text](images/MC_good.png)
 
