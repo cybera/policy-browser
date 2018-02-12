@@ -51,12 +51,12 @@ the `infer_vector` method, the weights in the neural network of that vector are 
 For `doc2vec` the result of overtraining can cause the network to "memorize" a set of documents, and perform poorly on searches that aren't already contained within your corpus. This (maybe, I have no non-emperical proof) evident with a Monte Carlo histogram. An example of overtraining can be seen below for the basic service quesion.
 
 
-![Screenshot](/Users/alextennant/CIRA/Word2VecAnalysis/MC_bad.png)
+![Alt Text](images/MC_bad.png)
 
 
 From the first figure we can see that the `doc2vec` network (here trained through 50 epochs) is getting hung up on the same ~200 sentences. These 200 sentences are not necessarily interesting as we're actually interested in _all_ the sentences that may be interesting. Not to mention the CDF is kind of "chunky" indicating multi-modal behavior, which is typically a bad sign unless there's a good reason for it. Not just these few that seem to fit the bill. Comparing these results to those of a network trained through only 20 epochs below
 
-![Alt text](/Users/alextennant/CIRA/Word2VecAnalysis/MC_good.png)
+![Alt text](images/MC_good.png)
 
 Where now we see that the network is frequently finding approximately 500 (hopefully highly relevant) sentences, as well as a long tail of "one hitters" or sentences that only appear once. Typically the one hitters are often noise, but sometimes there's a "diamond in the rough" where it answers the question, but in a highly idiosyncratic (and often angry) fashion from the the individual submissions. As well, the CDF of this function indicates that this histogram is unimodal, if you can consider a exponential curve to be unimodal.
 
@@ -141,21 +141,21 @@ AND o.category = 'Network operator: other'
 RETURN s.content AS Segment, o.name as Organization
 ```
 
-![Alt Text](/Users/alextennant/CIRA/Word2VecAnalysis/AllOrgsAfford.png)
+![Alt Text](images/AllOrgsAfford.png)
 
-![Alt Text](/Users/alextennant/CIRA/Word2VecAnalysis/OtherNetworkOpAfford.png)
+![Alt Text](images/OtherNetworkOpAfford.png)
 
-![Alt Text](/Users/alextennant/CIRA/Word2VecAnalysis/GovernmentAfford.png)
+![Alt Text](images/GovernmentAfford.png)
 
-![Alt Text](/Users/alextennant/CIRA/Word2VecAnalysis/AdvocacyOrgsAfford.png)
+![Alt Text](images/AdvocacyOrgsAfford.png)
 
-![Alt Text](/Users/alextennant/CIRA/Word2VecAnalysis/OtherAfford.png)
+![Alt Text](images/OtherAfford.png)
 
-![Alt Text](/Users/alextennant/CIRA/Word2VecAnalysis/CableAfford.png)
+![Alt Text](images/CableAfford.png)
 
-![Alt Text](/Users/alextennant/CIRA/Word2VecAnalysis/TelecomAfford.png)
+![Alt Text](images/TelecomAfford.png)
 
-![Alt Text](/Users/alextennant/CIRA/Word2VecAnalysis/SmallIncAfford.png)
+![Alt Text](images/SmallIncAfford.png)
 
 However on closer inspection there might be a few interesting things here. We see  that on the whole, most categories of organizations are predominantly neutral when it comes to affordability, with the exception of advocacy organizations which are slightly negative. Saying anything further about the individual named organizations may be difficult until I get the number of words used pasted on these graphs as well. But regardless, everyone is pretty neutral until you get into the "other" groups category, but I'm not convinces that isn't heavily biased by short snippets of text that are out of context and very negative. Anyways, I'll create more complete figures and hopefully there will be something else there
 
