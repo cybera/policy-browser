@@ -364,6 +364,7 @@ where that returns all organizations, if you need subsets an additional `AND o.c
 
 
 ![Alt Text](images/OtherNetworkBTS.png)
+
 |Organization                               |Sentiment_Mean |Sentiment_SD |Number_of_points |
 |:------------------------------------------|:--------------|:------------|:----------------|
 |Axia                                       |1.5            |0.58         |4                |
