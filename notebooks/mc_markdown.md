@@ -2,6 +2,9 @@
 
 ## Introduction
 
+NOTE: if you want the math equations to display in a non-latex way, the only way I could get them to work online was to install this chrome extension:
+https://chrome.google.com/webstore/detail/github-with-mathjax/ioemnmodlmafdkllaclgeombjnmnbima/related
+
   For this analysis we decided to train a doc2vec model of the
 documents submitted to CIRA from all organizations and individuals.
 In this case, the network was trained on all documents, with
@@ -62,7 +65,7 @@ Where now we see that the network is frequently finding approximately 500 (hopef
 
 I should note I have no real test to claim that the results of the second histogram are inherently better than the first, but the second network doesn't seem to get as hung up and finds more sentences. I'd be interested in any critiques of using Monte Carlo that you may have.
 
-##Neo4j
+## Neo4j
 The `doc2vec` tagged sentences as well as 3 sentences above and 3 sentences below (more if there were tagged sentences in close proximity) were all added into the `Neo4j` data base using the following
 ```Cypher
 MATCH (doc:Document {sha256: $doc256})
