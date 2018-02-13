@@ -91,6 +91,7 @@ In this case the `ID(Qe)` node label given is (my) `doc2vec` query node, and thi
 
 ### Advocacy organizations
 ![Alt Text](images/AdvocacyOrgsAffordsolr.png )
+
 |Organization                                                      |Sentiment_Mean |Sentiment_SD |Number_of_points |
 |:-----------------------------------------------------------------|:--------------|:------------|:----------------|
 |Canadian Association of the Deaf-Association des Sourds du Canada |-0.5           |1.26         |6                |
