@@ -145,7 +145,7 @@ AND o.category = 'Network operator: other'
 RETURN s.content AS Segment, o.name as Organization
 ```
 
-![Alt Text](images/AllOrgsAfford.png)
+![Alt Text](images/AllOrgsAfford2.png)
 
 ||Organization                         |Sentiment_Mean |Sentiment_SD |Number_of_points |
 |:------------------------------------|:--------------|:------------|:----------------|
@@ -160,7 +160,7 @@ RETURN s.content AS Segment, o.name as Organization
 |NA                                   |0.52           |1.21         |44               |
 
 
-![Alt Text](images/OtherNetworkOpAfford.png)
+![Alt Text](images/OtherNetworkOpAfford2.png)
 
 |Organization                               |Sentiment_Mean |Sentiment_SD |Number_of_points |
 |:------------------------------------------|:--------------|:------------|:----------------|
@@ -192,7 +192,7 @@ RETURN s.content AS Segment, o.name as Organization
 |Xplornet Communications Inc.               |0.21           |1.05         |17               |
 |Yak Communications                         |0.4            |0.99         |10               |
 
-![Alt Text](images/GovernmentAfford.png)
+![Alt Text](images/GovernmentAfford2.png)
 
 |Organization                                                            |Sentiment_Mean |Sentiment_SD |Number_of_points |
 |:-----------------------------------------------------------------------|:--------------|:------------|:----------------|
@@ -220,7 +220,7 @@ RETURN s.content AS Segment, o.name as Organization
 
 
 
-![Alt Text](images/AdvocacyOrgsAfford.png)
+![Alt Text](images/AdvocacyOrgsAfford2.png)
 
 |Organization                                                      |Sentiment_Mean |Sentiment_SD |Number_of_points |
 |:-----------------------------------------------------------------|:--------------|:------------|:----------------|
@@ -253,7 +253,7 @@ RETURN s.content AS Segment, o.name as Organization
 
 
 
-![Alt Text](images/OtherAfford.png)
+![Alt Text](images/OtherAfford2.png)
 
 
 |Organization                                                                          |Sentiment_Mean |Sentiment_SD |Number_of_points |
@@ -288,7 +288,7 @@ RETURN s.content AS Segment, o.name as Organization
 |West Beg Services Ltd.                                                                |1.5            |NA           |1                |
 |Yellow Pages Limited                                                                  |0.8            |0.92         |33               |
 
-![Alt Text](images/CableAfford.png)
+![Alt Text](images/CableAfford2.png)
 
 |Organization                         |Sentiment_Mean |Sentiment_SD |Number_of_points |
 |:------------------------------------|:--------------|:------------|:----------------|
@@ -305,7 +305,7 @@ RETURN s.content AS Segment, o.name as Organization
 
 
 
-![Alt Text](images/TelecomAfford.png)
+![Alt Text](images/TelecomAfford2.png)
 
 |Organization                              |Sentiment_Mean |Sentiment_SD |Number_of_points |
 |:-----------------------------------------|:--------------|:------------|:----------------|
@@ -319,14 +319,14 @@ RETURN s.content AS Segment, o.name as Organization
 
 
 
-![Alt Text](images/ConsumerAdvAfford.png)
+![Alt Text](images/ConsumerAdvAfford2.png)
 
 |Organization                    |Sentiment_Mean |Sentiment_SD |Number_of_points |
 |:-------------------------------|:--------------|:------------|:----------------|
 |BC Broadband Association (BCBA) |0.76           |1            |38               |
 
 
-![Alt Text](images/SmallIncAfford.png)
+![Alt Text](images/SmallIncAfford2.png)
 
 |Organization     |Sentiment_Mean |Sentiment_SD |Number_of_points |
 |:----------------|:--------------|:------------|:----------------|
@@ -353,7 +353,7 @@ RETURN s.content AS Segment, o.category as Organization
 ```
 where that returns all organizations, if you need subsets an additional `AND o.category = 'Desired Category'` is applied. The figures are below, and a summary table is provided below each box plot of the mean, standard deviation, and number of points used to calculate sentiments.
 
-![Alt Text](images/AllOrgsBTS.png)
+![Alt Text](images/AllOrgsBTS2.png)
 
 |Organization                         |Sentiment_Mean |Sentiment_SD |Number_of_points |
 |:------------------------------------|:--------------|:------------|:----------------|
@@ -368,7 +368,7 @@ where that returns all organizations, if you need subsets an additional `AND o.c
 |NA                                   |0.58           |1.27         |36               |
 
 
-![Alt Text](images/OtherNetworkBTS.png)
+![Alt Text](images/OtherNetworkBTS2.png)
 
 |Organization                               |Sentiment_Mean |Sentiment_SD |Number_of_points |
 |:------------------------------------------|:--------------|:------------|:----------------|
@@ -399,7 +399,7 @@ where that returns all organizations, if you need subsets an additional `AND o.c
 |Xplornet Communications Inc.               |0.13           |1.21         |19               |
 |Yak Communications                         |0.19           |1.11         |13               |
 
-![Alt Text](images/GovernmentBTS.png)
+![Alt Text](images/GovernmentBTS2.png)
 
 |Organization                                                            |Sentiment_Mean |Sentiment_SD |Number_of_points |
 |:-----------------------------------------------------------------------|:--------------|:------------|:----------------|
@@ -426,7 +426,7 @@ where that returns all organizations, if you need subsets an additional `AND o.c
 |Yukon Economic Development                                              |1.02           |0.89         |27               |
 |Yukon Government                                                        |0.64           |0.94         |22               |
 
-![Alt Text](images/AdvocacyOrgsBTS.png)
+![Alt Text](images/AdvocacyOrgsBTS2.png)
 
 |Organization                                                      |Sentiment_Mean |Sentiment_SD |Number_of_points |
 |:-----------------------------------------------------------------|:--------------|:------------|:----------------|
@@ -455,7 +455,7 @@ where that returns all organizations, if you need subsets an additional `AND o.c
 |Unknown                                                           |-0.33          |1.57         |452              |
 |Vaxination Informatique                                           |0.73           |0.81         |35               |
 
-![Alt Text](images/OtherBTS.png)
+![Alt Text](images/OtherBTS2.png)
 
 |Organization                                                                          |Sentiment_Mean |Sentiment_SD |Number_of_points |
 |:-------------------------------------------------------------------------------------|:--------------|:------------|:----------------|
@@ -496,7 +496,7 @@ where that returns all organizations, if you need subsets an additional `AND o.c
 |Shaw Communications Inc. |0.5            |NA           |1                |
 
 
-![Alt Text](images/TelecomBTS.png)
+![Alt Text](images/TelecomBTS2.png)
 
 |Organization                              |Sentiment_Mean |Sentiment_SD |Number_of_points |
 |:-----------------------------------------|:--------------|:------------|:----------------|
@@ -508,13 +508,13 @@ where that returns all organizations, if you need subsets an additional `AND o.c
 |Telus Communications                      |0.18           |1.36         |231              |
 |TELUS Communications Company              |0.47           |1.15         |98               |
 
-![Alt Text](images/ConsumerAdvBTS.png)
+![Alt Text](images/ConsumerAdvBTS2.png)
 
 |Organization                    |Sentiment_Mean |Sentiment_SD |Number_of_points |
 |:-------------------------------|:--------------|:------------|:----------------|
 |BC Broadband Association (BCBA) |0.81           |1.09         |36               |
 
-![Alt Text](images/SmallIncBTS.png)
+![Alt Text](images/SmallIncBTS2.png)
 
 |Organization     |Sentiment_Mean |Sentiment_SD |Number_of_points |
 |:----------------|:--------------|:------------|:----------------|
