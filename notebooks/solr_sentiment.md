@@ -136,7 +136,7 @@ In this case the `ID(Qe)` node label given is (my) `doc2vec` query node, and thi
 |Unifor                                          |0.5            |0            |3                |
 |Ward's Hydraulic                                |-0.5           |1.41         |4                |
 |Yellow Pages Limited                            |1.17           |0.58         |3                |
-[1] "Beginning query" "6"              
+
 
 ### Cable companies
 ![Alt Text](images/CableAffordsolr.png)
