@@ -156,7 +156,7 @@ This search returns approximately 5365 segments from the database, all with an u
 #### All Organizations
 ![Alt Text](images/AllOrgsAfford2.png)
 
-||Organization                         |Sentiment_Mean |Sentiment_SD |Number_of_points |
+|Organization                         |Sentiment_Mean |Sentiment_SD |Number_of_points |
 |:------------------------------------|:--------------|:------------|:----------------|
 |Advocacy organizations               |-0.2           |1.58         |789              |
 |Consumer advocacy organizations      |0.76           |1            |38               |
