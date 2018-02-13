@@ -128,6 +128,13 @@ QuerySentiment <- function(query,graph, sentiment_library)
 
 Here the data is pulled form the data base using a provided Query and pre-defined `Neo4j` graph. The data is then cleaned of odd symbols and stop words, before being run through and scored word-by-word using the `AFINN` sentiment library which scores words in the range $[-5,5]$, where the more positive the score, the more positive the sentiment of the word. The segments are then passed and scored on a word-by-word by however they're grouped, i.e. this function groups them by however the query returns the `Organization` clause. Unfortunately I don't know how to pass a variable argument into this to generalize this appropriately, but if someone knows please let me know. But regardless, this will return a tibbled data frame grouped by `Organization` (whatever that may be in your case) and returns the sentiment as a list within the table. I note that `ggplot` doesn't like this, and it's subject to change once I get more comfortable with `tidyr`. I also note that this function within `senties.R` (which will eventually be committed, sooner if there's interest) also returns sentiment for the other sentiment libraries not shown here, but for the purpose of this particular sentiment analysis, I found their scoring too binary for meaningful plots. However, with some restructuring using the `NRC` library, it might be interesting to get the emotional sentiment out of some of the respondents. I do however note that interesting $\neq$ answers.
 
+NOTE: I have rescaled all positive sentiments by subtracting 0.5 and all negative sentiments by adding 0.5 to the `AFINN` library. This gets rid of the "hole" at 0. I know it's a tedious point but it was bothering me and the plots look a lot nicer now. Essentially I did the following:
+```R
+positive_sentiment <- positive_sentiment - 0.5
+negative_sentiment <- negative_sentiment + 0.5
+```
+for all values of sentiment.
+
 ### Sentiment of Affordability Question
 
 See below for a dump of sentiment pdfs for each subset of groups. My next step will be to display the number of words counted in the sentiment analysis, but so far I haven't found an easy way to do that. However, the ones that have very few tend to be the ones where the mean or the 68% confidence region is out of the box. I think I'll implement a filter so we don't display results with very few sentiment words. I note that I tried violin plots, but they didn't really add anything that the mean and quantile confidence region didn't do more simply. A word of caution however: quartiles are calculated by sorting the data, and because we have identical integer data these also aren't that informative. However these bars are calculated exactly the same as they would be in a violin plot. I might try a bean plot shortly, but I still don't know how great those would be.
@@ -144,7 +151,9 @@ AND s.frequency > 0
 AND o.category = 'Network operator: other'
 RETURN s.content AS Segment, o.name as Organization
 ```
+This search returns approximately 5365 segments from the database, all with an unknown quality. Which is exciting.
 
+#### All Organizations
 ![Alt Text](images/AllOrgsAfford2.png)
 
 ||Organization                         |Sentiment_Mean |Sentiment_SD |Number_of_points |
@@ -159,7 +168,7 @@ RETURN s.content AS Segment, o.name as Organization
 |Small incumbents                     |0.23           |1.28         |116              |
 |NA                                   |0.52           |1.21         |44               |
 
-
+#### "Other Network" Category
 ![Alt Text](images/OtherNetworkOpAfford2.png)
 
 |Organization                               |Sentiment_Mean |Sentiment_SD |Number_of_points |
@@ -192,6 +201,7 @@ RETURN s.content AS Segment, o.name as Organization
 |Xplornet Communications Inc.               |0.21           |1.05         |17               |
 |Yak Communications                         |0.4            |0.99         |10               |
 
+#### Government Category
 ![Alt Text](images/GovernmentAfford2.png)
 
 |Organization                                                            |Sentiment_Mean |Sentiment_SD |Number_of_points |
@@ -219,7 +229,7 @@ RETURN s.content AS Segment, o.name as Organization
 |Yukon Government                                                        |0.27           |1.27         |26               |
 
 
-
+#### Advocacy organizations
 ![Alt Text](images/AdvocacyOrgsAfford2.png)
 
 |Organization                                                      |Sentiment_Mean |Sentiment_SD |Number_of_points |
@@ -252,7 +262,7 @@ RETURN s.content AS Segment, o.name as Organization
 
 
 
-
+#### "Other" Category
 ![Alt Text](images/OtherAfford2.png)
 
 
@@ -288,6 +298,7 @@ RETURN s.content AS Segment, o.name as Organization
 |West Beg Services Ltd.                                                                |1.5            |NA           |1                |
 |Yellow Pages Limited                                                                  |0.8            |0.92         |33               |
 
+#### Cable Companies
 ![Alt Text](images/CableAfford2.png)
 
 |Organization                         |Sentiment_Mean |Sentiment_SD |Number_of_points |
@@ -304,7 +315,7 @@ RETURN s.content AS Segment, o.name as Organization
 |Videotron                            |-2.5           |NA           |1                |
 
 
-
+#### Telecoms
 ![Alt Text](images/TelecomAfford2.png)
 
 |Organization                              |Sentiment_Mean |Sentiment_SD |Number_of_points |
@@ -318,6 +329,7 @@ RETURN s.content AS Segment, o.name as Organization
 |TELUS Communications Company              |0.47           |1.23         |86               |
 
 
+#### Consumer Advocacy
 
 ![Alt Text](images/ConsumerAdvAfford2.png)
 
@@ -325,6 +337,7 @@ RETURN s.content AS Segment, o.name as Organization
 |:-------------------------------|:--------------|:------------|:----------------|
 |BC Broadband Association (BCBA) |0.76           |1            |38               |
 
+#### Small Incumbents
 
 ![Alt Text](images/SmallIncAfford2.png)
 
@@ -351,8 +364,9 @@ WHERE ID(Qu) = 140612
 AND s.frequency > 0
 RETURN s.content AS Segment, o.category as Organization
 ```
-where that returns all organizations, if you need subsets an additional `AND o.category = 'Desired Category'` is applied. The figures are below, and a summary table is provided below each box plot of the mean, standard deviation, and number of points used to calculate sentiments.
+where that returns all organizations, if you need subsets an additional `AND o.category = 'Desired Category'` is applied. The figures are below, and a summary table is provided below each box plot of the mean, standard deviation, and number of points used to calculate sentiments. This returns 4239 segments of text from the database.
 
+#### All Orgs
 ![Alt Text](images/AllOrgsBTS2.png)
 
 |Organization                         |Sentiment_Mean |Sentiment_SD |Number_of_points |
@@ -367,7 +381,7 @@ where that returns all organizations, if you need subsets an additional `AND o.c
 |Small incumbents                     |0.33           |1.25         |121              |
 |NA                                   |0.58           |1.27         |36               |
 
-
+#### "Other Network" Category
 ![Alt Text](images/OtherNetworkBTS2.png)
 
 |Organization                               |Sentiment_Mean |Sentiment_SD |Number_of_points |
@@ -399,6 +413,8 @@ where that returns all organizations, if you need subsets an additional `AND o.c
 |Xplornet Communications Inc.               |0.13           |1.21         |19               |
 |Yak Communications                         |0.19           |1.11         |13               |
 
+#### Government category
+
 ![Alt Text](images/GovernmentBTS2.png)
 
 |Organization                                                            |Sentiment_Mean |Sentiment_SD |Number_of_points |
@@ -426,6 +442,7 @@ where that returns all organizations, if you need subsets an additional `AND o.c
 |Yukon Economic Development                                              |1.02           |0.89         |27               |
 |Yukon Government                                                        |0.64           |0.94         |22               |
 
+#### Advocacy Organizations
 ![Alt Text](images/AdvocacyOrgsBTS2.png)
 
 |Organization                                                      |Sentiment_Mean |Sentiment_SD |Number_of_points |
@@ -455,6 +472,7 @@ where that returns all organizations, if you need subsets an additional `AND o.c
 |Unknown                                                           |-0.33          |1.57         |452              |
 |Vaxination Informatique                                           |0.73           |0.81         |35               |
 
+#### "Other" Category
 ![Alt Text](images/OtherBTS2.png)
 
 |Organization                                                                          |Sentiment_Mean |Sentiment_SD |Number_of_points |
@@ -482,9 +500,10 @@ where that returns all organizations, if you need subsets an additional `AND o.c
 |Wehlend Consulting Inc.                                                               |0.79           |1.5          |7                |
 |Yellow Pages Limited                                                                  |0.7            |0.85         |30               |
 
+####Cable companies
+![Alt Text](images/CableBTS2.png)
 
-
-||Organization             |Sentiment_Mean |Sentiment_SD |Number_of_points |
+|Organization             |Sentiment_Mean |Sentiment_SD |Number_of_points |
 |:------------------------|:--------------|:------------|:----------------|
 |Cogeco                   |0.52           |1.1          |56               |
 |Cogeco Cable Inc.        |0.42           |0.89         |26               |
@@ -495,7 +514,7 @@ where that returns all organizations, if you need subsets an additional `AND o.c
 |Shaw Communications      |0.5            |1.17         |120              |
 |Shaw Communications Inc. |0.5            |NA           |1                |
 
-
+#### Telecoms
 ![Alt Text](images/TelecomBTS2.png)
 
 |Organization                              |Sentiment_Mean |Sentiment_SD |Number_of_points |
@@ -507,13 +526,14 @@ where that returns all organizations, if you need subsets an additional `AND o.c
 |SaskTel                                   |0.42           |1.93         |12               |
 |Telus Communications                      |0.18           |1.36         |231              |
 |TELUS Communications Company              |0.47           |1.15         |98               |
-
+#### Consumer Advocacy
 ![Alt Text](images/ConsumerAdvBTS2.png)
 
 |Organization                    |Sentiment_Mean |Sentiment_SD |Number_of_points |
 |:-------------------------------|:--------------|:------------|:----------------|
 |BC Broadband Association (BCBA) |0.81           |1.09         |36               |
 
+#### Small Incumbents
 ![Alt Text](images/SmallIncBTS2.png)
 
 |Organization     |Sentiment_Mean |Sentiment_SD |Number_of_points |
