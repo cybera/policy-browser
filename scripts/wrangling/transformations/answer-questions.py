@@ -18,19 +18,22 @@ class AnswerQuestions(TransformBase):
     def preconditions(self):
         # I think this is probably an all or nothing approach 
         self.qref = ["Q4","Q9","Q12","Q1"]
+        self.qorder = ["Q4","Q9","Q12","Q1","Q1"]
         self.answer_path = []
      
         self.answer_path.append(path.join(project_root.data.processed, "Market_Forces_Question_1500_LT.txt"))
         self.answer_path.append(path.join(project_root.data.processed, "Basic_Service_Question_1500_LT.txt"))
         self.answer_path.append(path.join(project_root.data.processed, "Subsity_Question_1500_LT.txt"))
         self.answer_path.append(path.join(project_root.data.processed, "Affordability_Question_1500_LT.txt"))
+        self.answer_path.append(path.join(project_root.data.processed, "Affordability_Question_1500_2_LT.txt"))
 
 
        
         self.Qe = ["Can market forces and government funding be relied on to ensure that all Canadians have access to basic telecommunications services?",
                     "Should broadband Internet service be defined as a basic telecommunications service (BTS)?",
                     "Should some or all services that are considered to be basic telecommunications services be subsidized?",
-                    "Affordability of broadband internet access"]
+                    "Affordability of broadband internet access",
+                    "Internet access is affordable"]
        
         for file in self.answer_path:     
             self.check_file(file)
@@ -60,7 +63,6 @@ class AnswerQuestions(TransformBase):
         existing = neo4j_count("MATCH (q:Question) WHERE q.ref IN $ref", ref=refs)
         existing2 = neo4j_count("MATCH (d:Document)")
         existing3 = neo4j_count("MATCH (q:Query) WHERE q.str IN $qe", qe=qes)
-        
         return ((existing == len(refs)) and (existing2 > 0) and (existing3 == 0))
     
 
@@ -75,8 +77,6 @@ class AnswerQuestions(TransformBase):
                         text = str(answer.split(" OBVIOUS_DELIMITER ")[0])
                         doc256 = str(answer.split(" OBVIOUS_DELIMITER ")[1]).strip()
                         counts = int(str(answer.split(" OBVIOUS_DELIMITER ")[2].strip()))
-                        
-                       
                         query = self.Qe[i]
                         seg256 = self.sha256str(text)
                         results = tx.run(
@@ -90,7 +90,7 @@ class AnswerQuestions(TransformBase):
                             SET s.frequency = $counts
                             SET s.content = $content """, 
                             doc256=doc256, 
-                            qref=self.qref[i], 
+                            qref=self.qorder[i], 
                             seg256=seg256, 
                             content=text, 
                             method=self.METHOD_TAG, 
