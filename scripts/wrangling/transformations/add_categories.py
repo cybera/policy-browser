@@ -32,7 +32,7 @@ class AddCategories(TransformBase):
                         with neo4j() as tx:
                             results=tx.run("""MATCH (o:Organization {name:$name})
                             SET o.category=$category
-                            """, name=row[0],category=row[1])
+                            """, name=row[1],category=row[2])
                             tx_results.append(results)
 
         return neo4j_summary(tx_results)
