@@ -3,6 +3,7 @@ library(dplyr)
 library(ggplot2)
 library(cld2)
 library(stringr)
+library(readr)
 
 graph <- startGraph("http://localhost:7474/db/data/", username = "neo4j", password = "password")
 
@@ -137,3 +138,43 @@ plot.open_media.top_locations <- df.open_media %>%
   ggtitle("Top Locations for Non-Form Letter Open Media Submissions")
 ggsave("notebooks/images/top_locations_for_open_media_submissions.png",
        plot.open_media.top_locations)
+
+
+postal_codes <- read_delim("data/raw/postal_codes.txt", delim="\t", col_names=FALSE) %>%
+  mutate(postal_prefix = X2, lat = X10, long = X11) %>%
+  select(postal_prefix, lat, long)
+  
+
+library(stringr)
+
+dfgeo.open_media <- df.open_media %>%
+  mutate(postal_prefix = str_sub(str_trim(postal_code), 1, 3)) %>%
+  left_join(postal_codes)
+
+library(maps)
+library(maptools)
+
+dfgeo.open_media.counts <- dfgeo.open_media %>%
+  group_by(postal_prefix, lat, long) %>%
+  count() %>%
+  ungroup()
+
+# borrowing heavily from: https://www.r-bloggers.com/ggplot2-maps-with-insets/
+canadamap <- data.frame(map("world", "Canada", plot = FALSE)[c("x", "y")])
+
+plot.open_media.geo <- ggplot(canadamap) + 
+  geom_path(data = canadamap, aes(x, y), colour = "black") +
+  scale_size(guide="none") +
+  theme(panel.grid.major = element_blank(), panel.grid.minor=element_blank(),
+       panel.background = element_rect( fill = 'white'),
+       legend.position = "left", legend.key = element_blank(),
+       axis.ticks = element_blank(), axis.text.x=element_blank(),
+       axis.text.y=element_blank()) +
+  geom_point(data=dfgeo.open_media.counts, aes(x=long, y=lat, color=n, size=n),
+             alpha=0.4) +
+  scale_colour_gradient2(low="yellow", mid="orange", high = "red") +
+  labs(x = '', y = '') +
+  labs(color = "Count") +
+  ggtitle("OpenMedia Submissions")
+ggsave("notebooks/images/openmedia-map-counts.png",
+       plot.open_media.geo)
