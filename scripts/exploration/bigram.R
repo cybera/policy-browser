@@ -63,7 +63,7 @@ bg.tfidf.affordability %>%
   facet_wrap(~category, ncol = 2, scales = "free") +
   coord_flip()
 
-# Load pre-trained GloVe embeddings from https://nlp.stanford.edu/projects/glove/
+# Load pre-trained GloVe embeddings from http://nlp.stanford.edu/data/glove.6B.zip
 embeddings <- read_delim("data/raw/embeddings/glove.6B.100d.txt", delim=" ", 
                          quote = "", col_names = FALSE)
 # Turn them into a data table so we can look them up quickly via the string
