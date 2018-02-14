@@ -2,7 +2,7 @@
 
 ##Introduction
 
-NOTE: Incomplete, will be finished soon. This is more fore reference 
+NOTE: Incomplete, will be finished soon. This is more fore reference
 
 In order to try and understand how different organizations talk about both affordability and the basic service question, this document will compare both `solr` searches and `doc2vec` searches. The hope being that these comparisons will massage out some issues of each organizaton group around each question. As `agentdave` said: it would be interesting to determine if there's one conversation happening, or a different conversation for each group.
 
@@ -12,7 +12,7 @@ This markdown will be organized as follows:
    - `doc2vec` and `solr` word webs for each organization group,
    unfiltered.
    - Apply some filters to try and reduce noise/manipulate the results that may reveal a narrative for each group.  
-   - Compare with the `wordvec` bigrams of `agentdave`.
+   - Compare with the `wordvec` bigrams of `agentdave`?
 
 2. Basic service question.
 
@@ -169,7 +169,7 @@ Where in terms of things relevant to affordability, telecoms typically talk abou
 #### Potential Narrative?
 
 
-###Small Incumbents
+### Small Incumbents
 
 #### #nofilter
 
