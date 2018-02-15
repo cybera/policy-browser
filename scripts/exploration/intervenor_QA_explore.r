@@ -8,6 +8,7 @@ library(cowplot)
 library(forcats)
 library(chorddiag)
 library(lubridate)
+library(RColorBrewer)
 
 interrogs <- read.csv("data/processed/intervenors_Q_A_raw_from_Middleton_group.csv")
 #Filter out columns that aren't needed
@@ -33,7 +34,10 @@ q_list <- (c("Q.Phase1", "Q.Phase2", "Q.Phase3", "Q.Phase4"))
 ################################
 #End data prep
 ################################
-
+#Summary stats
+#How many questions were asked  and in which rounds? 
+interrogs_gathered %>% filter(Type %in% q_list) %>%
+  group_by(Type) %>% dplyr::summarise(Qs_asked = n()) %>% arrange(desc(Qs_asked)) 
 
 q_a_dates <- interrogs_gathered %>% group_by(Date) %>% dplyr::summarise(Sub_count = n()) %>% 
   ggplot(aes(x=Date, y=Sub_count)) + geom_point() + labs(x = "Date", y = "Number of submissions") +
@@ -50,7 +54,7 @@ r_dates <-   interrogs_gathered %>% filter(!(Type %in% q_list)) %>%
   group_by(Date) %>% dplyr::summarise(Sub_count = n()) %>% 
   ggplot(aes(x=Date, y=Sub_count)) + geom_point() + labs(x = "Date", y = "Number of submissions") + 
   scale_x_date(date_labels ="%m-%Y", limits = c(dmy("01-08-2015"), dmy("01-03-2016")), date_breaks = "1 month") + 
-    ggtitle("Date answers were submitted") 
+  ggtitle("Date answers were submitted") 
 
 plot_grid(q_a_dates, q_dates, r_dates, align="h", ncol=1)
 
@@ -93,28 +97,53 @@ ggplotly(r)
 
 #Which orgs ask most of the questions? 
 interrogs_gathered %>% filter(Type %in% q_list) %>%
-  group_by(Questioner_reformat, Q_category) %>% dplyr::summarise(Qs_asked = n()) %>% arrange(desc(Qs_asked))
+  group_by(Questioner_reformat, Q_category) %>% dplyr::summarise(Qs_asked = n()) %>% 
+  arrange(desc(Qs_asked))
 
 #Questions by category
 interrogs_gathered %>% filter(Type %in% q_list) %>%
   group_by(Q_category) %>% dplyr::summarise(Qs_asked = n()) %>% arrange(desc(Qs_asked))
 
-#Top askers
+#Top askers for each category
 interrogs_gathered %>% filter(Type %in% q_list) %>%
   group_by(Questioner_reformat, Q_category) %>% dplyr::summarise(Qs_asked = n()) %>%
   dplyr::ungroup() %>% group_by(Q_category) %>% dplyr::mutate(Category_total = sum(Qs_asked)) %>%
   filter(Qs_asked == max(Qs_asked)) %>% 
   arrange(desc(Qs_asked))
 
-  
+# Who has the largest imbalance on questioner and receiver side? 
+questions_received <- interrogs_gathered %>% filter(Type %in% q_list) %>% group_by(Responder_reformat, R_category) %>% dplyr::summarise(Qs_received = n()) %>% arrange(desc(Qs_received))
+questions_asked <- interrogs_gathered %>% filter(Type %in% q_list) %>% group_by(Questioner_reformat, Q_category) %>% dplyr::summarise(Qs_asked = n()) %>% arrange(desc(Qs_asked))
+
+Qs_asked_received <- full_join(questions_received, questions_asked, by=c("Responder_reformat"="Questioner_reformat")) %>% replace_na(list(Qs_received = 0, Qs_asked = 0)) %>%
+  mutate(delta = Qs_asked - Qs_received) %>% arrange(desc(delta)) %>% mutate(org_category = ifelse(is.na(R_category), as.character(Q_category), as.character(R_category))) %>% 
+  select(-Q_category, -R_category)
+
+
+Qs_asked_received %>% group_by(org_category) %>% summarise(total_delta = sum(delta)) %>% arrange(desc(total_delta))
+
+#Largest imbalance on received side
+tail(Qs_asked_received, n=10)
+#Largest imbalance on questioner side
+head(Qs_asked_received, n=10)
+
+Qs_asked_received %>% group_by(org_category) %>% summarise(total_delta = sum(delta)) %>% arrange(desc(total_delta))
+
+
 #What rounds do intervenors ask questions?
 interrogs_gathered %>% filter(Type %in% q_list) %>% 
   ggplot(aes(Questioner_reformat)) + geom_bar(aes(fill=fct_rev(Type)), position = position_stack()) + 
   theme(axis.text = element_text(angle = 90, vjust = 0.9, hjust = 1)) +
   labs(fill = "Question Round", x = "")
 
-interrogs_gathered %>% filter(Type %in% q_list) %>%
-  group_by(Type) %>% dplyr::summarise(Qs_asked = n()) %>% arrange(desc(Qs_asked)) 
+interrogs_gathered %>% filter(Type %in% q_list) %>% 
+  ggplot(aes(Responder_reformat)) + geom_bar(aes(fill=fct_rev(Type)), position = position_stack()) + 
+  theme(axis.text = element_text(angle = 90, vjust = 0.9, hjust = 1)) +
+  labs(fill = "Question Round", x = "")
+
+
+
+
 
 ################################
 ################################
@@ -125,7 +154,6 @@ interrogs_gathered %>% filter(Type %in% q_list) %>%
 chord_prep <- function(df){
   df$to <-  droplevels(df$to)
   df$from <-  droplevels(df$from)
-  
   lf <- levels(df$from)
   lt <- levels(df$to)
   new_levels <- sort(union(lf,lt))
@@ -141,48 +169,110 @@ chord_prep <- function(df){
   return(df.mat)
 }
 
+chord_prep_asked <- function(df){
+  df$to <-  droplevels(df$to)
+  df$from <-  droplevels(df$from)
+  lf <- levels(df$from)
+  lt <- levels(df$to)
+  new_levels <- sort(union(lf,lt))
+  df$from = factor(df$from,levels =new_levels)
+  df$to = factor(df$to,levels =new_levels)
+  df_complete <- df %>% tidyr::complete(from, to, fill=list(value = 0))
+  
+  df.mat <- as.data.frame(df_complete) %>% spread(key=from, value=value, fill=0)
+  r_names <- df.mat$to
+  df.mat <- df.mat %>% select(-to)
+  row.names(df.mat) <- r_names
+  df.mat <- as.matrix(df.mat)
+  return(df.mat)
+}
+
+chord_pre_prep <- function(count_input){
+  names(count_input) <- c("from", "to", "value")
+  count_input <- data.frame(count_input) %>% filter(to !="")
+  count.df <- as.data.frame(count_input)
+  return(count.df)
+}
+
+get_cols <- function(count.df, col_list){
+  count.df$from <- droplevels(count.df$from)
+  count.df$to <- droplevels(count.df$to)
+  lf <- levels(count.df$from)
+  lt <- levels(count.df$to)
+  org_levels <- data.frame(sort(union(lf,lt)))
+  colnames(org_levels) <- "categories"
+  plot_colours <- dplyr::left_join(org_levels, col_list, by=c("categories" = "all_levels")) %>% 
+    select(cols)
+  return(plot_colours)
+}
+
+individual_chord <- function(df, type=""){
+  df <- chord_pre_prep(df)
+  if(type == "asked"){
+    df.mat <- chord_prep_asked(df)  
+  } else {
+    df.mat <- chord_prep(df)
+  }
+  cdiag <- chorddiag(df.mat, groupnameFontsize = 10, groupnamePadding = 20, tickInterval = 5)
+  return(cdiag)
+}
+
+category_chord <- function(interrog_count, colourdict, type=""){
+  chord_input <- chord_pre_prep(interrog_count)
+  plot_cols <- get_cols(chord_input, colourdict)
+  if(type == "asked"){
+    df.mat <- chord_prep_asked(chord_input)  
+  } else {
+    df.mat <- chord_prep(chord_input)
+  }
+  chorddiag(df.mat, groupnameFontsize = 10, groupnamePadding = 20, groupColors = plot_cols$cols, tickInterval = 5)
+}
+
+#Set up all colours: 
+lq <- levels(interrogs_gathered$Q_category)
+lr <- levels(interrogs_gathered$R_category)
+all_levels <- sort(union(lq,lr))
+
+cols <- brewer.pal(n = 12, name = 'Set3')
+
+colourdict <- cbind(all_levels, cols)
+colourdict <- data.frame(colourdict)
+
+
 #####################
-#Count all questions, filter out empty rows
-interrog_count <- interrogs_gathered %>% filter(Type %in% q_list) %>% group_by(Q_category, R_category) %>% dplyr::summarise(count= n())
-interrog_count <- interrog_count %>% filter(R_category !="")
-names(interrog_count) <- c("from", "to", "value")
-interrog_count.df <- as.data.frame(interrog_count)
-
-all_Q_A.mat <- chord_prep(interrog_count.df)
-chorddiag(all_Q_A.mat, groupnameFontsize = 10, groupnamePadding = 20)
-
 ### 
-#Look at the different phases: 
+#Look at all questions together & the different phases: 
+interrog_count <- interrogs_gathered %>% filter(Type %in% q_list) %>% group_by(Q_category, R_category) %>% dplyr::summarise(count= n())
+category_chord(interrog_count, colourdict)
 #Rounds 1-4: 
 interrog_count_rd1 <- interrogs_gathered %>% filter(Type %in% "Q.Phase1") %>% group_by(Q_category, R_category) %>% dplyr::summarise(count= n())
-interrog_count_rd1 <- interrog_count_rd1 %>% filter(R_category !="")
-names(interrog_count_rd1) <- c("from", "to", "value")
-interrog_count_rd1.df <- as.data.frame(interrog_count_rd1)
-rd1_Q_A.mat <- chord_prep(interrog_count_rd1.df)
+category_chord(interrog_count_rd1, colourdict)
 
 interrog_count_rd2 <- interrogs_gathered %>% filter(Type %in% "Q.Phase2") %>% group_by(Q_category, R_category) %>% dplyr::summarise(count= n())
-interrog_count_rd2 <- interrog_count_rd2 %>% filter(R_category !="")
-names(interrog_count_rd2) <- c("from", "to", "value")
-interrog_count_rd2.df <- as.data.frame(interrog_count_rd2)
-rd2_Q_A.mat <- chord_prep(interrog_count_rd2.df)
+category_chord(interrog_count_rd2, colourdict)
 
 interrog_count_rd3 <- interrogs_gathered %>% filter(Type %in% "Q.Phase3") %>% group_by(Q_category, R_category) %>% dplyr::summarise(count= n())
-interrog_count_rd3 <- interrog_count_rd3 %>% filter(R_category !="")
-names(interrog_count_rd3) <- c("from", "to", "value")
-interrog_count_rd3.df <- as.data.frame(interrog_count_rd3)
-rd3_Q_A.mat <- chord_prep(interrog_count_rd3.df)
+category_chord(interrog_count_rd3, colourdict)
 
 interrog_count_rd4 <- interrogs_gathered %>% filter(Type %in% "Q.Phase4") %>% group_by(Q_category, R_category) %>% dplyr::summarise(count= n())
-interrog_count_rd4 <- interrog_count_rd4 %>% filter(R_category !="")
-names(interrog_count_rd4) <- c("from", "to", "value")
-interrog_count_rd4.df <- as.data.frame(interrog_count_rd4)
-rd4_Q_A.mat <- chord_prep(interrog_count_rd4.df)
+category_chord(interrog_count_rd4, colourdict)
 
+### 
+#Look at who being asked together & the different phases: 
+interrog_count <- interrogs_gathered %>% filter(Type %in% q_list) %>% group_by(Q_category, R_category) %>% dplyr::summarise(count= n())
+category_chord(interrog_count, colourdict, type="asked")
+#Rounds 1-4: 
+interrog_count_rd1 <- interrogs_gathered %>% filter(Type %in% "Q.Phase1") %>% group_by(Q_category, R_category) %>% dplyr::summarise(count= n())
+category_chord(interrog_count_rd1, colourdict, type="asked")
 
-chorddiag(rd1_Q_A.mat, groupnameFontsize = 10, groupnamePadding = 20)
-chorddiag(rd2_Q_A.mat, groupnameFontsize = 10, groupnamePadding = 20)
-chorddiag(rd3_Q_A.mat, groupnameFontsize = 10, groupnamePadding = 20)
-chorddiag(rd4_Q_A.mat, groupnameFontsize = 10, groupnamePadding = 20)
+interrog_count_rd2 <- interrogs_gathered %>% filter(Type %in% "Q.Phase2") %>% group_by(Q_category, R_category) %>% dplyr::summarise(count= n())
+category_chord(interrog_count_rd2, colourdict, type="asked")
+
+interrog_count_rd3 <- interrogs_gathered %>% filter(Type %in% "Q.Phase3") %>% group_by(Q_category, R_category) %>% dplyr::summarise(count= n())
+category_chord(interrog_count_rd3, colourdict, type="asked")
+
+interrog_count_rd4 <- interrogs_gathered %>% filter(Type %in% "Q.Phase4") %>% group_by(Q_category, R_category) %>% dplyr::summarise(count= n())
+category_chord(interrog_count_rd4, colourdict, type="asked")
 
 
 #NB: Can change labels under groupNames to make them fit the graphic better
@@ -191,3 +281,38 @@ chorddiag(all_Q_A.mat, groupnameFontsize = 10, groupnamePadding = 20,
                          "Consumer advocacy orgs", "Government", "Individual", "#N/A",
                          "Network op: Cable co", "Network op: other",
                          "Network op: Telco Incumbents", "Other", "Small incumbents"))
+
+
+###################
+# Questions by individual organizations
+interrog_individual <- interrogs_gathered %>% filter(Type %in% q_list) %>% group_by(Questioner_reformat, Responder_reformat) %>% dplyr::summarise(count= n())
+individual_chord(interrog_individual)
+
+interrog_individ_rd1 <- interrogs_gathered %>% filter(Type %in% "Q.Phase1") %>% group_by(Questioner_reformat, Responder_reformat) %>% dplyr::summarise(count= n())
+individual_chord(interrog_individ_rd1)
+
+interrog_individ_rd2 <- interrogs_gathered %>% filter(Type %in% "Q.Phase2") %>% group_by(Questioner_reformat, Responder_reformat) %>% dplyr::summarise(count= n())
+individual_chord(interrog_individ_rd2)
+
+interrog_individ_rd3 <- interrogs_gathered %>% filter(Type %in% "Q.Phase3") %>% group_by(Questioner_reformat, Responder_reformat) %>% dplyr::summarise(count= n())
+individual_chord(interrog_individ_rd3)
+
+interrog_individ_rd4 <- interrogs_gathered %>% filter(Type %in% "Q.Phase4") %>% group_by(Questioner_reformat, Responder_reformat) %>% dplyr::summarise(count= n())
+individual_chord(interrog_individ_rd4)
+
+
+# Investigate which orgs got asked in each round
+interrog_individual_asked <- interrogs_gathered %>% filter(Type %in% q_list) %>% group_by(Questioner_reformat, Responder_reformat) %>% dplyr::summarise(count= n())
+individual_chord(interrog_individual_asked, type="asked")
+
+interrog_individ_rd1_asked <- interrogs_gathered %>% filter(Type %in% "Q.Phase1") %>% group_by(Questioner_reformat, Responder_reformat) %>% dplyr::summarise(count= n())
+individual_chord(interrog_individ_rd1_asked, type="asked")
+
+interrog_individ_rd2_asked <- interrogs_gathered %>% filter(Type %in% "Q.Phase2") %>% group_by(Questioner_reformat, Responder_reformat) %>% dplyr::summarise(count= n())
+individual_chord(interrog_individ_rd2_asked, type="asked")
+
+interrog_individ_rd3_asked <- interrogs_gathered %>% filter(Type %in% "Q.Phase3") %>% group_by(Questioner_reformat, Responder_reformat) %>% dplyr::summarise(count= n())
+individual_chord(interrog_individ_rd3_asked, type="asked")
+
+interrog_individ_rd4_asked <- interrogs_gathered %>% filter(Type %in% "Q.Phase4") %>% group_by(Questioner_reformat, Responder_reformat) %>% dplyr::summarise(count= n())
+individual_chord(interrog_individ_rd4_asked, type="asked")
