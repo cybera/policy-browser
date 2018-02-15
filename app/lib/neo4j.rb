@@ -11,7 +11,7 @@ module Neo4JQueries
   class << self
     def connect(username, password, hostname="neo4j", port=7687)
       connect_string = "bolt://#{username}:#{password}@#{hostname}:#{port}"
-      bolt_adaptor = Neo4j::Core::CypherSession::Adaptors::Bolt.new(connect_string, timeout: 10)
+      bolt_adaptor = Neo4j::Core::CypherSession::Adaptors::Bolt.new(connect_string, timeout: 30)
       Neo4JQueries.neo4j_db = Neo4j::Core::CypherSession.new(bolt_adaptor)
     end
   end
