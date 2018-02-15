@@ -1,6 +1,6 @@
 # Fancy Bigram Web Comparison of Solr and Doc2vec
 
-##Introduction
+## Introduction
 
 NOTE: Incomplete, will be finished soon. This is more fore reference
 
@@ -35,7 +35,8 @@ Where the same issue as before is cropping up in that the affordability question
 In either case, both `doc2vec` and `solr` seem to pick up on the same "big idea" pictures, but `doc2vec` grabs a few of the ideas surrounding the issue as well. It gets more apparent on larger plots, but I haven't included them here. So, let's see if we can tell these related ideas to take a hike, and see how words closer to affordability are related in these documents.
 
 #### #filter
-I note that the word2vec filter is slow, so I might not finish all of these tonight, but hopefully one or two so that maybe something interesting pops out. Once I know some are working I'll script it and let it run over night. But, these are the plots where things start to get (more?) interesting! When we apply a similar filter that can be seen in `bigram.R` to the `solr` and `doc2vec` results looking for only bigrams that are conceptually similar key words like affordable, the bigrams get sifted down to much more relevant subsets of data. In the plots below, I've limited it to only word-pairs that appear greater than $8$ times in the subset of text.
+I note that the word2vec filter is slow, so I might not finish all of these tonight, but hopefully one or two so that maybe something interesting pops out. Once I know some are working I'll script it and let it run over night. But, these are the plots where things start to get (more?) interesting! When we apply a similar filter that can be seen in `bigram.R` to the `solr` and `doc2vec` results looking for only bigrams that are conceptually similar key words like affordable, the bigrams get sifted down to much more relevant subsets of data. In the plots below, I've limited it to only word-pairs that appear greater than $8$ times in the subset of text, and a cosine similarity $>0.6$
+
 
 ![alt-text-1](images/doc2vecweb_advocacy_filtered.png "title-1") ![alt-text-2](images/solrweb_advocacy_filtered.png "title-2")
 
@@ -58,6 +59,9 @@ Where now things get a little more interesting. There are simply more `doc2vec` 
 #### #nofilter
 
 #### #filter
+This shows word-pairs with $N>5$ and a cosine similarity $>0.6$
+
+![alt-text-1](images/doc2vecweb_government_filter_afford.png)![alt-text-2](images/solr_government_filter_afford.png)
 
 #### Potential Narrative?
 
@@ -67,6 +71,7 @@ Where now things get a little more interesting. There are simply more `doc2vec` 
 #### #nofilter
 
 #### #filter
+![alt-text-1](images/doc2vec_cable_filter_afford.png)![alt-text-2](images/solr_cable_filter_afford.png)
 
 #### Potential Narrative?
 
