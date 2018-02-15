@@ -1,6 +1,6 @@
 ### Individual Submissions stats.
 
-Two sources of submissions OpenMedia and Acorn.
+Two sources of submissions: OpenMedia and Acorn.
 
 #### OpenMedia
 
@@ -64,6 +64,7 @@ Time to set the record straight. In April 2016, a historic CRTC hearing will sha
 
  `Results`:
 
+
  Answer| Frequency
  --- | ---
  *Extremely high; I can't afford it, but because I need it I take money out of my budget for other item* |  92                                                                                   
@@ -109,7 +110,7 @@ OM | ACORN
  speed   618 | food 64
  affordable   607 | people 61
 
-- Similarity between ACORN and OM - internet access afford
+- Similarity between ACORN and OM - internet access affordability
 - Difference - OM discussing more big  telecom companies, ACORN - more often mentions family, life, home.
 
 ##### Bigrams
@@ -129,8 +130,9 @@ industrialized     world   154 | internet services     7
 
 Submissions from both sources discuss internet access and internet services.
 
-ACORN members submissions more concerned about internet speed (most frequent bigram), internet affordability for low income households.   
-OM submissions are more focused on discussing telecom companies, profit providers.
+ACORN members are more concerned about internet speed (most frequent bigram), internet affordability and importance to stay connected.
+
+OM submissions are more focused on discussing telecom companies, profit providers and community access.
 
 ##### Trigrams
 
@@ -147,6 +149,9 @@ incumbent           isps municipalities   117 | jobs     jobs      jobs     2
 isps municipalities      community  117 | low   income    people     2
 class      broadband       internet   108 | university  student    living     2
 
+Affordable world class broadband internet, 3 mbps upload and  25 mbps download  speeds are discussed mostly in OM submissions.
+
+ACORN members talk about low income families and people, university students living, importance of affordable internet access.
 
 
 ##### Bigrams visualization
@@ -169,31 +174,33 @@ Narratives:
 Narratives:
 
 - pay bills, search jobs, save extra money
-- online access, stay connected
+- stay connected, easily afford internet access.
+- low-income families
+- budget food quality
 
 
-##### Topic modelling
+##### Topic modeling
 
 `OpenMedia`
 
 ![topics1](images/topicsOM.png)
 
-OM submissions tend to discuss following topics:
-1. world telecom companies
-2. internet: fast/slow affordable
-3. people pay money to government?
-4. speed/cost competition
-5. broadband
+OM submissions topics:
+1. telecom companies
+2. internet: fast/slow/affordable
+3. people pay money to government/country?
+4. speed/cost/price/rates competition
+5. world class broadband access
 
 `ACORN`
 
 ![topics2](images/topicsAC.png)
 
 ACORN submissions topics:
-1. budget afford food/Internet
-2. internet to stay in touch with family
-3. internet/phone/tv affordable
-4. internet access for job/studying
+1. budget save/afford food/Internet
+2. internet to stay in touch with family and friends
+3. internet/phone/tv at home per month affordable
+4. internet access for job/life
 5. low income, pay bills
 
 ##### Most common positive/negative words
@@ -205,20 +212,20 @@ ACORN submissions topics:
 Most common negative word in OM submissions is pay.
 
 Narrative:
-- negative: pay-ridiculous-poor-tired,
-- positive: opportunities to improve, support, fair , competitive.
+- negative: pay-ridiculous-poor-tired, greed
+- positive: opportunities to improve, support, fair, competitive.
 
 `ACORN`
 
 ![words2](images/wordsAC.png)
 
-Similarly in ACORN submissions most common negative word is pay.
+Similarly in ACORN submissions most common negative word is pay, it goes along with worry
 
 Narrative:
 - negative: pay-worry-poor-limited-struggle-difficult
-- positive: hope-chance-care-save
+- positive: hope-chance-care-support
 - to the question how would your life change if you have affordable internet:
-helps-fun-nice-happy
+helps-fun-nice-happy-healthy
 
 ##### Most negative/positive comments
 
@@ -239,5 +246,8 @@ helps-fun-nice-happy
 "I would be able to afford a car and insurance for it gas without that money i can not afford to get married or own or insure a car for that ma er and that makes me very mad. "
 
 ### Conclusion
+Both OpenMedia and ACORN submissions discuss the importance  of affordable  internet access.
 
-(???)
+OpenMedia submissions talk more about about large  telecom companies, real competition, industrialized world and community access.
+
+ACORN submissions touch low-income families issues, discuss internet as  necessity for work and  stay in touch with family and friends.

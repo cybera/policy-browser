@@ -2,7 +2,7 @@
 
 ## Introduction
 
-NOTE: Incomplete, will be finished soon. This is more fore reference
+NOTE: Incomplete, will be finished soon. This is more for reference
 
 In order to try and understand how different organizations talk about both affordability and the basic service question, this document will compare both `solr` searches and `doc2vec` searches. The hope being that these comparisons will massage out some issues of each organizaton group around each question. As `agentdave` said: it would be interesting to determine if there's one conversation happening, or a different conversation for each group.
 
@@ -47,10 +47,12 @@ Where now things get a little more interesting. There are simply more `doc2vec` 
 
 2. This group seems to care a lot about the affordability of internet access for individual Canadians, which makes sense considering they're the advocacy groups... However, there is the risk of taking these out of context, but based on the language used by these groups, it might be reasonable to say that they feel internet access could be more affordable in Canada.
 ### Consumer Advocacy Organizations
-
+I note that this is just (probably) BC Broadband (I think) because it only returns a small amount of rows -- I'll double check to be sure
 #### #nofilter
 
 #### #filter
+So there's not a lot here, but here's all the word pairs that appear $N>1$ in this section.
+![alt-text1](images_doc2vec_conadv_filter_afford.png)![alt-text-2](images/solr_conadv_filter_afford.png)
 
 ####Potential Narrative?
 
@@ -71,6 +73,8 @@ This shows word-pairs with $N>5$ and a cosine similarity $>0.6$
 #### #nofilter
 
 #### #filter
+This shows word pairs of $N>5$ .
+
 ![alt-text-1](images/doc2vec_cable_filter_afford.png)![alt-text-2](images/solr_cable_filter_afford.png)
 
 #### Potential Narrative?
@@ -98,7 +102,9 @@ Where in terms of things relevant to affordability, telecoms typically talk abou
 #### #nofilter
 
 #### #filter
+These images show word-pairs of frequency $N>5$ and cosine similarity of $0.6$.
 
+![alt-text1](images/solr_otherincumb_filter_afford.png)![alt-text-2](images/solr_otherincumb_filter_afford.png)
 #### Potential Narrative?
 
 ###Small Incumbents
@@ -106,6 +112,9 @@ Where in terms of things relevant to affordability, telecoms typically talk abou
 #### #nofilter
 
 #### #filter
+These images show word-pairs of frequency $N>3$ and cosine similarity of $0.6$.
+
+![alt-text-1](images/doc2vec_small_filter_afford.png) ![alt-text-2](images/solr_small_filter_afford.png)
 
 #### Potential Narriative?
 
@@ -114,6 +123,10 @@ Where in terms of things relevant to affordability, telecoms typically talk abou
 #### #nofilter
 
 #### #filter
+These images show word-pairs of frequency $N>3$ and cosine similarity of $0.6$.
+
+
+![alt-text-1](images/doc2vec_other_filter_afford.png)![alt-text-2](images/solr_other_filter_afford.png)
 
 #### Potential Narriative?
 
