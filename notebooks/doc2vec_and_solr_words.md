@@ -71,6 +71,8 @@ This shows word-pairs with $N>5$ and a cosine similarity $>0.6$
 #### #nofilter
 
 #### #filter
+This shows word pairs of $N>5$ .
+
 ![alt-text-1](images/doc2vec_cable_filter_afford.png)![alt-text-2](images/solr_cable_filter_afford.png)
 
 #### Potential Narrative?
@@ -98,7 +100,9 @@ Where in terms of things relevant to affordability, telecoms typically talk abou
 #### #nofilter
 
 #### #filter
+These images show word-pairs of frequency $N>5$ and cosine similarity of $0.6$.
 
+![alt-text1](images/solr_otherincumb_filter_afford.png)![alt-text-2](images/solr_otherincumb_filter_afford.png)
 #### Potential Narrative?
 
 ###Small Incumbents
@@ -110,7 +114,7 @@ Where in terms of things relevant to affordability, telecoms typically talk abou
 #### Potential Narriative?
 
 ### "Other"
-
+![alt-text-1](images/doc2vec_other_filter.png)![alt-text-2](images/solr_other_filter.png)
 #### #nofilter
 
 #### #filter
