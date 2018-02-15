@@ -48,11 +48,15 @@ tfidf.affordability %>%
   coord_flip()
 
 bg.tfidf.affordability <- bigrams.affordability %>%
+  separate(bigram, c("word1", "word2"), sep = " ") %>%
+  filter(!word1 %in% stop_words$word) %>%
+  filter(!word2 %in% stop_words$word) %>%
+  mutate(bigram = paste(word1, word2)) %>%
   count(category, bigram, sort = TRUE) %>%
   bind_tf_idf(bigram, category, n) %>%
   arrange(desc(tf_idf))
 
-bg.tfidf.affordability %>%
+bg.plot.normal <- bg.tfidf.affordability %>%
   mutate(bigram = factor(bigram, levels = rev(unique(bigram)))) %>% 
   group_by(category) %>% 
   top_n(15) %>% 
@@ -62,6 +66,8 @@ bg.tfidf.affordability %>%
   labs(x = NULL, y = "tf-idf") +
   facet_wrap(~category, ncol = 2, scales = "free") +
   coord_flip()
+ggsave("notebooks/images/subsidies-affordability-bigram-normal.png",
+       bg.plot.normal, width=8, height=14, units="in", dpi=300)
 
 # Load pre-trained GloVe embeddings from http://nlp.stanford.edu/data/glove.6B.zip
 embeddings <- read_delim("data/raw/embeddings/glove.6B.100d.txt", delim=" ", 
@@ -143,7 +149,7 @@ tfidf.relevance.affordability <- relevance.affordability %>%
   mutate(max_relevance = pmax(relevance1, relevance2)) %>%
   count(category, max_relevance, bigram, sort = TRUE) %>%
   bind_tf_idf(bigram, category, n) %>%
-  arrange(desc(tf_idf, max_relevance))
+  arrange(max_relevance, desc(tf_idf))
 
 tfidf.relevance.affordability %>%
   mutate(bigram = factor(bigram, levels = rev(unique(bigram)))) %>% 
@@ -164,7 +170,7 @@ tfidf.relevance.affordability %>%
 # this seems to be the case. Then we can use the tf_idf scores to get the more
 # unique bigrams between the organization types.
 
-relevance.affordability %>%
+bg.plot.relevance <- relevance.affordability %>%
   mutate(bigram = paste(word1, word2)) %>%
   mutate(max_relevance = pmax(relevance1, relevance2)) %>%
   filter(max_relevance > 0.7) %>%
@@ -180,3 +186,5 @@ relevance.affordability %>%
   labs(x = NULL, y = "tf-idf") +
   facet_wrap(~category, ncol = 2, scales = "free") +
   coord_flip()
+ggsave("notebooks/images/subsidies-affordability-bigram-with-relevance.png",
+       bg.plot.relevance, width=8, height=20, units="in", dpi=300)

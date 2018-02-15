@@ -24,3 +24,11 @@ As the following plot shows, roughly 85% of the documents are in English, and th
 ## Top Locations for Open Media Submissions
 
 ![](images/top_locations_for_open_media_submissions.png)
+
+## Open Media Submission Count Map
+
+Open Media submissions contained postal codes, and joining those up with the locations associated with the first 3 letters/numbers, we can obtain the following map:
+
+![](images/openmedia-map-counts.png)
+
+As might be expected, submissions tended to cluster in areas of higher population density, but there seems to be at least some coverage in most of the populated areas of the country as well.
