@@ -47,10 +47,12 @@ Where now things get a little more interesting. There are simply more `doc2vec` 
 
 2. This group seems to care a lot about the affordability of internet access for individual Canadians, which makes sense considering they're the advocacy groups... However, there is the risk of taking these out of context, but based on the language used by these groups, it might be reasonable to say that they feel internet access could be more affordable in Canada.
 ### Consumer Advocacy Organizations
-
+I note that this is just (probably) BC Broadband (I think) because it only returns a small amount of rows -- I'll double check to be sure
 #### #nofilter
 
 #### #filter
+So there's not a lot here, but here's all the word pairs that appear $N>1$ in this section.
+![alt-text1](images_doc2vec_conadv_filter_afford.png)![alt-text-2](images/solr_conadv_filter_afford.png)
 
 ####Potential Narrative?
 
@@ -110,14 +112,21 @@ These images show word-pairs of frequency $N>5$ and cosine similarity of $0.6$.
 #### #nofilter
 
 #### #filter
+These images show word-pairs of frequency $N>3$ and cosine similarity of $0.6$.
+
+![alt-text-1](images/doc2vec_small_filter_afford.png) ![alt-text-2](images/solr_small_filter_afford.png)
 
 #### Potential Narriative?
 
 ### "Other"
-![alt-text-1](images/doc2vec_other_filter.png)![alt-text-2](images/solr_other_filter.png)
+
 #### #nofilter
 
 #### #filter
+These images show word-pairs of frequency $N>3$ and cosine similarity of $0.6$.
+
+
+![alt-text-1](images/doc2vec_other_filter_afford.png)![alt-text-2](images/solr_other_filter_afford.png)
 
 #### Potential Narriative?
 
