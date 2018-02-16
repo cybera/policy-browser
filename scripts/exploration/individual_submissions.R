@@ -115,7 +115,7 @@ acorn_comment$content <- gsub('posi ve','positive',acorn_comment$content)
 acorn_comment$content <- gsub('necessi','necessiti',acorn_comment$content)
 acorn_comment$content <- gsub('alterna ve','alternative',acorn_comment$content)
 acorn_comment$content <- gsub('inter- net','internet',acorn_comment$content)
-acorn_comment$content <- gsub('ac- cess','internet',acorn_comment$content)
+acorn_comment$content <- gsub('ac- cess','access',acorn_comment$content)
 
 ######################### Comparing data_om, acorn_comment and html submissions
 
