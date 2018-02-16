@@ -11,7 +11,7 @@ module Sinatra
             "generic_quality"
           end
 
-          { text: label, href: "/browser?navigation=quality&detail=#{detail}" }
+          { text: label, href: "/browser?ppn=#{params[:ppn]}&navigation=quality&detail=#{detail}" }
         end
 
         { labels: labels }

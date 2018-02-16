@@ -36,13 +36,13 @@ module Sinatra
 
       def related_organization_clause(missing=false)
         missing_str = missing ? "NOT " : ""
-
         """
-          MATCH (o:Organization)
-          MATCH (q:Question)<--(query:Query)<--(s:Segment)-[:SEGMENT_OF]->(d:Document)
-          WHERE ID(q) = $question AND
-            #{missing_str}(o)<-[:ALIAS_OF*0..1]-()-[:SUBMITTED]->(d) AND
-            NOT (o)-[:ALIAS_OF]->()
+          MATCH (o:Organization)<-[:ALIAS_OF*0..1]-()-[:SUBMITTED]->(:Document)
+          MATCH (q:Question)
+          WHERE 
+            NOT (o)-[:ALIAS_OF]->() AND
+            ID(q) = $question AND
+            #{missing_str}(q)<--(:Query)<--(:Segment)-->(:Document)<-[:SUBMITTED]-()-[:ALIAS_OF*0..1]->(o)
         """
       end
     end
