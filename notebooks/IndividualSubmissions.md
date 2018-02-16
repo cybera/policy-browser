@@ -89,9 +89,9 @@ Time to set the record straight. In April 2016, a historic CRTC hearing will sha
 ### Individual html submissions.
 - *266 Submissions*
   - *239 Submissions in English*
-  - *27 Submissions in French*
+  - *27 Submissions in French*  (used google translate API to translate them)
   - *6 Empty submissions*
-  (used google translate API to translate them)
+ 
 
 ### Comparing individual submissions language
 
