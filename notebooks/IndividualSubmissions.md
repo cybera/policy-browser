@@ -91,7 +91,7 @@ Time to set the record straight. In April 2016, a historic CRTC hearing will sha
   - *239 Submissions in English*
   - *27 Submissions in French*  (used google translate API to translate them)
   - *6 Empty submissions*
- 
+
 
 ### Comparing individual submissions language
 
@@ -108,15 +108,15 @@ Time to set the record straight. In April 2016, a historic CRTC hearing will sha
 OM | ACORN | HTML
 --- | --- | ---
  internet  5.4% | internet   4.6% | internet 3.3%
- world  1.9% | access    2.2% | speed 1.5%
+ world  1.9% | access    2.1% | speed 1.5%
  access  1.9% | afford 1.3% | access 1%
  telecom   1.2% | money    1.2% | month 0.7%
- companies   1.1% | online    1.1% | data 0.7%
- pay   1% | family  0.9% | mbps 0.6%
- prices   0.9% | life    0.9% | rural 0.6%
- broadband   0.9% | home    0.9% | speeds 0.6%
- speed   0.9% | food 0.8% | live 0.6%
- affordable   0.9% | people 0.8% | bell 0.6%
+ companies   1.1% | online    1% | data 0.7%
+ pay   1% | information  1% | mbps 0.6%
+ prices   0.9% | family  0.9% | rural 0.6%
+ broadband   0.9% | life    0.9% | speeds 0.6%
+ speed   0.9% | home    0.8% | live 0.6%
+ affordable   0.9% | food 0.8% | bell 0.6%
 
 - Similarities:
   - ACORN, OM, HTML discuss internet access.
@@ -131,14 +131,14 @@ OM | ACORN | HTML
 
 OM | ACORN | HTML
 --- | --- | ---
-telecom companies   1.6%  | speed   internet    1.6% | internet    service 1.2%
-internet  services   1.4% | internet  access   1.6% | speed   internet 0.7%
-internet    access   1.2% | online access    1.5% | internet     access 0.5%
-internet   service   1.1% | low    income     0.9% | internet   services 0.4%
-world     class   0.8%    | stay connected     0.6% | download      speed 0.4%
-25      mbps   0.7%     | affordable internet     0.6% | 5       mbps 0.3%
-community    access   0.6% | cell   phone     0.6% | service  providers 0.3%
-3      mbps   0.6%         | internet service     0.4% | data       caps 0.3%
+telecom companies   1.6%  | speed   internet    1.5% | internet    service 1.2%
+internet  services   1.4% | internet  access   1.4% | speed   internet 0.7%
+internet    access   1.2% | online access    1.3% | internet     access 0.5%
+internet   service   1.1% | low    income     0.8% | internet   services 0.4%
+world     class   0.8%    | stay connected     0.5% | download      speed 0.4%
+25      mbps   0.7%     | affordable internet     0.5% | 5       mbps 0.3%
+community    access   0.6% | cell   phone     0.5% | service  providers 0.3%
+3      mbps   0.6%         | internet service     0.3% | data       caps 0.3%
 profit providers   0.6%    | afford internet     0.3% | internet connection 0.3%
 industrialized     world   0.6% | internet services      0.3% | bell     canada 0.2%
 
@@ -155,9 +155,9 @@ HTML submissions talk about internet speed, data caps and service providers like
 OM | ACORN | HTML
 --- | --- | ---
 community         access       programs   1.7% | low    income  families 0.7% | internet            service providers 0.3%
-3           mbps         upload   1.6% | affordable internet    access     0.5% | cell              phone   service 0.3%
-25           mbps       download   1.5% | easily   afford      home     0.5% |  1               mbps    upload 0.2%
-municipalities      community         access   1.4% |speed internet    access 0.5% | speed           internet   service 0.2%
+3           mbps         upload   1.6% | affordable internet    access     0.4% | cell              phone   service 0.3%
+25           mbps       download   1.5% | easily   afford      home     0.4% |  1               mbps    upload 0.2%
+municipalities      community         access   1.4% |speed internet    access 0.4% | speed           internet   service 0.2%
  world          class      broadband   1.4% | cell    phone   service     0.3% | basic telecommunications  services 0.2%
  affordable          world          class   1.4% | cell    phone   services     0.3% | residential           internet  services 0.2%
 sell      broadband       services   1.4% | easily   afford groceries 0.3% |  speed           internet    access 0.2%
@@ -195,7 +195,7 @@ Narratives:
 - pay bills, search jobs, save extra money
 - stay connected, easily afford internet access.
 - low-income families
-- budget food quality
+- buy quality food
 
 `HTML`:
 
@@ -227,11 +227,11 @@ OM submissions topics:
 ![topics2](images/topicsAC.png)
 
 ACORN submissions topics:
-1. budget save/afford food/Internet
-2. internet to stay in touch with family and friends
-3. internet/phone/tv at home per month affordable
-4. internet access for job/life
-5. low income, pay bills
+1. afford/Internet/stress
+2. internet to stay in touch with family
+3. internet/access daily life
+4. money afford internet/food
+5. internet access /online information
 
 `HTML`
 
@@ -263,8 +263,8 @@ Narrative:
 Similarly in ACORN submissions most common negative word is pay, it goes along with worry
 
 Narrative:
-- negative: pay-worry-poor-limited-struggle-difficult
-- positive: hope-chance-care-support
+- negative: pay-worry-poor-hard-limited-struggle-difficult
+- positive: helps-save-hope-care-support
 - to the question how would your life change if you have affordable internet:
 helps-fun-nice-happy-healthy
 
@@ -296,7 +296,7 @@ Narrative:
 
 `Negative ACORN`:
 
-"I would be able to afford a car and insurance for it gas without that money i can not afford to get married or own or insure a car for that ma er and that makes me very mad. "
+"The medical research I access is critically important as I have a health issue I must keep up to date on and my doctor sends me for the tests etc but does not have me to discuss in detail I want to keep up regarding the latest break- throughs and alternative therapies. I would feel more lost and worried without out more extensive information. Being able to email is very important as it keeps me connected to others and as I have this health issue right now it al- lows me to connectwhen I don't always have the energy to go out. "
 
 `Positive HTML(not really positive)`
 
@@ -313,4 +313,4 @@ OpenMedia submissions talk more about about large  telecom companies, real compe
 
 ACORN submissions touch low-income families issues, discuss internet as  necessity for work and  everyday life.
 
-HTML submissions mostly discuss large telecom provides - shaw, bell and Telus, talk about 1/5 upload/download speeds, mention phone services cell and land.
+HTML submissions mostly discuss large telecom provides - Shaw, Bell and Telus, talk about 1/5 upload/download speeds, mention phone services cell and land.
