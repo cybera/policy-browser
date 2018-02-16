@@ -90,7 +90,7 @@ dim(acorn_comment) #150
 colnames(acorn_comment) <- "content"
 acorn_comment <- dplyr::mutate(acorn_comment, id = as.integer(rownames(acorn_comment)))
 
-#########################Comparing data_om and acorn_comment
+#########################Comparing data_om, acorn_comment and html submissions
 
 ##Word count
 my_stopwords <- data_frame(word = c(as.character(1:10),"canada","service","canadians", "canadian", "services"))
@@ -257,7 +257,12 @@ lda_om %>%
   facet_wrap(~ topic, scales = "free_y") +
   coord_flip()
 
-dtm_acorn <- result_acorn %>%
+words50_acorn <- result_acorn %>%
+  group_by(word) %>%
+  mutate(word_total = n()) %>%
+  ungroup()
+
+dtm_acorn <- words50_acorn %>%
   count(id, word) %>%
   cast_dtm(id, word, n)
 
@@ -277,8 +282,7 @@ lda_acorn %>%
 words50_html <- result_html %>%
   group_by(word) %>%
   mutate(word_total = n()) %>%
-  ungroup() #%>%
-  #filter(word_total > 50)
+  ungroup() 
 
 dtm_html <- words50_html %>%
   count(sha256, word) %>%
