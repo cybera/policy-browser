@@ -20,7 +20,7 @@ For 100 topics model more documents have gamma (per document per topic probabili
 `Top 4 most frequent topics + keywords`
 
 Topic| Percent of docs | Keyword1 |Keyword2 | Keyword3 | Keyword4 | Keyword5 | Keyword6 | Keyword7 | Keyword8 | Keyword9 | Keyword10
---- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+--- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---
 4 | 35.9% | "information"  | “service"   |  "internet"   | "crtc"     |   "mbps"    |    "customers"  |  "wireless"  |  "response"  |  "provide"  |   "data"
 9  |  24.4% |  "service"  |   "services"   | "broadband" |   "commission" | "access"   |  "internet" | "basic"   |  “subsidy"  |  "canadians" |  "funding"
 3  |  18.6% | "internet"  | ”service" |  "online" |  "costs"  |  "services" | "speed"  |  "access"  | "home"   |  "time"  |   "phone"
@@ -34,7 +34,7 @@ Sum  | 94.5%  |   |   |   |   |   |   |   |   |   |
 `Top 6 most frequent topics + keywords`
 
 Topic| Percent of docs | Keyword1 |Keyword2 | Keyword3 | Keyword4 | Keyword5 | Keyword6 | Keyword7 | Keyword8 | Keyword9 | Keyword10
---- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+--- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---
  6  | 13% | "telecommunications" | "crtc" | "commission" |  "telecom" |         "canadian" |  "regulatory" | "consultation"   | "information"  | "notice" |          "canada"            
 24  |  12.9% | "internet" | ”speed"  |  "data"  |   "access"  | "rural"  |  "bell"   |  "month"  |  "wireless" | ”home"   |  "xplornet"
 15  |  8.5%  | "information"  |  "response"   |  "crtc"    |     "commission"  |  "disclosure"   | "confidential" | "request"   |   "rogers"  |     "confidence"  |  "provided"  
@@ -52,7 +52,7 @@ Sum  |  56.1% |   |   |   |   |   |   |   |   |   |
 `Top 6 most frequent topics + keywords`
 
 Topic| Percent of docs| Keyword1 |Keyword2 | Keyword3 | Keyword4 | Keyword5 | Keyword6 | Keyword7 | Keyword8 | Keyword9 | Keyword10
---- | --- | --- | --- | --- | --- | --- | --- | --- | ---
+--- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---
 14  | 8%  | "internet" | "service"  | "speed"  |  "access" |  "bell"  |  "home"   |  "rural"  |  "month"  |  "line"   |  "cellular"
  82  | 7.4%  | "crtc"    |     "telecom"   |   "regulatory"  |  "commission"  | "notice"    |   "consultation"  | ”canadian"   |  "review"   |    "basic"     |   "services"
 34  | 4%  |  "internet"  |  "data"   |   "service"  |  "price" |    "prices"  |  "month"   |  "speeds"  |   "caps"    |  "canada"  |  "companies"
