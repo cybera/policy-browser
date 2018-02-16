@@ -32,7 +32,7 @@ where I've left the comments of my changes in explicitly. Essentially removed th
 relevant_words = c("basic", "universal", "mandated", "essential")
 ```
 
- The graphs were then made in a straight foreward was as
+ The graphs were then made in a straight forward was as
 ```R
 bigram_graph<-bigram_counts %>%
     filter(n >6) %>%
@@ -56,7 +56,7 @@ Here the doc2vec results are only showing pairs which occur with $N>30$ times, s
 
 
 #### Potential Narrative?
-Narrative aside, there are considerably more hits with `doc2vec` and `solr` from the advocacy groups than there are any other group for the basic service question, which we can tell easily from the $N>30$ for word pairs. Meaning that in terms of answering this question, this group answered signficantly more. I might toss all the telecom groups together to see if their response was similar, as there is probably just more advocacy groups than there are incumbents.
+Narrative aside, there are considerably more hits with `doc2vec` and `solr` from the advocacy groups than there are any other group for the basic service question, which we can tell easily from the $N>30$ for word pairs. Meaning that in terms of answering this question, this group answered significantly more. I might toss all the telecom groups together to see if their response was similar, as there is probably just more advocacy groups than there are incumbents.
 
 In terms of a narrative however this isn't as "clear" as it was before for the affordability question where there was clear differences between how the groups discuss it. In this case I _think_ the interesting bits might actually end up being outside of the main cluster. for example there's a lot of talk about education, jobs, staying connected etc. that may be interesting in terms of "sub-topics" that we find. However, the affordability things may be noise due to statement proximity.
 
@@ -74,13 +74,14 @@ Mushed in with the Advocacy groups.
 
 #### #filter
 Here the doc2vec results are only showing pairs which occur with $N>5$ times and solr has $N>2$, both with a minimum cosine similarity to the filter words of 0.6
+
 ![alt-text](images/doc2vec_government_filter_bts.png) ![alt-text-2](images/solr_government_filter_bts.png)
 
 #### Potential Narrative?
 Government groups seem to talk about either themselves or other governments quite about when surrounding the basic service question. Besides that the main cluster of frequent word pairs are very similar to that of the Advocacy groups, however there is also talk of online education and social requirements which might be of interest Besides that the main cluster of points is basically the same as everywhere else, and I think that could be an artifact of everyone restating the question in their response. Which while nice for reading responses by hand, sometimes may make things more difficult for text mining.
 
 ### Cable Companies
-Again, the main cluster seems to be primarily a restatement of the question itself, however there is a potentially addition of the pair "regulatory framework" to the policy node. There is also a smaller cluster which seems to talk about government funding and subisities which may be of interest, however, that's another CRTC question that was close in proximity to the BTO question, so that might not be of interest. I think the case for ignoring that is that it does not appear in the `solr` search, only the `doc2vec` search. One interesting cluster is the "maximum extent feasible" cluster, but I'm not sure how much we can take away from this.
+Again, the main cluster seems to be primarily a restatement of the question itself, however there is a potentially addition of the pair "regulatory framework" to the policy node. There is also a smaller cluster which seems to talk about government funding and subsidies which may be of interest, however, that's another CRTC question that was close in proximity to the BTO question, so that might not be of interest. I think the case for ignoring that is that it does not appear in the `solr` search, only the `doc2vec` search. One interesting cluster is the "maximum extent feasible" cluster, but I'm not sure how much we can take away from this.
 
 
 
@@ -102,11 +103,12 @@ Here the doc2vec results are only showing pairs which occur with $N>4$ times and
 
 #### #filter
 Here the telecom word-pairs are limited to those that appear $N>8$ times, solr is $N>4$, both with a minimum cosine similarity of 0.6
+
 ![alt-text](images/doc2vec_telecom_filter_bts.png)![alt-text-2](images/solr_telecom_filter_bts.png)
 
 #### Potential Narrative?
 
-This is a little more interesting than the cable company word web I have to admit. There's a sub cluster that seeems to be about service adoption issues, and there's a branch of the word "basic" which seems to be about internet modernization which could be an interesting analysis route. However, besides that, the main cluster still looks the same to me as every other main cluster.
+This is a little more interesting than the cable company word web I have to admit. There's a sub cluster that seems to be about service adoption issues, and there's a branch of the word "basic" which seems to be about internet modernization which could be an interesting analysis route. However, besides that, the main cluster still looks the same to me as every other main cluster.
 
 
 ### Other Network Operators
@@ -117,6 +119,7 @@ This is a little more interesting than the cable company word web I have to admi
 Here the doc2vec results are only showing pairs which occur with $N>5$ times, solr with $N>1$, both with a minimum cosine similarity to the filter words of 0.6
 
 ![alt-text](images/doc2vec_otherincumbents_filter_bts.png)![alt-text](images/solr_otherincumbents_filter_bts.png)
+
 #### Potential Narrative?
 
 These look a little different than the other incumbents, but that may partially be due to the different amounts of data. Theres's a few new things such as "satellite" and "yukon", however, I don't think that's something worth looking into as I feel like these are providers of those more niche/remote services.
@@ -139,6 +142,7 @@ Here both solr and doc2vec results are only showing pairs which occur with $N>1$
 Here both solr and doc2vec results are only showing pairs which occur with $N>1$ times, with a minimum cosine similarity to the filter words of 0.6
 
 ![alt-text](images/doc2vec_other_filter_bts.png)![alt-text](images/solr_other_filter_bts.png)
+
 #### Potential Narriative?
 Truth be told, I don't think there's enough data here to make any claims about what they're talking about.
 
@@ -146,4 +150,4 @@ Truth be told, I don't think there's enough data here to make any claims about w
 
 ## Conclusion
 
-I think the basic service objective question is a little less interesting in regards to the plots we make and the language used, however, in terms of the BTO I think each group is at least having the _same_ conversation. Unlike the affordability question where mostly saw how each group talks about affordability to them, in this case the question is so pointed that most groups seem to respond the same. A lot of that is likely due to restating the question itself in each response. But regardless, I think it's pretty clear each group is having the same conversation about this question, and that there may be small differences in common word pairs for each group surrounding the question. That said, I'm not sure how much we can say in terms of "who seems to be in favour of the basic service objective" vs. who isn't. At this point, the most I'm willing to claim is that everyone seems to be having the same conversation in this case. 
+I think the basic service objective question is a little less interesting in regards to the plots we make and the language used, however, in terms of the BTO I think each group is at least having the _same_ conversation. Unlike the affordability question where mostly saw how each group talks about affordability to them, in this case the question is so pointed that most groups seem to respond the same. A lot of that is likely due to restating the question itself in each response. But regardless, I think it's pretty clear each group is having the same conversation about this question, and that there may be small differences in common word pairs for each group surrounding the question. That said, I'm not sure how much we can say in terms of "who seems to be in favor of the basic service objective" vs. who isn't. At this point, the most I'm willing to claim is that everyone seems to be having the same conversation in this case.
