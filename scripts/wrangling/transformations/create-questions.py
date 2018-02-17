@@ -4,7 +4,13 @@ class CreateQuestions(TransformBase):
   QUESTIONS = [
     {
       "ref": "Q4",
-      "content": "Can market forces and government funding be relied on to ensure that all Canadians have access to basic telecommunications services? What are the roles of the private sector and the various levels of government (federal, provincial, territorial, and municipal) in ensuring that investment in telecommunications infrastructure results in the availability of modern telecommunications services to all Canadians?"
+      "content": "Can market forces and government funding be relied on to ensure that all Canadians have access to basic telecommunications services? What are the roles of the private sector and the various levels of government (federal, provincial, territorial, and municipal) in ensuring that investment in telecommunications infrastructure results in the availability of modern telecommunications services to all Canadians?",
+      "sub_questions": [
+        {
+          "ref": "Q4-1",
+          "content": "What speed (mbps) should be considered the minimum for a basic service?"
+        }
+      ]
     },
     {
       "ref": "Q9",
@@ -23,7 +29,7 @@ class CreateQuestions(TransformBase):
     {
      "ref": "Q1",
      "content": "What positions on affordability are being taken by different types of intervenors?" 
-     }
+    }
   ]
 
   def match(self):
