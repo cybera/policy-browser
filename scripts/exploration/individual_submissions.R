@@ -47,7 +47,23 @@ RETURN  d.sha256 AS sha256, d.content AS content"
 data_acorn = cypher(graph, query_acorn)
 acorn_content <- paste(data_acorn$content[1],data_acorn$content[2])
 
-##Question about pricing
+###Individual html submissions 
+query_html= "MATCH path=(:Person)-[]-(p:Participant)-[]-(:Submission)-[]-(d:Document{type:\"html\"})
+WHERE NOT (:Organization)-[]-(p)
+RETURN d.content as content, d.sha256 as sha256, d.translated as translated"
+data_html = cypher(graph, query_html) #dim 266
+data_html <- data_html[!data_html$content== "Copie envoyée au demandeur et à tout autre intimé si applicable / Copy sent to applicant and to any respondent if applicable: Non/No",]
+data_html_english <- data_html[is.na(data_html$translated),] #dim 239
+data_html_french <- data_html[!is.na(data_html$translated),] #dim 27
+data_html_french <-data_html_french[,c("sha256","translated")]
+data_html_english <-data_html_english[,c("sha256","content")]
+colnames(data_html_french) <- colnames(data_html_english)
+data_html <- rbind(data_html_french, data_html_english) 
+#Some cleaning
+data_html$content <- gsub('\u009c|\u00F0',' ',data_html$content)
+data_html$content <- gsub('Raisons pour comparaitre / Reasons for appearance', ' ',data_html$content)
+
+##Question about pricing (ACORN)
 acorn_pricing <- regmatches(acorn_content,gregexpr("How do you feel about the current pricing of high-speed internet\\?(.*?)Which budget items have you taken money out of to pay for internet\\?",acorn_content))
 acorn_pricing <- lapply(acorn_pricing, function(x) gsub(".*How do you feel about the current pricing of high-speed internet\\?\\s*|Which budget items have you taken money out of to pay for internet\\?.*", "", x))
 acorn_pricing <- lapply(acorn_pricing, function(x) gsub("\\n+ |\\s+", " ", x))
@@ -74,9 +90,36 @@ dim(acorn_comment) #150
 colnames(acorn_comment) <- "content"
 acorn_comment <- dplyr::mutate(acorn_comment, id = as.integer(rownames(acorn_comment)))
 
-#########################Comparing data_om and acorn_comment
+#Some words were parsed not correctly
+acorn_comment$content <- gsub('informa on','information',acorn_comment$content)
+acorn_comment$content <- gsub('op on','option',acorn_comment$content)
+acorn_comment$content <- gsub('transac on','transaction',acorn_comment$content)
+acorn_comment$content <- gsub('ac vit','active',acorn_comment$content)
+acorn_comment$content <- gsub('ac ve','activit',acorn_comment$content)
+acorn_comment$content <- gsub('essen al','essential',acorn_comment$content)
+acorn_comment$content <- gsub('communica ','communicati',acorn_comment$content)
+acorn_comment$content <- gsub('ge ng','getting',acorn_comment$content)
+acorn_comment$content <- gsub('medica ons','medications',acorn_comment$content)
+acorn_comment$content <- gsub('wai ng','waiting',acorn_comment$content)
+acorn_comment$content <- gsub('applica ','applicati',acorn_comment$content)
+acorn_comment$content <- gsub('cri cal','critical',acorn_comment$content)
+acorn_comment$content <- gsub('recrea onal','recreational',acorn_comment$content)
+acorn_comment$content <- gsub('educa onal','educational',acorn_comment$content)
+acorn_comment$content <- gsub('connec ','connecti',acorn_comment$content)
+acorn_comment$content <- gsub('ma er','matter',acorn_comment$content)
+acorn_comment$content <- gsub('be er','better',acorn_comment$content)
+acorn_comment$content <- gsub('elimina ng','eliminating',acorn_comment$content)
+acorn_comment$content <- gsub('ea ng','eating',acorn_comment$content)
+acorn_comment$content <- gsub('rela ve','relative',acorn_comment$content)
+acorn_comment$content <- gsub('posi ve','positive',acorn_comment$content)
+acorn_comment$content <- gsub('necessi','necessiti',acorn_comment$content)
+acorn_comment$content <- gsub('alterna ve','alternative',acorn_comment$content)
+acorn_comment$content <- gsub('inter- net','internet',acorn_comment$content)
+acorn_comment$content <- gsub('ac- cess','access',acorn_comment$content)
 
-##Word count
+######################### Comparing data_om, acorn_comment and html submissions
+
+#########################  Word count
 my_stopwords <- data_frame(word = c(as.character(1:10),"canada","service","canadians", "canadian", "services"))
 
 result_om <- data_om[,c("sha256","content")] %>% 
@@ -84,27 +127,42 @@ result_om <- data_om[,c("sha256","content")] %>%
   anti_join(stop_words)  %>%
   anti_join(my_stopwords)
 
-result_om %>%
+counts_om <- result_om %>%
   count(word, sort = TRUE)
 
-my_stopwords_acorn <- data_frame(word = c(as.character(1:10),"ons","ng","de","communica","informa", "es","er","ac","essen","al","ma", "li", "le", "ons","er", "opprtuni", "necessi","es","inter","net","ci","zens","ge","ng","ac","vi", "par", "cipate","recrea","onal","cri","cal"))
+counts_om$n <- counts_om$n*100/sum(counts_om$n)
+
 result_acorn <- acorn_comment%>% 
   unnest_tokens(word, content) %>% 
   anti_join(stop_words)  %>%
   anti_join(my_stopwords) %>%
-  anti_join(my_stopwords_acorn) %>%
   anti_join(proustr::proust_stopwords()) #for french data
 
-result_acorn %>%
+counts_acorn <- result_acorn %>%
   count(word, sort = TRUE) 
 
-##Bigrams
+counts_acorn$n <- counts_acorn$n*100/sum(counts_acorn$n)
+
+result_html <- data_html%>% 
+  unnest_tokens(word, content) %>% 
+  anti_join(stop_words)  %>%
+  anti_join(my_stopwords)
+
+counts_html <- result_html %>%
+  count(word, sort = TRUE)
+
+counts_html$n <- counts_html$n*100/sum(counts_html$n)
+
+#################### Bigrams
 bigram_counts_om <- data_om[,c("sha256","content")] %>%
   unnest_tokens(bigram, content, token = "ngrams", n = 2)%>%
   separate(bigram, c("word1", "word2"), sep = " ")%>%
   filter(!word1 %in% stop_words$word) %>%
   filter(!word2 %in% stop_words$word) %>% 
   count(word1, word2, sort = TRUE)
+
+bigram_counts_om2 <- bigram_counts_om
+bigram_counts_om2$n <- bigram_counts_om$n*100/sum(bigram_counts_om$n)
 
 bigram_graph_om <- bigram_counts_om %>%
   filter(n > 20) %>%
@@ -122,14 +180,15 @@ bigram_counts_acorn <- acorn_comment %>%
   separate(bigram, c("word1", "word2"), sep = " ")%>%
   filter(!word1 %in% stop_words$word) %>%
   filter(!word2 %in% stop_words$word) %>% 
-  filter(!word1 %in% my_stopwords_acorn$word) %>%
-  filter(!word2 %in% my_stopwords_acorn$word) %>% 
   filter(!word1 %in% proustr::proust_stopwords()$word) %>%
   filter(!word2 %in% proustr::proust_stopwords()$word) %>% 
   count(word1, word2, sort = TRUE)
 
+bigram_counts_acorn2<- bigram_counts_acorn
+bigram_counts_acorn2$n <- bigram_counts_acorn$n*100/sum(bigram_counts_acorn$n)
+
 bigram_graph_acorn <- bigram_counts_acorn%>%
-  filter(n > 3) %>%
+  filter(n > 2) %>%
   graph_from_data_frame()
 
 set.seed(4321)
@@ -138,9 +197,30 @@ ggraph(bigram_graph_acorn, layout = "fr") +
   geom_node_point() +
   geom_node_text(aes(label = name), vjust = 1, hjust = 1)
 
-##############
 
-data_om[,c("sha256","content")] %>%
+bigram_counts_html <- data_html%>%
+  unnest_tokens(bigram, content, token = "ngrams", n = 2)%>%
+  separate(bigram, c("word1", "word2"), sep = " ")%>%
+  filter(!word1 %in% stop_words$word) %>%
+  filter(!word2 %in% stop_words$word) %>% 
+  count(word1, word2, sort = TRUE)
+
+bigram_counts_html2 <- bigram_counts_html
+bigram_counts_html2$n <- bigram_counts_html$n*100/sum(bigram_counts_html$n)
+
+bigram_graph_html <- bigram_counts_html %>%
+  filter(n > 5) %>%
+  graph_from_data_frame()
+
+set.seed(1234)
+ggraph(bigram_graph_html, layout = "fr") +
+  geom_edge_link() +
+  geom_node_point() +
+  geom_node_text(aes(label = name), vjust = 1, hjust = 1)
+
+############## Trigramms
+
+trigram_om <- data_om[,c("sha256","content")] %>%
   unnest_tokens(trigram, content, token = "ngrams", n = 3) %>%
   separate(trigram, c("word1", "word2", "word3"), sep = " ") %>%
   filter(!word1 %in% stop_words$word,
@@ -148,19 +228,30 @@ data_om[,c("sha256","content")] %>%
          !word3 %in% stop_words$word) %>%
   count(word1, word2, word3, sort = TRUE)
 
-acorn_comment %>%
+trigram_om$n <- trigram_om$n*100/sum(trigram_om$n)
+
+trigram_acorn <- acorn_comment %>%
   unnest_tokens(trigram, content, token = "ngrams", n = 3) %>%
   separate(trigram, c("word1", "word2", "word3"), sep = " ") %>%
   filter(!word1 %in% stop_words$word,
          !word2 %in% stop_words$word,
          !word3 %in% stop_words$word) %>%
-  filter(!word1 %in% my_stopwords_acorn$word,
-         !word2 %in% my_stopwords_acorn$word,
-         !word3 %in% my_stopwords_acorn$word) %>%
   filter(!word1 %in% proustr::proust_stopwords()$word,
          !word2 %in% proustr::proust_stopwords()$word,
          !word3 %in% proustr::proust_stopwords()$word) %>%
   count(word1, word2, word3, sort = TRUE)
+
+trigram_acorn$n <- trigram_acorn$n*100/sum(trigram_acorn$n)
+
+trigram_html <- data_html %>%
+  unnest_tokens(trigram, content, token = "ngrams", n = 3) %>%
+  separate(trigram, c("word1", "word2", "word3"), sep = " ") %>%
+  filter(!word1 %in% stop_words$word,
+         !word2 %in% stop_words$word,
+         !word3 %in% stop_words$word) %>%
+  count(word1, word2, word3, sort = TRUE)
+
+trigram_html$n <- trigram_html$n*100/sum(trigram_html$n)
 
 ################ Topic modelling
 words50_om <- result_om %>%
@@ -186,13 +277,40 @@ lda_om %>%
   facet_wrap(~ topic, scales = "free_y") +
   coord_flip()
 
-dtm_acorn <- result_acorn %>%
+words50_acorn <- result_acorn %>%
+  group_by(word) %>%
+  mutate(word_total = n()) %>%
+  ungroup()
+
+dtm_acorn <- words50_acorn %>%
   count(id, word) %>%
   cast_dtm(id, word, n)
 
 lda_acorn <- LDA(dtm_acorn, k = 5, control = list(seed = 1234))
 
 lda_acorn %>%
+  tidy() %>%
+  group_by(topic) %>%
+  top_n(8, beta) %>%
+  ungroup() %>%
+  mutate(term = reorder(term, beta)) %>%
+  ggplot(aes(term, beta, fill = factor(topic))) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ topic, scales = "free_y") +
+  coord_flip()
+
+words50_html <- result_html %>%
+  group_by(word) %>%
+  mutate(word_total = n()) %>%
+  ungroup() 
+
+dtm_html <- words50_html %>%
+  count(sha256, word) %>%
+  cast_dtm(sha256, word, n)
+
+lda_html <- LDA(dtm_html, k = 5, control = list(seed = 1234))
+
+lda_html %>%
   tidy() %>%
   group_by(topic) %>%
   top_n(8, beta) %>%
@@ -213,6 +331,13 @@ result_om %>%
                    max.words = 100)
 
 result_acorn  %>%
+  inner_join(get_sentiments("bing")) %>%
+  count(word, sentiment, sort = TRUE) %>%
+  acast(word ~ sentiment, value.var = "n", fill = 0) %>%
+  comparison.cloud(colors = c("#F8766D", "#00BFC4"),
+                   max.words = 100)
+
+result_html  %>%
   inner_join(get_sentiments("bing")) %>%
   count(word, sentiment, sort = TRUE) %>%
   acast(word ~ sentiment, value.var = "n", fill = 0) %>%
@@ -244,7 +369,19 @@ contributions_acorn %>%
   geom_col(show.legend = FALSE) +
   coord_flip()
 
-### Most positive/negative messages
+contributions_html <- result_html %>%
+  inner_join(get_sentiments("afinn"), by = "word") %>%
+  group_by(word) %>%
+  summarize(occurences = n(),
+            contribution = sum(score))
+contributions_html %>%
+  top_n(25, abs(contribution)) %>%
+  mutate(word = reorder(word, contribution)) %>%
+  ggplot(aes(word, contribution, fill = contribution > 0)) +
+  geom_col(show.legend = FALSE) +
+  coord_flip()
+
+###################### Most positive/negative messages
 sentiment_messages_om <- result_om %>%
   inner_join(get_sentiments("afinn"), by = "word") %>%
   group_by(sha256) %>%
@@ -278,4 +415,22 @@ acorn_comment[acorn_comment$id=="104",]$content
 sentiment_messages_acorn %>%
   arrange(sentiment)
 
-acorn_comment[acorn_comment$id=="28",]$content
+acorn_comment[acorn_comment$id=="194",]$content
+
+sentiment_messages_html <- result_html %>%
+  inner_join(get_sentiments("afinn"), by = "word") %>%
+  group_by(sha256) %>%
+  summarize(sentiment = mean(score),
+            words = n()) %>%
+  ungroup() %>%
+  filter(words >= 5)
+
+sentiment_messages_html %>%
+  arrange(desc(sentiment))
+
+data_html[data_html$sha256=="88c261d0ed59df75041125c68ad48f3604944dc84094bb67f118092de34a12ba",]$content
+
+sentiment_messages_html %>%
+  arrange(sentiment)
+
+data_html[data_html$sha256=="8f47bb74dcd6cb96a54e06f8b1da0b3d62cb6e59a522ec578d7799b3fe465b18",]$content

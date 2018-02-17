@@ -1,6 +1,6 @@
 ### Individual Submissions stats.
 
-Two sources of submissions: OpenMedia and Acorn.
+Sources of submissions: OpenMedia, Acorn, individual html submissions.
 
 #### OpenMedia
 
@@ -86,47 +86,61 @@ Time to set the record straight. In April 2016, a historic CRTC hearing will sha
  *Reasonable, and I can afford it. Too high, but I can afford it.* | 1
  *Too high, but I can afford it. Extremely high; I can barely afford it. Extremely high; I can't afford it, but because I need it I take money out of my budget for other items* |  1
 
-### Comparing OpenMedia and Acorn Submissions
+### Individual html submissions.
+- *266 Submissions*
+  - *239 Submissions in English*
+  - *27 Submissions in French*  (used google translate API to translate them)
+  - *6 Empty submissions*
+
+
+### Comparing individual submissions language
 
 - 2427 free form comments from OpenMedia.
 - 289  ACORN member comments discussing following questions:
   - Why is online access important to you?
   - Please share how your life would change if you could easily afford home high-speed Internet.
   - Please share anything else relevant.
+- 258 individual html submissions.
 
 ##### Top 10 most frequent words
  (excluded words - "canada","service","canadians", "canadian", "services")
 
-OM | ACORN
---- | ---
- internet  3730 | internet   353
- world  1293 | access    170
- access  1268 | afford 103
- telecom   808 | money    95
- companies    783 | online    86
- pay   736 | family  73
- prices   660 | life    72
- broadband   620 | home    66
- speed   618 | food 64
- affordable   607 | people 61
+OM | ACORN | HTML
+--- | --- | ---
+ internet  5.4% | internet   4.6% | internet 3.3%
+ world  1.9% | access    2.1% | speed 1.5%
+ access  1.9% | afford 1.3% | access 1%
+ telecom   1.2% | money    1.2% | month 0.7%
+ companies   1.1% | online    1% | data 0.7%
+ pay   1% | information  1% | mbps 0.6%
+ prices   0.9% | family  0.9% | rural 0.6%
+ broadband   0.9% | life    0.9% | speeds 0.6%
+ speed   0.9% | home    0.8% | live 0.6%
+ affordable   0.9% | food 0.8% | bell 0.6%
 
-- Similarity between ACORN and OM - internet access affordability
-- Difference - OM discussing more big  telecom companies, ACORN - more often mentions family, life, home.
+- Similarities:
+  - ACORN, OM, HTML discuss internet access.
+  - ACORN, OM discuss affordability, prices.
+  - OM, HTM discuss internet speeds.
+- Differences:
+  - OM discussing more big  telecom companies.
+  - ACORN - more often mentions family, life, home.
+  - HTML submissions discuss rural access.
 
 ##### Bigrams
 
-OM | ACORN
---- | ---
-telecom companies   416  | speed   internet    35
-internet  services   374 | internet  access   34
-internet    access   328 | online access    32
-internet   service   305 | low    income     20
-world     class   220    | stay connected     13
-25      mbps   171     | affordable internet     12
-community    access   161 | cell   phone     12
-3      mbps   160         | internet service     8
-profit providers   156    | afford internet     7
-industrialized     world   154 | internet services     7
+OM | ACORN | HTML
+--- | --- | ---
+telecom companies   1.6%  | speed   internet    1.5% | internet    service 1.2%
+internet  services   1.4% | internet  access   1.4% | speed   internet 0.7%
+internet    access   1.2% | online access    1.3% | internet     access 0.5%
+internet   service   1.1% | low    income     0.8% | internet   services 0.4%
+world     class   0.8%    | stay connected     0.5% | download      speed 0.4%
+25      mbps   0.7%     | affordable internet     0.5% | 5       mbps 0.3%
+community    access   0.6% | cell   phone     0.5% | service  providers 0.3%
+3      mbps   0.6%         | internet service     0.3% | data       caps 0.3%
+profit providers   0.6%    | afford internet     0.3% | internet connection 0.3%
+industrialized     world   0.6% | internet services      0.3% | bell     canada 0.2%
 
 Submissions from both sources discuss internet access and internet services.
 
@@ -134,24 +148,29 @@ ACORN members are more concerned about internet speed (most frequent bigram), in
 
 OM submissions are more focused on discussing telecom companies, profit providers and community access.
 
+HTML submissions talk about internet speed, data caps and service providers like Bell.
+
 ##### Trigrams
 
-OM | ACORN
---- | ---
-community         access       programs   152 | low    income  families 5
-3           mbps         upload   142 | affordable internet    access     3
-25           mbps       download   135 | easily   afford      home     3
-municipalities      community         access   129 |speed internet    access 3
- world          class      broadband   129 | cell    phone   service     2
- affordable          world          class   128 | cell    phone   services     2
-sell      broadband       services   125 | easily   afford groceries 2
-incumbent           isps municipalities   117 | jobs     jobs      jobs     2
-isps municipalities      community  117 | low   income    people     2
-class      broadband       internet   108 | university  student    living     2
+OM | ACORN | HTML
+--- | --- | ---
+community         access       programs   1.7% | low    income  families 0.7% | internet            service providers 0.3%
+3           mbps         upload   1.6% | affordable internet    access     0.4% | cell              phone   service 0.3%
+25           mbps       download   1.5% | easily   afford      home     0.4% |  1               mbps    upload 0.2%
+municipalities      community         access   1.4% |speed internet    access 0.4% | speed           internet   service 0.2%
+ world          class      broadband   1.4% | cell    phone   service     0.3% | basic telecommunications  services 0.2%
+ affordable          world          class   1.4% | cell    phone   services     0.3% | residential           internet  services 0.2%
+sell      broadband       services   1.4% | easily   afford groceries 0.3% |  speed           internet    access 0.2%
+incumbent           isps municipalities   1.3% | jobs     jobs      jobs     0.3% | 5               mbps  download 0.2%  
+isps municipalities      community  1.3% | low   income    people    0.3% | internet            service  provider 0.2%
+class      broadband       internet   1.1% | university  student    living     0.3% | mbps             upload     speed 0.2%
 
 Affordable world class broadband internet, 3 mbps upload and  25 mbps download  speeds are discussed mostly in OM submissions.
 
 ACORN members talk about low income families and people, university students living, importance of affordable internet access.
+
+HTML submissions talk about 	internet service providers a lot, upload/download speeds
+(1/5 vs 5/25 in OM submissions) and internet as basic telecommunication service.
 
 
 ##### Bigrams visualization
@@ -169,14 +188,25 @@ Narratives:
 
 `ACORN`:
 
-![bigrams](images/2gram_acorn.png)
+![bigrams2](images/2gram_acorn.png)
 
 Narratives:
 
 - pay bills, search jobs, save extra money
 - stay connected, easily afford internet access.
 - low-income families
-- budget food quality
+- buy quality food
+
+`HTML`:
+
+![bigrams3](images/2gram_html.png)
+
+Narratives:
+- telephone-land-cell
+- satellite-tv-cable
+- rural-canadians-internet-speeds
+- data-cap-unlimited
+- upload/download speeds
 
 
 ##### Topic modeling
@@ -197,11 +227,22 @@ OM submissions topics:
 ![topics2](images/topicsAC.png)
 
 ACORN submissions topics:
-1. budget save/afford food/Internet
-2. internet to stay in touch with family and friends
-3. internet/phone/tv at home per month affordable
-4. internet access for job/life
-5. low income, pay bills
+1. afford/Internet/stress
+2. internet to stay in touch with family
+3. internet/access daily life
+4. money afford internet/food
+5. internet access /online information
+
+`HTML`
+
+![topics3](images/topicsHTML.png)
+
+HTML submissions topics:
+1. internet /live/speech(?) /crtc/shaw
+2. internet providers /speed/data
+3. rural/internet/phone/telus
+4. rural internet/bell
+5. internet download speed pay
 
 ##### Most common positive/negative words
 
@@ -222,10 +263,22 @@ Narrative:
 Similarly in ACORN submissions most common negative word is pay, it goes along with worry
 
 Narrative:
-- negative: pay-worry-poor-limited-struggle-difficult
-- positive: hope-chance-care-support
+- negative: pay-worry-poor-hard-limited-struggle-difficult
+- positive: helps-save-hope-care-support
 - to the question how would your life change if you have affordable internet:
 helps-fun-nice-happy-healthy
+
+
+`HTML`
+
+![words3](images/wordsHTML.png)
+
+Most common negative word is pay.
+
+Narrative:
+- negative: pay-poor-limited-ridiculous-disadvantage-terrible.
+- positive: opportunities to improve, hope, support, fair, happy, encourage
+
 
 ##### Most negative/positive comments
 
@@ -243,11 +296,21 @@ helps-fun-nice-happy-healthy
 
 `Negative ACORN`:
 
-"I would be able to afford a car and insurance for it gas without that money i can not afford to get married or own or insure a car for that ma er and that makes me very mad. "
+"The medical research I access is critically important as I have a health issue I must keep up to date on and my doctor sends me for the tests etc but does not have me to discuss in detail I want to keep up regarding the latest break- throughs and alternative therapies. I would feel more lost and worried without out more extensive information. Being able to email is very important as it keeps me connected to others and as I have this health issue right now it al- lows me to connectwhen I don't always have the energy to go out. "
+
+`Positive HTML(not really positive)`
+
+"I am using this as an opportunity to voice my opinion regarding internet in Nova Scotia- that being in rural areas. Several years back Eastlink \"won\" the contract in my area of N.S. ( Lunenburg County) to provide high speed internet. Previously having \"dial-up\" , this was a miracle. First of all they were at least a year over contract to have the job done and our government did nothing to obtain penalties from them. So, then we get it  ! So excited ! As it stands now , evenings and weekends, I am no better off than I was with dial-up. I have called and had my system checked out and told \"NO, that's as good as it gets\" . While I am thankful to have this wireless, the speeds are nowhere near what we were promised and nobody is checking into this. So Eastlink can brush us off and there are no consequences. We are supposed to be satisfied. Bell advertises Fibre-Op - what a joke that is. You have to live somewhere in town or close to town to get it. We are being shafted by corpor... <truncated>"
+
+`Negative HTML`
+
+"I am a resident of Chaplin Saskatchewan and a vacationer at Palliser Regional Park on Lake Diefenbaker SK.  Our cellular service is absolutely terrible.  We farm 5 miles north of the #1 highway and our service is spotty at best.  North of us where we farm there is absolutely no cell service at all which makes it impossible for communications for breakdowns or any urgent problems or emergencies.At Palliser Park we have a seasonal site and there is not service where we camp there.  We bought a $600 booster so that we can at least be able to text but the tower there is too small to provide service once the park is at full capacity.  This not only causes problems at the park but it hinders all surrounding communities as far a Central Butte, SK.These concerns only encompass cellular coverage.  We also have absolutely terrible internet service.  Worse than the old dial up internet use to be.People in the cities pay a fee for service and have service!  We in the rural areas have to pay f... <truncated>
 
 ### Conclusion
-Both OpenMedia and ACORN submissions discuss the importance  of affordable  internet access.
+OpenMedia and ACORN and HTML submissions discuss the importance  of affordable  internet access and talk about internet speeds.
 
-OpenMedia submissions talk more about about large  telecom companies, real competition, industrialized world and community access.
+OpenMedia submissions talk more about about large  telecom companies, real competition, industrialized world and community access. OM submissions mostly often mention upload/download speed  5/25.
 
-ACORN submissions touch low-income families issues, discuss internet as  necessity for work and  stay in touch with family and friends.
+ACORN submissions touch low-income families issues, discuss internet as  necessity for work and  everyday life.
+
+HTML submissions mostly discuss large telecom provides - Shaw, Bell and Telus, talk about 1/5 upload/download speeds, mention phone services cell and land.
