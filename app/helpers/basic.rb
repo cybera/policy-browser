@@ -21,7 +21,7 @@ module Sinatra
     end
 
     def smart_paragraphs(newlines_str)
-      paragraphs = newlines_str.split(/\n+/).select do |para| 
+      paragraphs = newlines_str.gsub("\u00A0", " ").split(/\n+/).select do |para| 
         para.strip != ""
       end
       
@@ -35,6 +35,14 @@ module Sinatra
       end.map do | short, parachunk | 
         short ? parachunk.join("<br/>") : parachunk.map { |para| "<p>#{para}</p>" }
       end.join("\n")
+    end
+
+    def navigation_active_css(path)
+      if request.path_info == path
+        "active"
+      else
+        ""
+      end
     end
   end
 

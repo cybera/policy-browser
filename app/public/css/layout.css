@@ -22,3 +22,11 @@ body {
 .browser-navigation-style-dropdown ul.dropdown-menu {
   width: 100%;
 }
+
+span.badge a {
+  color: yellow;
+}
+
+.list-group-item {
+  overflow-wrap: break-word;
+}
