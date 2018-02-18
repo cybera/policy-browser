@@ -1,3 +1,16 @@
+function updateQuality(element, quality) {
+  var link_quality = parseFloat($(element).attr("prop-quality"));
+  if(quality >= link_quality - Number.EPSILON) {
+    $(element).attr("href", $(element).attr("href").replace("/link", "/unlink"));
+    $(element).find("span.glyphicon").removeClass("glyphicon-star-empty");
+    $(element).find("span.glyphicon").addClass("glyphicon-star");
+  } else {
+    $(element).attr("href", $(element).attr("href").replace("/unlink", "/link"));
+    $(element).find("span.glyphicon").removeClass("glyphicon-star");
+    $(element).find("span.glyphicon").addClass("glyphicon-star-empty");
+  }
+}
+
 $(function() {
   $('a.query-link-toggle').click(function() {
     $.ajax({
@@ -6,15 +19,10 @@ $(function() {
       context: this,
       async: true,
       success: function(data){
-        if(data.linked) {
-          $(this).attr("href", $(this).attr("href").replace("/link", "/unlink"));
-          $(this).find("span.glyphicon").removeClass("glyphicon-star-empty");
-          $(this).find("span.glyphicon").addClass("glyphicon-star");
-        } else {
-          $(this).attr("href", $(this).attr("href").replace("/unlink", "/link"));
-          $(this).find("span.glyphicon").removeClass("glyphicon-star");
-          $(this).find("span.glyphicon").addClass("glyphicon-star-empty");
-        }
+        updateQuality(this, data.quality);
+        $(this).siblings("a.query-link-toggle").each(function(index, element) {
+          updateQuality(element, data.quality);
+        });
       }
     });
     return false;

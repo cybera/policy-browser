@@ -2,13 +2,31 @@
 <ul class="list-group">
   <% queries.each do | q | %>
     <li class="list-group-item">
-      <a class="query-link-toggle" 
-         href='/question/<%= question['id'] %>/<%= q['linked'] ? 'unlink' : 'link' %>/<%= q['id'] %>'
-         style = "float: right; margin-left:10px">
+      <a class="query-link-toggle" prop-quality="1.0" style="float:right;"
+         href='/question/<%= question['id'] %>/<%= q['quality'] >= 1.0 ? 'unlink' : 'link' %>/<%= q['id'] %>?quality=1.0'>
+        <span class="glyphicon glyphicon-star<%= q['quality'] >= 1.0 ? '' : '-empty' %>"></span>
+      </a>
+      <a class="query-link-toggle" prop-quality="0.8" style="float:right;"
+         href='/question/<%= question['id'] %>/<%= q['quality'] >= 0.8 ? 'unlink' : 'link' %>/<%= q['id'] %>?quality=0.8'>
+        <span class="glyphicon glyphicon-star<%= q['quality'] >= 0.8 ? '' : '-empty' %>"></span>
+      </a>
+      <a class="query-link-toggle" prop-quality="0.6" style="float:right;"
+        href='/question/<%= question['id'] %>/<%= q['quality'] >= 0.6 ? 'unlink' : 'link' %>/<%= q['id'] %>?quality=0.6'>
+        <span class="glyphicon glyphicon-star<%= q['quality'] >= 0.6 ? '' : '-empty' %>"></span>
+      </a>
+      <a class="query-link-toggle" prop-quality="0.4" style="float:right;"
+        href='/question/<%= question['id'] %>/<%= q['quality'] >= 0.4 ? 'unlink' : 'link' %>/<%= q['id'] %>?quality=0.4'>
+        <span class="glyphicon glyphicon-star<%= q['quality'] >= 0.4 ? '' : '-empty' %>"></span>
+      </a>
+      <a class="query-link-toggle" prop-quality="0.2"
+         href='/question/<%= question['id'] %>/<%= q['linked'] ? 'unlink' : 'link' %>/<%= q['id'] %>?quality=0.2'
+         style = "float: right; margin-left:10px;">
         <span class="glyphicon glyphicon-star<%= q['linked'] ? '' : '-empty' %>"></span>
       </a>
       <span class="badge"><%= q['hits'] %></span>
-      <%= q['str'] %>
+      <div style="width:80%">
+        <%= q['str'] %>
+      </div>
     </li>
   <% end %>
 </ul>

@@ -4,11 +4,11 @@ module Sinatra
       def data
         queries = graph_query("""
           MATCH (q:Query)
-          OPTIONAL MATCH (question:Question)<--(q)
+          OPTIONAL MATCH (question:Question)<-[r:ABOUT]-(q)
           WHERE ID(question) = $question
-          WITH q, EXISTS(question.ref) AS linked
+          WITH q, COALESCE(question.ref, false) AS linked, COALESCE(r.quality, 0.0) AS quality
           MATCH (d:Document)--(:Segment)--(q)
-          RETURN q.str AS str, COUNT(DISTINCT d) AS hits, ID(q) AS id, linked
+          RETURN q.str AS str, COUNT(DISTINCT d) AS hits, ID(q) AS id, linked, quality
         """, question:params[:question].to_i)
 
         question = graph_query("""

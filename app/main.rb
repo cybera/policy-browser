@@ -88,24 +88,28 @@ get '/search', &solr_search
 post '/search', &solr_search
 
 post '/question/:question_id/link/:query_id' do
+  quality = params[:quality].to_f || 0.2
+
   results = graph_query("""
     MATCH (question:Question)
     MATCH (query:Query)
     WHERE ID(question) = $question AND ID(query) = $query
-    MERGE (query)-[:ABOUT { method:'browser' }]->(question)
-  """, question:params[:question_id].to_i, query:params[:query_id].to_i)
+    MERGE (query)-[r:ABOUT { method:'browser' }]->(question)
+    SET r.quality = $quality
+  """, question:params[:question_id].to_i, query:params[:query_id].to_i, quality:quality)
 
   content_type :json
-  { linked: true }.to_json
+  { linked: true, quality: quality }.to_json
 end
 
 post '/question/:question_id/unlink/:query_id' do
+  quality = (params[:quality].to_f || 0.2) - 0.2
   graph_query("""
     MATCH (query:Query)-[r:ABOUT]->(question:Question)
     WHERE ID(question) = $question AND ID(query) = $query
-    DELETE r
-  """, question:params[:question_id].to_i, query:params[:query_id].to_i)
+    #{quality > 0.0 ? 'SET r.quality = $quality' : 'DELETE r'}
+  """, question:params[:question_id].to_i, query:params[:query_id].to_i, quality:quality)
 
   content_type :json
-  { linked: false }.to_json
+  { linked: false, quality: quality }.to_json
 end
