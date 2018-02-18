@@ -13,7 +13,7 @@ class OrganizationAliases(TransformBase):
     "Cree Nation Government": [ "Cree Nation Government and Eeyou Communications Network" ],
     "Federation of Canadian Municipalities": [ "Federation of Canadian Municipalities (FCM)" ],
     "Harewaves Wireless": [ "Harewaves Wireless Inc." ],
-    "Manitoba Keewatinowi Okimakinak": [ "Manitoba Keewatinowi Okimakinak Inc." ],
+    "Manitoba Keewatinowi Okimakinak": [ "Manitoba Keewatinowi Okimakinak Inc.", "MKO" ],
     "Media Access Canada": [ "Media Access Canada / Access 2020" ],
     "Open Media": [ "OpenMedia" ],
     "OneWeb": [ "OneWeb, Ltd." ],
