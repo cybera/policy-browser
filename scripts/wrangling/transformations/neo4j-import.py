@@ -9,7 +9,6 @@ import csv
 import sys
 from glob import glob
 import json
-from nltk.tokenize import TextTilingTokenizer
 
 uri = "bolt://neo4j:7687"
 driver = GraphDatabase.driver(uri, auth=("neo4j", "password"))
@@ -24,6 +23,11 @@ metadir = os.path.join("data", "processed", "meta")
 txtdir = os.path.join("data", "processed", "raw_text")
 csvdir = os.path.join("data", "processed")
 hasheddir = os.path.join("data", "processed", "hashed")
+
+def create_indices():
+  with transaction() as tx:
+    tx.run("CREATE INDEX ON :Document(sha256)")
+    tx.run("CREATE INDEX ON :Segment(sha256)")
 
 def merge_core():
   print("Using filenames to merge PublicProcess, Intervention, and Document nodes")
@@ -201,47 +205,7 @@ def merge_dates():
           MATCH (s:Submission)
           WHERE ID(s) = $id
           SET s.date_arrived = $date_arrived
-        """, id=r['id'], date_arrived=date_arrived_val) 
-        
-def merge_segments():
-  print("Splitting documents into segments via nltk.tokenize.TextTilingTokenizer")
-
-  tiler = TextTilingTokenizer()
-
-  with transaction() as tx:
-    results = tx.run("""
-      MATCH (d:Document)
-      WHERE 
-        EXISTS(d.content) AND
-        NOT (d)-[:CONTAINS_SEGMENT]->(:Segment)
-      RETURN ID(d) as id, d.content as content, d.name as name
-    """)
-  
-  for r in results:
-    print(f"Segmenting: {r['name']}")
-
-    with transaction() as tx:
-      content = r['content']
-      segments = [content]
-
-      try:
-        segments = tiler.tokenize(content)
-      except ValueError as e:  # as e syntax added in ~python2.5
-        too_short = "No paragraph breaks were found(text too short perhaps?)"
-        if str(e) != too_short:
-          raise
-
-      seq = 1
-      for segment in segments:
-        tx.run("""
-          MATCH (d:Document)
-          WHERE ID(d) = $docid
-          WITH d
-          MERGE (d)-[:CONTAINS_SEGMENT]->(s:Segment { seq:$seq })
-          SET s.content = $segment
-        """, docid=r['id'], seq=seq, segment=segment)
-        seq = seq + 1
-  
+        """, id=r['id'], date_arrived=date_arrived_val)   
 
 def topics():
   print("Creating topics")
@@ -298,17 +262,27 @@ def doc_french():
                        SET d.translated = $translated
                        """, sha256=row[1],translated=row[3])
 
-merge_core()
-merge_expert_knowledge()
-merge_raw_text()
-merge_content()
-merge_submitter("Client")
-merge_submitter("Designated Representative")
-merge_dates()
-# Currently this slows down way too much on some of the parsed PDF documents (the
-# ones containing ~3000 pages) and may not be useful enough to justify that sort
-# of time investment.
-#merge_segments()
-topics()
-doc_topic()
-doc_french()
+class Neo4JImport(TransformBase):
+  DESCRIPTION = "Base import of data into Neo4J after scraping"
+
+  def match(self):
+    # This whole file should probably be broken into multiple transformations, each with more
+    # specific matching, but for now, this should work to make sure the transformation runs when
+    # it has to (as long as additional changes aren't made to this file – as it won't get run
+    # again after these objects are first created).
+    return neo4j_count("MATCH (n) WHERE n:PublicProcess OR n:Intervention OR n:Phase") == 0
+
+  def transform(self, data):
+    create_indices()
+    merge_core()
+    merge_expert_knowledge()
+    merge_raw_text()
+    merge_content()
+    merge_submitter("Client")
+    merge_submitter("Designated Representative")
+    merge_dates()
+    topics()
+    doc_topic()
+    doc_french()
+
+    return [ "Did initial Neo4J import" ]
