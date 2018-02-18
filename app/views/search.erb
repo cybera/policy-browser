@@ -1,0 +1,63 @@
+<div class="row">
+  <div class="col-md-4">
+    <div class="row text-left">
+      <div>
+        <form action="/search" method="post" class="form-horizontal">
+          <div class="form-group">
+            <div class="col-sm-12">
+              <div class="input-group">
+                <input type="text" class="form-control" name="solr_query_string" 
+                      value="<%= solr_query_string %>" placeholder="Solr query...">
+                <span class="input-group-btn">
+                  <button class="btn btn-default" type="submit" name="action" value="search">Search</button>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="solr_segment_size" class="col-sm-4 control-label">Segment Size:</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" name="solr_segment_size" value="<%= solr_segment_size %>"></input>
+            </div>
+          </div>
+          <% if results.docs.count > 0 %>
+            <div class="form-group">
+              <div class="col-sm-12">
+                <div class="alert alert-success" role="alert">
+                  <button class="btn btn-xs alert-link" style="float:right" type="submit"
+                          name="action" value="show_all">Show All</button>
+                  Showing <b><%= results.docs.count %></b> of <b><%= results.hits %></b> document hits
+                </div>
+              </div>
+              <div class="col-sm-6">
+                    <button class="btn btn-default btn-block" type="submit" name="action" value="add_all">Add All</button>
+              </div>
+              <div class="col-sm-6">
+                    <button class="btn btn-default btn-block" type="submit" name="action" value="add_visible">Add Visible</button>
+              </div>
+            </div>
+            <input type="hidden" name="search_hits" value="<%= results.hits %>"/>
+            <input type="hidden" name="visible_hits" value="<%= results.docs.count %>"/>
+          <% end %>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-8 text-left">
+    <% results.docs.each do | doc | %>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title"><%= doc['name'] %></h3>
+          <h5><%= doc['organization'] %>
+        </div>
+        <ul class="list-group query-matches">
+          <% doc['segments'].each do |segment| %>
+            <li class="list-group-item">
+              <%= segment %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+  </div>
+</div>

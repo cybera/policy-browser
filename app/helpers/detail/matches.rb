@@ -4,14 +4,12 @@ module Sinatra
       def data
         if params[:query]
           segments = graph_query("""
-            MATCH (q:Query)
-            MATCH (o:Organization)<-[:ALIAS_OF*0..1]-()-[r1:ACTING_AS]->(participant:Participant)
-            MATCH (participant)-[:PARTICIPATES_IN]->(sub:Submission)
-            MATCH (sub)-[r2:CONTAINING]->(d:Document)
-            MATCH (q)<-[r4:MATCHES]-(s:Segment)-[r3:SEGMENT_OF]->(d)
-            WHERE ID(q) = $query AND
-              NOT (o)-[:ALIAS_OF]->()
-            RETURN q.str as query, o.name as organization, d.name as document,s.hlcontent as hlcontent, s.content as content
+            MATCH (q:Query)<-[:MATCHES]-(s:Segment)-[:SEGMENT_OF]->(d:Document)
+            WHERE ID(q) = $query
+            WITH q,s,d
+            OPTIONAL MATCH (o:Organization)<-[:ALIAS_OF*0..1]-()-->(:Participant)-->(sub:Submission)-[*0..1]->(d)
+            WHERE NOT (o)-[:ALIAS_OF]->()
+            RETURN q.str as query, d.name as document, o.name as organization, s.hlcontent as hlcontent, s.content as content
           """, query:params[:query].to_i)
           { documents: segments.group_by { |s| s[:document] } }
         else

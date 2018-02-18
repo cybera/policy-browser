@@ -1,10 +1,13 @@
 <ul class="list-group">
-  <% questions.each do | q | %>
+  <% questions.sort_by { |q| q['ref'] }.each do | q | %>
     <li class="list-group-item">
       <b><%= q.ref %></b>: <%= q['content'] %><br/><br/>
       <a href='<%= "/browser?ppn=#{ppn}&question=#{q['id']}&navigation=questions&detail=question_info" %>'>
         Info
-      </a><br/>
+      </a> |
+      <a href='<%= "/browser?ppn=#{ppn}&question=#{q['id']}&navigation=questions&detail=question_queries" %>'>
+        Link Queries
+      </a>
     </li>
   <% end %>
 </ul>

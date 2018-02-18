@@ -1,0 +1,14 @@
+<h4><%= question['ref'] %>: <%= question['content'] %></h4>
+<ul class="list-group">
+  <% queries.each do | q | %>
+    <li class="list-group-item">
+      <a class="query-link-toggle" 
+         href='/question/<%= question['id'] %>/<%= q['linked'] ? 'unlink' : 'link' %>/<%= q['id'] %>'
+         style = "float: right; margin-left:10px">
+        <span class="glyphicon glyphicon-star<%= q['linked'] ? '' : '-empty' %>"></span>
+      </a>
+      <span class="badge"><%= q['hits'] %></span>
+      <%= q['str'] %>
+    </li>
+  <% end %>
+</ul>
