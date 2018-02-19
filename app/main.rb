@@ -4,6 +4,7 @@ require "sinatra"
 require "sinatra/base"
 require "active_support"
 require "active_support/core_ext"
+require "csv"
 
 $:.unshift File.expand_path("..", __FILE__)
 
@@ -112,4 +113,33 @@ post '/question/:question_id/unlink/:query_id' do
 
   content_type :json
   { linked: false, quality: quality }.to_json
+end
+
+get '/csv/:question' do
+  csv_data = graph_query("""
+    MATCH (question:Question)
+    MATCH (query:Query)-[r:ABOUT]-(question)
+    MATCH (query)<--(segment:Segment)-[:SEGMENT_OF]->(doc:Document)
+    MATCH (org:Organization)<-[:ALIAS_OF*0..1]-()-[:SUBMITTED]->(doc)
+    WHERE ID(question) = $question AND
+          NOT (org)-[:ALIAS_OF]->()
+    RETURN doc.name as document, segment.content AS segment, query.str as query, org.category as category, 
+    org.name as organization, COALESCE(r.quality, 0.2) AS quality
+  """, question:params[:question].to_i)
+
+  question = graph_query("""
+    MATCH (q:Question)
+    WHERE ID(q) = $question
+    RETURN q.content AS content, q.ref AS ref, ID(q) AS id
+  """, question:params[:question].to_i).first
+
+  content_type :csv
+  headers["Content-Disposition"] = "attachment;filename=#{question['ref']}-segments.csv"
+
+  str = ""
+  str += CSV.generate_line(csv_data.columns, { :force_quotes => true })
+  str += csv_data.rows.map do |row|
+    CSV.generate_line(row, { :force_quotes => true }).strip.gsub(/\n/,"\\n")
+  end.join("\n")
+  str
 end

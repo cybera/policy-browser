@@ -1,8 +1,49 @@
-<b>Total Organizations:</b><%= organization_count %><br/>
-<b>Organizations w/ Observations:</b><%= observed_organization_count %><br/>
-<b>Missing organizations</b><br/>
-<ul>
-  <% missing_organizations.each do |mo| %>
-    <li><%= mo %></li>
-  <% end %>
-</ul>
+<h4 style="margin-top: 0px"><%= question['ref'] %>: <%= question['content'] %></h4>
+<h3>Covering <%= observed_organization_count %> out of <%= organization_count %> organizations</h3>
+<br/>
+<h4>Categories matched</h4>
+<table class="table table-condensed table-hover">
+  <thead><tr>
+    <th></th>
+    <th>Segments</th>
+    <th>Max Quality</th>
+  </tr></thead>
+  <tbody>
+    <% categories.each do |category_name, records| %>
+      <tr><td><%= category_name %></td><td><%= records.count %></td><td><%= records.map { |r| r["quality"] }.max %></td></tr>
+    <% end %>
+  </tbody>
+</table>
+
+<h4>Queries used</h4>
+<table class="table table-condensed table-hover">
+  <thead><tr>
+    <th></th>
+    <th>Segments</th>
+    <th>Categories</th>
+    <th>Organizations</th>
+    <th>Quality</th>
+  </tr></thead>
+  <tbody>
+    <% queries.each do |query_str, records| %>
+      <%
+        segment_count = records.count
+        category_count = records.group_by { |r| r["category"] }.count
+        organization_count = records.group_by { |r| r["organization"] }.count
+        quality = records.map { |r| r["quality"] }.max
+      %>
+      <tr>
+        <td><%= query_str %></td>
+        <td><%= segment_count %></td>
+        <td><%= category_count %></td>
+        <td><%= organization_count %></td>
+        <td><%= quality %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br/>
+
+<h4>Missing organizations</h4>
+<%= missing_organizations.reject(&:empty?).uniq.join(", ") %>
