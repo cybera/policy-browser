@@ -1,20 +1,22 @@
 <div class="row">
-  <div class="col-md-4">
-    <div class="row dropdown browser-navigation-style-dropdown">
-      <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-        <%= navigation.camelize %>
-        <span class="caret"></span>
-      </button>
-      <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-        <% NavigationHelper.registered_helpers.each do | nav_helper | %>
-          <li><a href="/browser?navigation=<%= nav_helper.param_name %>&ppn=<%= ppn %>">
+  <div class="col-md-12" style="padding-left:0px">
+    <ul class="nav nav-tabs">
+      <%
+        navigation_sorting = ["Timeline", "Organizations", "Queries", "Questions"] 
+        navigation_missing = NavigationHelper.registered_helpers.map { |nav| nav.descriptive_name } - navigation_sorting
+        navigation_sorting += navigation_missing
+        sorted_navigation = NavigationHelper.registered_helpers.sort_by { |nav| navigation_sorting.index(nav.descriptive_name) }
+
+        sorted_navigation.each do | nav_helper | 
+      %>
+        <li role="presentation" class="<%= navigation.camelize.strip == nav_helper.descriptive_name ? 'active' : '' %>">
+          <a href="/browser?navigation=<%= nav_helper.param_name %>&ppn=<%= ppn %>">
             <%= nav_helper.descriptive_name %>
-          </a></li>
-        <% end %>
-      </ul>
-    </div>
+          </a>
+        </li>
+      <% end %>
+    </ul>
   </div>
-  <div class="col-md-8"></div>
 </div>
 <div class="row browser-main-content">
   <div class="col-md-4">
