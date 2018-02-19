@@ -7,7 +7,7 @@
       <% submission_group.each do | submission | %>
         <li class="list-group-item">
           <a href='<%= "/browser?ppn=#{ppn}&submission=#{submission[:id]}&navigation=timeline" %>'>
-            <%= "#{submission[:case]}-#{submission[:name]}" %>
+            <%= "#{submission[:name]}#{!submission[:author].empty? ? ': ' : ''}#{submission[:author]}" %>
           </a>
         </li>
       <% end %>

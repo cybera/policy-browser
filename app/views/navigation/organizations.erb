@@ -10,7 +10,7 @@
       <% submission_group.each do | submission | %>
         <li class="list-group-item">
           <a href='<%= "/browser?ppn=#{ppn}&submission=#{submission[:id]}&navigation=organizations" %>'>
-            <%= "#{submission[:case]}-#{submission[:name]}" %>
+            <%= "#{submission[:name]} (case: #{submission[:case]})" %>
           </a>
         </li>
       <% end %>

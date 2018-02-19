@@ -27,6 +27,6 @@ span.badge a {
   color: yellow;
 }
 
-.list-group-item {
+.list-group-item, .panel-body {
   overflow-wrap: break-word;
 }
