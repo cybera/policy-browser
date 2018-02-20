@@ -1,6 +1,34 @@
 # hey-cira
 repo for various CIRA project deliverables
 
+<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+
+- [hey-cira](#hey-cira)
+	- [Running w/ Docker](#running-w-docker)
+	- [Getting started with Neo4j](#getting-started-with-neo4j)
+		- [Adding data to Neo4J](#adding-data-to-neo4j)
+	- [Getting started with Solr](#getting-started-with-solr)
+		- [Why Solr?](#why-solr)
+		- [Web interface](#web-interface)
+		- [Solr Query Basics](#solr-query-basics)
+		- [Segment script](#segment-script)
+	- [The Hey CIRA Browser](#the-hey-cira-browser)
+		- [Running the browser](#running-the-browser)
+		- [Adding new styles of navigation](#adding-new-styles-of-navigation)
+		- [Adding to the navigation selector](#adding-to-the-navigation-selector)
+		- [Navigation links](#navigation-links)
+		- [Adding a new style of detail display](#adding-a-new-style-of-detail-display)
+		- [TODO](#todo)
+		- [CSS, Javascript, and Bootstrap](#css-javascript-and-bootstrap)
+	- [Transformation Scripts](#transformation-scripts)
+		- [Preconditions](#preconditions)
+		- [Helper functions](#helper-functions)
+		- [The .skip-transforms file](#the-skip-transforms-file)
+		- [I just want to change some data. Why do it this way?](#i-just-want-to-change-some-data-why-do-it-this-way)
+	- [Deprecated: old local Ruby installation instructions](#deprecated-old-local-ruby-installation-instructions)
+
+<!-- /TOC -->
+
 ## Running w/ Docker
 
 1. Install [Docker](https://www.docker.com)
@@ -24,7 +52,7 @@ repo for various CIRA project deliverables
   bin/solr start
   ```
 
-  Persistent data for these containers will be stored under *data/neo4j* and *data/solr*. It is not intended to be checked in and is ignored by git. 
+  Persistent data for these containers will be stored under *data/neo4j* and *data/solr*. It is not intended to be checked in and is ignored by git.
 
   The neo4j database will be available at [localhost:7474](localhost:7474). In order to make the next step work, change the password to 'password'.
 
@@ -43,7 +71,14 @@ repo for various CIRA project deliverables
   bin/wrangle-neo4j
   ```
 
-7. Import Neo4j Document nodes into Solr for fuzzy text searches
+7. Import and modify various other pieces of the Neo4j database  
+  See the [Transformation Scripts](#transformation-scripts) section for more details.
+
+  ```
+  bin/transform
+  ```
+
+8. Import Neo4j Document nodes into Solr for fuzzy text searches
 
   ```
   bin/script import/neo4j-to-solr.py
@@ -77,8 +112,8 @@ Show 10 organizations:
 
   ```
   // Organizations
-  MATCH(n:Organization) 
-  RETURN n 
+  MATCH(n:Organization)
+  RETURN n
   LIMIT 10
   ```
 
@@ -102,8 +137,8 @@ Wipe the database (useful when you're working on something to do with the import
 
   ```
   // Delete queries and results
-  MATCH(n) 
-  WHERE n:Segment OR n:Query 
+  MATCH(n)
+  WHERE n:Segment OR n:Query
   DETACH DELETE n;
   ```
 
@@ -133,7 +168,7 @@ The web interface can be accessed from [http://localhost:8983](http://localhost:
 
 ### Solr Query Basics
 
-Solr queries are sent via HTTP requests, and results are HTTP responses. Results can be returned in a number of formats, including XML and JSON. We've only used JSON in our code so far. [The documentation on the Query Parser](https://lucene.apache.org/solr/guide/6_6/the-standard-query-parser.html) is pretty good for figuring out what you might want to put in your query. There's a good collection of logical operators, wildcard matching, and fuzzy match operators. 
+Solr queries are sent via HTTP requests, and results are HTTP responses. Results can be returned in a number of formats, including XML and JSON. We've only used JSON in our code so far. [The documentation on the Query Parser](https://lucene.apache.org/solr/guide/6_6/the-standard-query-parser.html) is pretty good for figuring out what you might want to put in your query. There's a good collection of logical operators, wildcard matching, and fuzzy match operators.
 
 The first part of a query string is usually the field you're matching. In our case, it'll almost always be "content". So to search for references to "network speed" in our documents, we might form the query: 'content:"network speed"'. What if we want to grab document sections where people are talking about things like "network needs higher speed" or "network is too slow"? Well, we could choose to be a bit fuzzier with the amount of words we allow between "network" and "speed". So, 'content:"network speed"~2 would allow 2 "edits" to the tokens in the search string in any match. And we could add extra conditions to allow variations: 'content:("network speed"~2 OR "network slow"~2).
 
@@ -307,8 +342,8 @@ Adding a new navigation style invovles two main tasks:
   You could get the same results using raw ruby code:
 
   ```ruby
-  "<ul>" + 
-    string_array.map { |str| "<li>#{str}</li>" } + 
+  "<ul>" +
+    string_array.map { |str| "<li>#{str}</li>" } +
   "</ul>"
   ```
 
@@ -322,8 +357,8 @@ Adding a new navigation style invovles two main tasks:
   line is that you're guaranteed to have access to any variables you return in the `data` method of your
   `YourHelperClassName` above. The variables will be named the same as the keys of that hash. The other things
   you should have access to are various "helper" methods. See, for example, *helpers/basic.rb*. You can find
-  examples of where some of those methods are used in various ERB templates. 
-  
+  examples of where some of those methods are used in various ERB templates.
+
   See the [Sinatra documentation](http://sinatrarb.com/extensions.html) for more extensive information on
   how to writer helpers and add them in.
 
@@ -360,7 +395,7 @@ module Sinatra
 end
 ```
 
-There currenly isn't any way of choosing different display styles explicitly (the navigation link tends 
+There currenly isn't any way of choosing different display styles explicitly (the navigation link tends
 to dictate the display style), but in theory, this wouldn't be too hard to add.
 
 ### TODO
@@ -373,7 +408,7 @@ in their browser.
 
 ### CSS, Javascript, and Bootstrap
 
-We're using [Bootstrap](https://getbootstrap.com/docs/3.3/) as a UI framework. It will handle the vast majority 
+We're using [Bootstrap](https://getbootstrap.com/docs/3.3/) as a UI framework. It will handle the vast majority
 of things you might want to otherwise do in CSS and/or Javascript. See their extensive documentation for good
 code snippits you might want to use. As long as you use the right CSS class names and HTML property values,
 they often "just work".
