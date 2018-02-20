@@ -112,6 +112,8 @@ plot.mbps <- function(df, mbps_colname, mbps_label="Mbps", threshold=NA, remove_
   if(remove_dups == TRUE){
     df.should_score <- df.should_score %>% arrange(desc(should_score)) %>% 
       distinct(content, .keep_all = TRUE) 
+    df.no_should_score <- df.no_should_score %>% arrange(desc(should_score)) %>% 
+      distinct(content, .keep_all = TRUE) 
   }
   
   
