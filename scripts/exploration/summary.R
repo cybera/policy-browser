@@ -1,11 +1,60 @@
 library(RNeo4j)
 library(dplyr)
 library(ggplot2)
-library(cld2)
+#library(cld2)
 library(stringr)
 library(readr)
 
 graph <- startGraph("http://localhost:7474/db/data/", username = "neo4j", password = "password")
+
+#General summary stats:
+#Total number of documents
+q.docs_total <- "
+  MATCH (n:Document) RETURN count(n)
+"
+cypher(graph, q.docs_total)
+
+#Number of organizations who submitted
+q.orgs_total <- "
+  MATCH (o:Organization) RETURN count(o)
+"
+orgs_total <- cypher(graph, q.orgs_total)
+print(orgs_total)
+
+#Docs per phase
+q.docs_phase <- "
+  MATCH (o:Organization)-[r*2]->(s:Submission)-->(d:Document)
+RETURN DISTINCT s.name AS phase, o.name AS organization, o.category AS category,
+COUNT(DISTINCT d.sha256) AS n, ID(s) AS id
+"
+df.docs_phase <- cypher(graph, q.docs_phase)
+
+df.docs_phase %>% group_by(phase) %>% summarise(submissions_per_phase = sum(n)) %>% arrange(desc(submissions_per_phase))
+
+#Total number of intervenors
+#Organiztions
+orgs_total
+
+#Individual html submissions
+q.html_submissions <- "
+  MATCH path=(:Person)-[]-(p:Participant)-[]-(:Submission)-[]-(d:Document {type:'html'})
+  WHERE NOT (:Organization)-[]-(p)
+  RETURN COUNT(d)
+"
+html_total <- cypher(graph, q.html_submissions)
+
+#ACORN submissions analyzed (from Tatiana)
+acorn_total <- 289
+
+#OpenMedia individual submissions
+q.openmedia_submissions <- "
+  match ()-[o]-() where o.method = 'divide-big-docs'
+  return count(distinct o)
+"
+openmedia_total <- cypher(graph, q.openmedia_submissions)
+
+total_intervenors <- orgs_total + html_total + acorn_total + openmedia_total
+
 
 q.docs_per_category <- "
   MATCH (o:Organization)-->(d:Document) 
@@ -13,6 +62,8 @@ q.docs_per_category <- "
 "
 
 df.docs_per_category <- cypher(graph, q.docs_per_category)
+
+
 plot.doc_submissions_per_organization_type <- df.docs_per_category %>% 
   mutate(category = reorder(category, n)) %>%
   ggplot(aes(x=category, y=n)) + 
@@ -22,6 +73,8 @@ plot.doc_submissions_per_organization_type <- df.docs_per_category %>%
   ylab("Number of submissions") +
   theme(panel.background = element_blank()) +
   ggtitle("Document Submissions per Organization Type")
+
+
 ggsave("notebooks/images/document_submissions_per_organization_type.png",
        plot.doc_submissions_per_organization_type)
 
