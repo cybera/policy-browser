@@ -11,7 +11,7 @@
       <h3 class="panel-title"><a href="#<%= category_header_id %>" data-toggle="collapse"><%= category || "NA" %></a></h3>
     </div>
     <ul class="list-group query-matches panel-collapse collapse in" id="<%= category_header_id %>">
-      <% segments.each do | segment | %>
+      <% segments[0...5].each do | segment | %>
         <li class="list-group-item">
           <%= smart_paragraphs(segment[:content]) %>
           <br/>
@@ -35,7 +35,7 @@
       <h3 class="panel-title"><a href="#<%= organization_header_id %>" data-toggle="collapse"><%= organization || "NA" %></a></h3>
     </div>
     <ul class="list-group query-matches panel-collapse collapse in" id="<%= organization_header_id %>">
-      <% segments.each do | segment | %>
+      <% segments[0...5].each do | segment | %>
         <li class="list-group-item">
           <%= smart_paragraphs(segment[:content]) %>
           <br/>
