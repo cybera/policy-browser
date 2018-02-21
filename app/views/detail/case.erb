@@ -1,7 +1,8 @@
 <% documents.each do | document | %>
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h3 class="panel-title"><%= document[:name] %></h3>
+      <h3 class="panel-title"><%= authored_by(document[:submission_name], author(document)) %></h3>
+      <h5>Document Name: <%= document[:name] %></h5>
     </div>
     <div class="panel-body">
       <%= smart_paragraphs(document[:content]) %>

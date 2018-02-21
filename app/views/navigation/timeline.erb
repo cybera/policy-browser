@@ -7,7 +7,7 @@
       <% submission_group.each do | submission | %>
         <li class="list-group-item">
           <a href='<%= "/browser?ppn=#{ppn}&submission=#{submission[:id]}&navigation=timeline" %>'>
-            <%= "#{submission[:name]}#{!submission[:author].empty? ? ': ' : ''}#{submission[:author]}" %>
+            <%= authored_by(submission[:name], author(submission)) %>
           </a>
         </li>
       <% end %>

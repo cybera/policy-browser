@@ -44,6 +44,18 @@ module Sinatra
         ""
       end
     end
+
+    def author(data_row, organization_name_key=:organization, person_name_key=:person)
+      if !(data_row[organization_name_key].to_s.empty? || data_row[person_name_key].to_s.empty?)
+        "#{data_row[organization_name_key]} (#{data_row[person_name_key]})"
+      else
+        data_row[organization_name_key].to_s.empty? ? data_row[person_name_key] : data_row[organization_name_key]
+      end
+    end
+
+    def authored_by(text, author)
+      "#{text}#{!author.to_s.empty? ? ': ' : ''}#{author}"
+    end
   end
 
   helpers BasicHelpers
