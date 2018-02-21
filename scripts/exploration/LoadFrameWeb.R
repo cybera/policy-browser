@@ -10,65 +10,54 @@ library(ggraph)
 library(tidyr)
 library(text2vec)
 library(data.table)
-library(qdap)
 library(tm)
+library(SnowballC)
 
-# Note you need to run this as root 
-relevance.affordability <- read.csv("doc2vec_advocacy_afford_filter_300.csv")
+# of your image file to root, so you may have to chown the file after
 
+relevance.affordability <- read.csv("all_orgs_filter.csv")
 
-
+# uncomment/comment max_relevance stuff to filter according to cosine similiarity 
 bigram_counts<-relevance.affordability %>%
-  #mutate(bigram = paste(word1, word2)) %>%
-#  mutate(max_relevance = pmax(relevance1, relevance2)) %>%
-#  filter(max_relevance > 0.6) %>%
-  mutate(word1=word1, word2=word2)# %>%
-  #count(word1, word2, sort = TRUE) %>%
-  #mutate(word1=stemCompletion(as.character(word1), scan_tokenizer(word1)), word2=stemCompletion(as.character(word2), scan_tokenizer(word2)))
-  #count(bigram, sort=TRUE) %>%
-  #bind_tf_idf(word1, Organization, n) %>%
-  # arrange(desc(tf_idf)) %>%
- # mutate(bigram = factor(bigram, levels = rev(unique(bigram))))
-print("DF")
+  mutate(max_relevance = pmax(relevance1, relevance2)) %>%
+  filter(max_relevance > 0.6) %>%
+  mutate(word1=word1, word2=word2)
+
+  
+
+
+# create a corpus to re-stem the words after the bigrams are counted using
+# the stemmed form. 
 corp1 = array(bigram_counts$word1)
 corp2 = array(bigram_counts$word2)
 corpus = Corpus(VectorSource(cbind(corp1, corp2)))
-print("DFF")
+
 bigram_counts <- bigram_counts %>%
-  mutate(word1 = tolower(stemmer(word1)), word2 = tolower(stemmer(word2))) %>%
+  mutate(word1 = tolower(wordStem(word1)), word2 = tolower(wordStem(word2))) %>%
   count(word1, word2, sort=TRUE) #%>%
- # mutate(word1=stemCompletion(word1, dictionary=corpus), 
-    #     word2=stemCompletion(word2, dictionary=corpus))
+bigram_counts
 
-
-# I note that this is slow. Like, annoyingly slow. It's not so slow
-# you can go home, but it's slow enough that you have enough time
-# to start an existential crisis. 
+# this is slow so we filter before to do less work
 bigram_counts <- bigram_counts %>% 
+  filter(n >= 25) %>%
   mutate(word1=stemCompletion(word1, dictionary=corpus), 
         word2=stemCompletion(word2, dictionary=corpus))
-
 bigram_counts
 
 
 bigram_graph<-bigram_counts %>%
-   # separate(bigram, c("word1" ,"word2"), sep=" ") %>%
-   # count(word1, word2, sort=TRUE) %>%
-   # unite("bigrm", c(word1, word2), sep=" ") %>% 
-    filter(n >= 65) %>%
     graph_from_data_frame()
-
-
 
 
 #set.seed(13423524)
 ggraph(bigram_graph, layout = 'fr')+
-	geom_edge_link(aes(edge_alpha=n), 
-					         show.legend=FALSE,
-                     end_cap = circle(0.03, 'inches')) +
+	geom_edge_link(
+    aes(edge_alpha=n), 
+		show.legend=FALSE,
+    end_cap = circle(0.03, 'inches')) +
 	geom_node_point(color="lightblue", size=4) +
 	geom_node_text(aes(label=name), repel=TRUE, size=2.1) +
   theme_void() + 
-  ggtitle("Discussion of Affordability by Advocacy Groups")
+  ggtitle("Discussion of Affordability by All Groups")
 
-ggsave("../hey-cira/notebooks/images/advocacy_doc2vec_afford_no_filter.png", height=5, width= 5)
+ggsave("../hey-cira/notebooks/images/all_doc2vec_afford_filter.png", height=5, width= 5)

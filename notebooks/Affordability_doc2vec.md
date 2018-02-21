@@ -4,6 +4,8 @@
 
 This document will outline both the methods used and the organizational response to the question put forward by the CRTC concerning whether or not internet access in Canada is affordable.
 
+NOTE: The completed stems do okay, but sometimes something like "funding" becomes "funded" so keep that in mind when reading the bigrams below. Or my personal favorite "information" sometimes becomes "informatica".
+
 # Doc2vec
 
 [Doc2vec](https://radimrehurek.com/gensim/models/doc2vec.html) is a machine learning algorithm which can be used to learn the semantic meaning or context of various lengths of text. This can be useful in order to find lengths of text which express a similar sentiment, or discuss similar topics. This is done by transforming each unique length of text, either sentences, paragraphs, or entire documents, into a vector representation of the text. Once each length of text has been vectorized, these vectors are then used to train a shallow three layer neural network (input, hidden and output), allowing the network to 'learn' the context expressed in each length of text. Once the neural network is trained, it is then possible to find the lengths of text which are most similar to each other based on their vector inner product from the output of the neural network. This method also has the advantage that you can find lengths of text that the network was trained on that are most similar to a length of text of your choosing -- in other words `doc2vec` provides an excellent search tool for concepts or ideas within a corpus of text.
@@ -23,7 +25,7 @@ The algorithm used to find similar sentences within a set of documents contains 
 
 ![alt-text](images/histogram_cdf.png)
 
-Using this algorithm, around 4000 sentences containing something conceptually similar to "affordability of broadband internet access" are found within the documents. Another interesting artifact of this analysis is that the histogram formed is functionally similar to an inverse exponential function, meaning that the "similarity" of sentences to our search term drop off exponentially with respect to how often they appear as the most similar terms. Using this histogram, we can rank tagged sentences by how frequently they appeared in the Monte Carlo analysis.
+Using this algorithm, around 4000 sentences containing something conceptually similar to "affordability of broadband internet access" are found within the documents. Certainly, semantic relevance to the neural network may be different from semantic relevance as found by a human. Another interesting artifact of this analysis is that the histogram formed is functionally similar to an inverse exponential function, meaning that the "similarity" of sentences to our search term drop off exponentially with respect to how often they appear as the most similar terms. Using this histogram, we can rank tagged sentences by how frequently they appeared in the Monte Carlo analysis.
 
 Once each sentence was tagged, in order to understand the discussions taking place, we then gathered two sentences above and below the sentence tagged by `doc2vec`, ensured that there was no overlap between two sentences that were found near-adjacent to avoid repeated data, and used those fragments of text in the following analysis.
 
@@ -41,7 +43,8 @@ $N$-grams can be visualized as a web of words, where bigrams that share common w
 ### All Groups
 
 #### Unfiltered Bigram Web
-To get a sense of the common issues surrounding the question of affordability it is instructive to see the most common word bigrams that appear in the entire corpus of the 1105 segments of text. Using this information, we can judge the most common phrases used in the entire corpus. This is shown in the image below, displaying only the bigrams which appear $N>75$ times. We have also applied a stemmer to the word pairs in order to ensure that different conjugations are only counted as one. For example the word "application" or "applies" would both be mapped to a root form of "appli". Or the word "service" or "services" would both be mapped to "serv".
+
+To get a sense of the common issues surrounding the question of affordability it is instructive to see the most common word bigrams that appear in the entire corpus of the 1105 segments of text. Using this information, we can judge the most common phrases used in the entire corpus. This is shown in the image below, displaying only the bigrams which appear $N>70$ times. We have also applied a stemmer to the word pairs in order to ensure that different conjugations are only counted as one. However, after word pairs were sorted we "completed" the stems once again. We note however, that this process isn't perfect and sometimes the completed stems aren't the most 'logical' choice. For example, on occasion information will appear as 'informatica' etc.
 
 ![alt-text](images/all_doc2vec_afford_no_filter.png)
 
@@ -57,12 +60,12 @@ In order to gain insight into the discussion advocacy organizations are having s
 ```
 cost, affordability, price and expensive
 ```
-which should return to us a highly relevant bigram web. Shown below is the common word pairs from all the documents using the above word embedding filter which we have only shown bigrams with frequency $N \geq 30$.
+which should return to us a highly relevant bigram web. Shown below is the common word pairs from all the documents using the above word embedding filter which we have only shown bigrams with frequency $N \geq 25 $.
 
 
 ![alt-text](images/all_doc2vec_afford_filter.png)
 
-This provides us with a much more succinct and relevant overview of the common terms used in regards to a discussion of internet affordability. The most common terms within this subset of documents surround funding, afford(ability) and internet. A secondary cluster of words surrounding broadband and provide show us another secondary discussion taking place. It is tempting to take the "top-down" view of this information and begin trying to interpret this plot beyond a statement of common discussion points. However, it will be more useful to filter the text segments by organizational category, and discover which topics are important to each group, rather than making generalizations based on the entire discussion.
+This provides us with a much more succinct and relevant overview of the common terms used in regards to a discussion of internet affordability. The most common terms within this subset of documents surround fund(ing), afford(ability) and internet. A secondary cluster of words surrounding broadband and provide show us another secondary discussion taking place. It is tempting to take the "top-down" view of this information and begin trying to interpret this plot beyond a statement of common discussion points. However, it will be more useful to filter the text segments by organizational category, and discover which topics are important to each group, rather than making generalizations based on the entire discussion. I am hesitant to interpret this further than stating that these are the most common word pairs in the discussion around affordability in the documents submitted to the CRTC.  
 
 ### Advocacy Organizations
 
@@ -77,11 +80,11 @@ Where this plot is eerily similar to the plot of most common terms used by all o
 In this case we have filtered down to words which share a cosine similarity to the above of greater than 0.6, and display only bigram pairs that appear $N \geq 16$ times within the text supplied by the responses from advocacy groups.
 
 
-![alt-text](images/advocacy_doc2vec_afford_filter.png)
+![alt-text](images/advocacy_doc2vec_afford_filter.png)  
 
-The above figure shows us the most common terms used by advocacy groups which directly relate to the concept of affordability, filtered from the segments related in context to affordability of internet access.  In the largest cluster of word pairs we see that the advocacy groups use language suggesting discussion relevant to consumer-end pricing of internet access and government funding mechanisms. Using this plot it may be reasonable to state that the discussion concerning affordability by advocacy groups are centered around ensuring that internet access is affordable for the consumer. There is also significant discussion of government funding programs, which either center around funding for new infrastructure, or for Canadian consumers to have access to the internet. However, as we lose all sense of context from a figure such as this, the discussion about government funding could either be in terms of subsidies to expand existing infrastructure, government funding for non-profit organizations, or financial assistance for low-income households.
+The above figure shows us the most common terms used by advocacy groups which directly relate to the concept of affordability, filtered from the segments related in context to affordability of internet access.  In the largest cluster of word pairs we see that the advocacy groups use language suggesting discussion relevant to consumer-end pricing of internet access and government funding mechanisms. Using this plot it may be reasonable to state that the discussion concerning affordability by advocacy groups are centered around ensuring that internet access is affordable for the consumer. There is also significant discussion of government funding programs, which either center around funding for new infrastructure, or for Canadian consumers to have access to the internet. Interestingly the most frequent bigrams from the advocacy groups are "afford <-> internet", "fund(ing) <-> opportunities", "low <-> income" and "telecom <-> companies", which would indicate that the advocacy groups had significant discussion around these topics. However, we lose all sense of context surrounding interesting word pairs in a figure such as this. For example the discussion about government funding could be in terms of subsidies to expand existing infrastructure, government funding for non-profit organizations, or financial assistance for low-income households.
 
-In essence these results aren't necessarily surprising. Advocacy groups seem to be primarily concerned with the affordability and access from the perspective of Canadian consumers, with common word pairs such as "price" and "gouge" and many common word pairs around "afford".  There are also many common bigrams relevant to government funding programs. Essentially what we're finding is that the discussion relevant to affordability by advocacy groups is a discussion of affordability from their perspective.
+In essence these results aren't necessarily surprising. Advocacy groups seem to be primarily concerned with the affordability and access from the perspective of Canadian consumers, with common word pairs such as "price" and "gouge" and many common word pairs around "afford".  There are also many common bigrams relevant to government funding programs. Essentially this shows the discussion relevant to affordability by advocacy groups is a discussion centered around affordability issues important to the interests of advocacy groups. In other words, advocacy groups use language surrounding affordability that would suggest a consumer-centric point of view.
 
 ## Government Groups
 
@@ -91,7 +94,7 @@ The responses of government groups in regards to sentences that are semantically
 
 Discussion by government groups surrounding affordability is noticeably different than that of the advocacy groups with respect to frequent word pairs. In terms of government discussion surrounding affordability there exist many frequent word pairs surrounding revenues and government funding mechanisms. Drawing our attention to the largest cluster around the word "prodid (provide)" we see that during the discussion of affordability by government groups that there are many common word pairs concerning providing access, service, consumers and so forth. Government organizations seem to be using language focused around, funding, revenues, and subsidies, as well as language surrounding the issues of services provided.
 
-Again this isn't necessarily surprising. Government groups discuss affordability in a way that is relevant to them in terms of both providing or receiving funding, and affordability and access with respect to their constituents.
+Again this isn't necessarily surprising. Government groups discuss affordability as it is relevant to them: in terms of both providing or receiving funding, and affordability and access with respect to their constituents.
 
 
 ## Telecom incumbents
@@ -110,9 +113,11 @@ The discussion of the cable incumbent groups surrounding affordability is shown 
 In the case of the cable incumbents the language used surrounding the issue of affordability again is surrounding affordability through the lens of the particular incumbent. There is popular bigram pairs surrounding the word "market" with common pairs in terms of "forc (force(s))" and "competit (competition)" as well as retail. There is also a small cluster surrounding the word "fund" with respect to receive and government. Much like the telecom incumbents, the discussion of affordability by cable incumbents is primarily focused on what is affordable in terms of the services they provide.
 
 ## Small Incumbents
-Showing bigrams with frequency $N \geq 1$ from 33 text segments. Honestly I don't think there's enough here to warrant any discussion. There's not much to see. It might be smarter to group these with cable or telecoms? oR just ignore them completely as this doesn't add anything to the discussion that we haven't already talked about.
+Showing bigrams with frequency $N \geq 2$ from 33 text segments. Honestly I don't think there's enough here to warrant any discussion. There's not much to see. It might be smarter to group these with cable or telecoms? oR just ignore them completely as this doesn't add anything to the discussion that we haven't already talked about.
 
 ![alt-text](images/small_doc2vec_afford_filter.png)
+
+Although I note that there is an interesting popular bigram between cost and service, which would indicate that small incumbents talk about "cost of service" with great frequency (16 times in all)
 
 ## 'Other' groups
 Showing bigrams with frequency $N \geq 3$ from 80 segments of text found by `doc2vec`.
@@ -122,7 +127,7 @@ The submissions contained within this group come primarily from individual respo
 
 
 ## Other incumbents
-This shows bigrams with frequency $N\geq 3$ from 155 segments found by `doc2vec`. Honestly there's not much new going on here either that we haven't already seen before. Other incumbents seem to have a discussion of affordability that is similar to telecoms and cable companies.
+This shows bigrams with frequency $N\geq 4$ from 155 segments found by `doc2vec`. Honestly there's not much new going on here either that we haven't already seen before. Other incumbents seem to have a discussion of affordability that is similar to telecoms and cable companies.
 ![alt-text](images/otherinc_doc2vec_afford_filter.png)
 
 
@@ -130,4 +135,4 @@ This shows bigrams with frequency $N\geq 3$ from 155 segments found by `doc2vec`
 
 By using `doc2vec` as a search tool to locate sentences which contain content semantically similar to the affordability of broadband internet access it was possible automatically identify segments of text from the CRTC documents with some mention of affordability. It was then possible to further refine these results by using `text2vec` word embeddings in order to further isolate the language used by different invested organizations surrounding the issue of affordability of broadband access in Canada. From these results it was possible to identify that the language used surrounding affordability is significantly different depending on which group is identified. Each group's discussion of affordability seems to be focused around what affordability is to them. Advocacy organizations discuss affordability from the perspective of Canadian consumers, telecom and cable companies discuss affordability from the perspective of running a business, and government groups discuss affordability in terms of receiving or granting funding as well as detailing services provided.
 
-In essence we've discovered that there are essentially four different discussions of affordability taking place within the CRTC documents, where the issues surrounding affordability are different depending on who you ask. This result is not at all surprising due to the nature of `doc2vec`, as we're finding statements of semantic or contextual similarity. In this regard, each group discusses issues similar to affordability as it means to them. Businesses are concerned about affordability in terms of revenues and market forces, governments are concerned about affordability in terms of funding and service provided, and advocacy groups are concerned about affordability in terms of the cost to the consumer. From this perspective, this analysis has showcased the language used surrounding the issue affordability as it means to each group. While this certainly does not answer whether or not internet access in Canada is affordable, what it is able to clean is potentially important discussion points from every group surrounding the idea of affordability from a larger scope. Such analysis may prove to be useful in understanding what issues each group have surrounding affordability, and may make it more straight forward to understand the requirements of each group in order to find a price range which maximally satisfies every invested party. 
+In essence we've discovered that there are essentially four different discussions of affordability taking place within the CRTC documents, where the issues surrounding affordability are different depending on who you ask. This result is not at all surprising due to the nature of `doc2vec`, as we're finding statements of semantic or contextual similarity. In this regard, each group discusses issues similar to affordability as it means to them. Businesses are concerned about affordability in terms of revenues and market forces, governments are concerned about affordability in terms of funding and service provided, and advocacy groups are concerned about affordability in terms of the cost to the consumer. From this perspective, this analysis has showcased the language used surrounding the issue affordability as it means to each group. While this certainly does not answer whether or not internet access in Canada is affordable, what it is able to clean is potentially important discussion points from every group surrounding the idea of affordability from a larger scope. Such analysis may prove to be useful in understanding what issues each group have surrounding affordability, and may make it more straight forward to understand the requirements of each group in order to find a price range which maximally satisfies every invested party.
