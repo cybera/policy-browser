@@ -13,10 +13,10 @@ df.drop_duplicates('Sentence', inplace=True)
 # Purged most of the data, need to reindex
 df.reset_index(inplace=True)
 
-savefile="Basic_Service_Question_300.txt"
+savefile="Subsity_Question_300.txt"
 
-
-with open("MC_BasicService_CopyPaste_300_LT.txt", 'r') as file:
+s_indexes = []
+with open("MC_Subsidize_CopyPaste_300_LT.txt", 'r') as file:
     for lines in file.readlines():
         s_indexes.append(int(lines))
 
@@ -161,7 +161,7 @@ with open(savefile, 'w') as file:
         # this should never happen, so if you see ohno something went wrong
         if lastsent < firstsent:
            print("ohno", firstsent, lastsent, df["DocumentNumber"][ranges[0]], df["DocumentNumber"][ranges[1]])
-        
+           # Fixed it. 
 
 total = 0
 for ranges in a:

@@ -140,8 +140,8 @@ In essence we've discovered that there are essentially four different discussion
 
 # Bonus Section
 
-Here is a tf_idf text2vec filtered bigram of all the groups using `bigrams.R` provided by `agentdave`. Here the consine similarity must be greater than 0.7, a little stricter than in the bigram webs. I didn't stem these before I did the analysis because un-stemming them proved a lot more difficult with bigrams than they did with regular ol' words. But more importantly with the tf_idf sort, the stemming didn't reall make any difference at all in terms of the top 15 bigrams.
+Here is a tf_idf text2vec filtered bigram of all the groups using `bigrams.R` provided by `agentdave`. Here the consine similarity must be greater than 0.65, a little stricter than in the bigram webs. I didn't stem these before I did the analysis because un-stemming them proved a lot more difficult with bigrams than they did with regular ol' words. But more importantly with the tf_idf sort, the stemming didn't reall make any difference at all in terms of the top 15 bigrams.
 
 ![alt-text](images/afford_filter_bigram.png)
 
-I think it provides a nice "summary at a glance" but less interesting to look at than the webs. There's really not much extra here that we didn't see in the webs, but it's easier to compare. I also note that Consumer advocacy organizations were lumped in wit advocacy organizations in the webs. If this is something we like I'll put some effort into cleaning them up. 
+I think it provides a nice "summary at a glance" but less interesting to look at than the webs. There's really not much extra here that we didn't see in the webs, but it's easier to compare. I also note that Consumer advocacy organizations were lumped in wit advocacy organizations in the webs. If this is something we like I'll put some effort into cleaning them up.
