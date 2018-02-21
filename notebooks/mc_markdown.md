@@ -193,7 +193,7 @@ This search returns approximately 2173 segments from the database, all with an u
 #### Government Category
 ![Alt Text](images/GovernmentAfford2.png)
 
-||Organization                                                |Sentiment_Mean |Sentiment_SD |Number_of_points |
+|Organization                                                |Sentiment_Mean |Sentiment_SD |Number_of_points |
 |:-----------------------------------------------------------|:--------------|:------------|:----------------|
 |Cree Nation Government                                      |0.26           |1.15         |78               |
 |Federation of Canadian Municipalities                       |0.45           |1.07         |21               |
