@@ -20,16 +20,16 @@ None  | 869 | 319  | 412
 
 Advocacy organizations  | Government | Network operator - Cable companies |  Network operator: other|  Network operator: Telecom Incumbents  | None   | Other  | Small incumbents
 --- | --- | --- | --- | --- | --- | --- | ---
- internet   2    |        service   2.9    |  service   2.6   |  service   2.7   |   service   1.9      |      service   2.1    |        service   2.3  |  service   2.4
- services   1.4    |       services   1.8       |                services   2      |     services   1.9    |                   services   1.7     |     broadband   1.4       |      services   2    |    jtf   1.8
- service   1.3    |       internet   1.6         |            internet   1.6   |       broadband   1.8     |                 broadband   1.6   |        services   1.2       |    internet   1.8  | services   1.5
-  crtc   1.1     |     broadband   1.2          |          broadband   1.6     |      internet   1.2        |                  telus   1.5      |           ay   1.2 | telecommunications   1.4   |    mbps   1.5
- broadband    1.1  | telecommunications    0.9    |                     rogers   1      |       access   1.1             |          internet   1.2     |      internet   1.2     |     broadband   1.1 | broadband   1.4 
-access   1       |      access   0.9       |                  access   1      |   commission   0.9              |         commission   1     |        access   0.9      |       access   1.1 | commission   1.1
- canada   0.8         |     basic   0.8           |        commission   0.8    |          basic   0.8                |        access   0.9          |       hw   0.8           |   basic   1.1    | internet   1
- canadians   0.7        |      speed   0.8        |                 shaw   0.8 | telecommunications   0.8               |            bell   0.8          |  highway   0.7              |   pm   0.8    |   access   1 |
-telecommunications   0.7    |        subsidy   0.7     |                   basic   0.8     |     canadians   0.7     |                      mbps   0.7 | telecommunications   0.6   |       canadians   0.7   |    cost   0.9
- basic   0.6     |    government   0.7         |                mbps   0.8        |        ssi   0.6       |      telecommunications   0.6     |    commission   0.6     |        canada   0.7    |   crtc   0.8
+ internet   2%    |        service   2.9%    |  service   2.6%   |  service   2.7%   |   service   1.9%      |      service   2.1%   |        service   2.3%  |  service   2.4%
+ services   1.4%    |       services   1.8%       |                services   2%      |     services   1.9%    |                   services   1.7%     |     broadband   1.4%       |      services   2%    |    jtf   1.8%
+ service   1.3%    |       internet   1.6%         |            internet   1.6%   |       broadband   1.8%    |                 broadband   1.6%   |        services   1.2%       |    internet   1.8%  | services   1.5%
+  crtc   1.1%     |     broadband   1.2%          |          broadband   1.6%    |      internet   1.2%        |                  telus   1.5%      |           ay   1.2% | telecommunications   1.4%   |    mbps   1.5%
+ broadband    1.1%  | telecommunications    0.9%    |                     rogers   1%      |       access   1.1%             |          internet   1.2%     |      internet   1.2%     |     broadband   1.1% | broadband   1.4%
+access   1%       |      access   0.9%       |                  access   1%      |   commission   0.9%              |         commission   1%    |        access   0.9%      |       access   1.1% | commission   1.1%
+ canada   0.8%         |     basic   0.8%           |        commission   0.8%    |          basic   0.8%                |        access   0.9%          |       hw   0.8%           |   basic   1.1%    | internet   1%
+ canadians   0.7%        |      speed   0.8%        |                 shaw   0.8% | telecommunications   0.8%               |            bell   0.8%          |  highway   0.7%              |   pm   0.8%    |   access   %1 |
+telecommunications   0.7%    |        subsidy   0.7%     |                   basic   0.8%     |     canadians   0.7%     |                      mbps   0.7% | telecommunications   0.6%   |       canadians   0.7%   |    cost   0.9%
+ basic   0.6%     |    government   0.7%         |                mbps   0.8%        |        ssi   0.6%       |      telecommunications   0.6%     |    commission   0.6%     |        canada   0.7%    |   crtc   0.8%
 
 
 #### Top 10 most  common trigrams:
@@ -48,6 +48,6 @@ world   class   broadband   0.2 %    | nation   government   presentation   0.2 
  affordable   world   class   0.2 %   |     broadband   internet   service   0.2 %   |      canadian   radio   television   0.2 %   |   satellite   served   communities   0.2 %       |    tnc   attachment   abridged   0.2 % |  ig   hw   ay   0.2 %    |      service   obligations   tnoc   0.2 % | canadian   independent   telephone   0.5 %
 
 
-*Top sentiment words by category*:
+#### Top sentiment words by category:
 
 ![top_sent](images/top_sent.png)
