@@ -13,36 +13,24 @@ df.drop_duplicates('Sentence', inplace=True)
 # Purged most of the data, need to reindex
 df.reset_index(inplace=True)
 
-# MyFiles = ["MC_BasicService_CopyPaste_1500_2.txt", 
-#             "MC_marketforces_1500_2.txt",
-#             "MC_Subsidize_CopyPaste_1500_2.txt",
-#             "MC_Affordability_1500_2",
-#"MC_Affordability_2_LT.txt"]
+savefile="Basic_Service_Question_300.txt"
 
 
-s_indexes = []
-
-savefile="Affordability_Question_300.txt"
-
-
-with open("MC_Affordability_300_LT", 'r') as file:
-
+with open("MC_BasicService_CopyPaste_300_LT.txt", 'r') as file:
     for lines in file.readlines():
         s_indexes.append(int(lines))
 
-
-
 file.close()
-
 counted = Counter(s_indexes)
 to_base = []
+
 # Indexes of the copy-paste stuff that I don't really
 # care about. 
 copy_pastes = [1090, 1298, 2034, 1360, 246, 716, 918]
 drop_copies = []
 
 # Maybe put these in later, but these are just the copy pastes
-# they kind of pollute the data so I've removed them ( for now?)
+# they kind of pollute the data so I've removed them (for now?)
 for keys in counted:
     if int(df["DocumentNumber"][keys]) in copy_pastes:
         drop_copies.append(keys)
@@ -55,9 +43,6 @@ for keys in counted:
 
 to_base = sorted(to_base)
 pd.options.display.max_colwidth = 150
-
-around = 3
-
 
 def group_integers(array, gap = 3):
     # This groups sentence integers by whatever you tell it to for printing
@@ -99,9 +84,7 @@ def Create_Range(array, space = 3):
         bottom = space
         # use in range, going to be -1 of end point, so add one for fun
         top = space + 1
-
         # If we ping the past the last sentence, the program gets unhappy 
-
         try: 
             df["DocumentNumber"][stop + top]
         except KeyError:
@@ -113,7 +96,6 @@ def Create_Range(array, space = 3):
                     break
                 except:
                     pass
-
         # this just prevents us from matching beginnings/endings of documents
         # by accident. Potentially infinite loops because I am lazy. 
 
@@ -135,14 +117,13 @@ def Create_Range(array, space = 3):
                 top -= 1
                 if df["DocumentNumber"][stop + top] == df["DocumentNumber"][stop]:
                     break
-
-
         sentence_combine.append([start-bottom, stop+top])
 
     return sentence_combine
 
 a = Create_Range(to_base, space=3)
 
+# don't really need to sort, but I did it anyways. 
 a = sorted(a)
 
 # gets the counts if things have been squished together. 
@@ -162,7 +143,6 @@ with open(savefile, 'w') as file:
             block.append(" ".join([str(df["Sentence"][j])]))
             document = df["Document"][j].split('/')[-1].strip('.txt')
             print(df["Sentence"][j])
-
                 
         firstsent = df["SentenceNumber"][ranges[0]]
         lastsent = df["SentenceNumber"][ranges[1]]
@@ -178,17 +158,10 @@ with open(savefile, 'w') as file:
 
         file.write('\n')
         print('\n')
-        
-        # this should never it, so if you see ohno something went wrong
+        # this should never happen, so if you see ohno something went wrong
         if lastsent < firstsent:
-           # MESSED UP NEED TO MAKE SURE DOCUMENTS DON"T MIX
            print("ohno", firstsent, lastsent, df["DocumentNumber"][ranges[0]], df["DocumentNumber"][ranges[1]])
-           # Fixed it. 
-
-
-                    
-
-
+        
 
 total = 0
 for ranges in a:
@@ -196,7 +169,6 @@ for ranges in a:
 
 print("Used ", total, " out of ", len(df["Sentence"]))
 
-# 5 uses 41648 out of 159061
 
 
 
