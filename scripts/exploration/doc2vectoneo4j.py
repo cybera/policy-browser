@@ -13,18 +13,31 @@ df.drop_duplicates('Sentence', inplace=True)
 # Purged most of the data, need to reindex
 df.reset_index(inplace=True)
 
+# MyFiles = ["MC_BasicService_CopyPaste_1500_2.txt", 
+#             "MC_marketforces_1500_2.txt",
+#             "MC_Subsidize_CopyPaste_1500_2.txt",
+#             "MC_Affordability_1500_2",
+#"MC_Affordability_2_LT.txt"]
+
+
 s_indexes = []
 
-with open("MC_BasicService_CopyPaste_750.txt", 'r') as file:
+savefile="Affordability_Question_300.txt"
+
+
+with open("MC_Affordability_300_LT", 'r') as file:
 
     for lines in file.readlines():
         s_indexes.append(int(lines))
+
 
 
 file.close()
 
 counted = Counter(s_indexes)
 to_base = []
+# Indexes of the copy-paste stuff that I don't really
+# care about. 
 copy_pastes = [1090, 1298, 2034, 1360, 246, 716, 918]
 drop_copies = []
 
@@ -37,15 +50,13 @@ for keys in counted:
 for drops in drop_copies:
     del counted[drops]
     
-
 for keys in counted:
-  to_base.append(keys)
+        to_base.append(keys)
 
 to_base = sorted(to_base)
 pd.options.display.max_colwidth = 150
 
 around = 3
-
 
 
 def group_integers(array, gap = 3):
@@ -62,17 +73,20 @@ def group_integers(array, gap = 3):
     yield out 
 
 
-def Create_Range(array, gap = 3):
+def Create_Range(array, space = 3):
     # this creates the ranges for grabbing sentence data. 3 is default again
     # but feel free to change it if you want more things in a row. 
 
+    # TODO: asymmetric sorting 
+
     sentence_combine = []
-    squished_array = list(group_integers(array, gap = gap))
+    # 2 * space is a little agressive certainly, but it prevents overlap
+    # once I've gone and messed up the boundaries to prevent the document
+    # mis-match 
+    squished_array = list(group_integers(array, gap = 2 * space))
     before = len(squished_array)
     # shouldn't be any duplicates, but this is more of a 'just in case'
     squished_array = [list(x) for x in set(tuple(x) for x in squished_array)]
-    after = len(squished_array)
-
 
     for ranges in squished_array:
         start = min(ranges)
@@ -80,11 +94,25 @@ def Create_Range(array, gap = 3):
 
         if stop < start:
             print(start, stop, df["DocumentNumber"][start], df["DocumentNumber"][stop])
-            quit()
+            
 
-        bottom = gap
+        bottom = space
         # use in range, going to be -1 of end point, so add one for fun
-        top = gap + 1
+        top = space + 1
+
+        # If we ping the past the last sentence, the program gets unhappy 
+
+        try: 
+            df["DocumentNumber"][stop + top]
+        except KeyError:
+            while True:
+            
+                try: 
+                    top -= 1
+                    df["DocumentNumber"][stop + top]
+                    break
+                except:
+                    pass
 
         # this just prevents us from matching beginnings/endings of documents
         # by accident. Potentially infinite loops because I am lazy. 
@@ -92,7 +120,6 @@ def Create_Range(array, gap = 3):
         if df["DocumentNumber"][start] != df["DocumentNumber"][stop]:
             while True:
                 stop -= 1
-                print("SDFSDFSF", df["DocumentNumber"][start], df["DocumentNumber"][stop])
                 if df["DocumentNumber"][start] == df["DocumentNumber"][stop]:
                     break
 
@@ -110,54 +137,47 @@ def Create_Range(array, gap = 3):
                     break
 
 
-
-
         sentence_combine.append([start-bottom, stop+top])
 
     return sentence_combine
 
-a = Create_Range(to_base, gap=3)
+a = Create_Range(to_base, space=3)
+
+a = sorted(a)
+
+# gets the counts if things have been squished together. 
+counts_ordered = []
+for r in a:
+    tot_counts = 0
+    for pot_key in range(r[0], r[1]+1):
+        if pot_key in to_base:
+            tot_counts += counted[pot_key]
+    counts_ordered.append(tot_counts)
 
 
-
-for i, ranges in enumerate(a): 
-    sentencetoprint = []
-    for j in range(ranges[0], ranges[1]):
-        sentencetoprint.append(df["Sentence"][j])
-        if j in to_base:
-            place = to_base.index(j)
-           
-
-    for sentence in sentencetoprint:
-        print(sentence, df["DocumentNumber"][to_base[place]], ranges, to_base[place])
-
-    print('\n')
-     
-
-
-print(len(a))
-
-
-with open("Basic_Service_Question.txt", 'w') as file:
-    for ranges in a:
+with open(savefile, 'w') as file:
+    for i, ranges in enumerate(a):
         block = []
         for j in range(ranges[0], ranges[1]):
             block.append(" ".join([str(df["Sentence"][j])]))
             document = df["Document"][j].split('/')[-1].strip('.txt')
-
-
+            print(df["Sentence"][j])
 
                 
         firstsent = df["SentenceNumber"][ranges[0]]
         lastsent = df["SentenceNumber"][ranges[1]]
 
         block = " ".join(block)
-        
+
         file.write(block)
         file.write(" OBVIOUS_DELIMITER ")
         #print(document)
         file.write(document)
+        file.write(" OBVIOUS_DELIMITER ")
+        file.write(str(counts_ordered[i]))
+
         file.write('\n')
+        print('\n')
         
         # this should never it, so if you see ohno something went wrong
         if lastsent < firstsent:
@@ -170,8 +190,13 @@ with open("Basic_Service_Question.txt", 'w') as file:
 
 
 
+total = 0
+for ranges in a:
+    total += len(range(ranges[0],ranges[1]))
 
+print("Used ", total, " out of ", len(df["Sentence"]))
 
+# 5 uses 41648 out of 159061
 
 
 
