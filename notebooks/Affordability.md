@@ -13,7 +13,7 @@ Network operator: other | 278 | 102 | 262
 Network operator: Telecom Incumbents | 335 | 107| 198
 Other | 108 | 32 | 140
 Small incumbents  | 64  | 22  | 49
-None  | 869 | 319  | 412
+None  | 869 | 319  | 27
 
 
 #### Top 10 most  common words:
