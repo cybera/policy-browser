@@ -1,179 +1,51 @@
-### Goal:
-understand the positions of intervenors on how affordable internet services should be if it mandated to be a basic service.
-
-### Part1. ACORN members testimonials
-
- (ACORN (Association of Community Organizations for Reform Now) Canada is an independent national organization of low- and moderate-income families.)
-
-`Documents`:
-
-- 2015-134.224035.2409353.Intervention(1fn2h01!).pdf
-- 2015-134.224035.2409354.Intervention(1fn2$01!).pdf
-
-`Number of surveys analyzed`: 289
-
-
-`Question`:
-How do you feel about the current pricing of high speed internet? Please mark (x) on all that apply.
-
-`Possible answers`:
-- Reasonable, and I can afford it.
-- Too high, but I can afford it.
-- Extremely high, I can barely afford it.
-- Extremely high I can't afford it, but because I need it I take money out of my:  
-     - Food budget
-     - Recreational budget
-     - Rent
-     - Other budget item
-- Extremely high and I can't afford it, so I cancel my service from time to time.
-- So expensive that I cannot afford it.
-- Other.
-
-`Results`:
-
-Answer| Frequency
---- | ---
-*Extremely high; I can't afford it, but because I need it I take money out of my budget for other item* |  92                                                                                   
-*Extremely high; I can barely afford it.* | 82  
-*Too high, but I can afford it.* |   39
-*Extremely high; I can barely afford it. Extremely high; I can't afford it, but because I need it I take money out of my budget for other items*   |  20  
-*So expensive that I cannot afford it.* | 14
-*Extremely high; I can't afford it, but because I need it I take money out of my budget for other items Extremely high and I can't afford it, so I cancel my service from me to me.* | 11
-*Extremely high and I can't afford it, so I cancel my service from me to me.* | 8
-*Too high, but I can afford it. Extremely high; I can barely afford it.* | 6
-*Extremely high; I can barely afford it. Extremely high; I can't afford it, but because I need it I take money out of my budget for other items So expensive that I cannot afford it.* | 3
-*Extremely high; I can't afford it, but because I need it I take money out of my budget for other items So expensive that I cannot afford it.* | 3
-*No Answer* | 2    
-*Extremely high; I can barely afford it. Extremely high; I can't afford it, but because I need it I take money out of my budget for other items Extremely high and I can't afford it, so I cancel my service from me to me.* | 2
-*Reasonable, and I can afford it.* | 2
-*Extremely high; I can barely afford it. Extremely high and I can't afford it, so I cancel my service from me to me.* | 1
-*Extremely high; I can barely afford it. Extremely high and I can't afford it, so I cancel my service from me to me. So expensive that I cannot afford it.* | 1
-*Reasonable, and I can afford it. Extremely high; I can barely afford it.* | 1
-*Reasonable, and I can afford it. Too high, but I can afford it.* | 1
-*Too high, but I can afford it. Extremely high; I can barely afford it. Extremely high; I can't afford it, but because I need it I take money out of my budget for other items* |  1
-
-`Analysis of Additional Comments`
-
-Comparison Word cloud:
-
-![sent](images/sent.png)
-
-Sentiment ananlysis - top negative/positive distinctive  words:
-
-![wc](images/wc.png)
-
-Word co-occurence :
-
-![cooc](images/cooc.png)
-
-### Part2. Other documents
-
-#### Sentiment analysis - all documents together
-
-Comparing  tidytext sentiment dictionaries -  afinn, nrc and Bing
-
-![score_bing](images/pie_afinn.png)
-![score_nrc](images/pie_bing.png)
-![score_afinn](images/pie_nrc.png)
-
-Distribution of scores:
-
-![bar_bing](images/bar_afinn.png)
-![bar_nrc](images/bar_bing.png)
-![bar_afinn](images/bar_nrc.png)
-
-
-**Most positive segments**
-
-*Afinn*
-
-- `score`: 29
-- `document name`: 2015-134.224004.2394790.Intervention(1fbty01!).doc
-- `text`:
-funding be determined (e.g. only one service provider per area, all service providers that meet certain conditions, wireless service providers, or service providers that win a competitive bidding process)? The existing subsidy for rural voice delivered over copper networks should continue to be directed to the ILEC.Any new funding awarded for broadband development should be determined through needs analysis and competitive bidding processes, similar to the Digital Canada 150 program.13. d) How should the amount of funding be determined (e.g. based on costs to provide service or a competitive bidding process)? A competitive bidding process will ensure that the costs of providing service are not excessive.The Digital Canada 150 program set service targets, and allowed private firms to present the cost of meeting these targets, enabling a cost-benefit analysis of the solutions presented. This system allows Industry Canada clear visibility into the true costs associated with improving
-
-*Nrc*
-
-- `score`:  20
-- `document name`: 2015-134.224010.2598227.Undertakings Report Appendix 1(1j_sz01!).pdf
-- `text`:
-three levels factors in technology adoption in northern and remote Indigenous communities are illustrated in the diagram below. All three need to be considered in the community-level research proposed for this project. Adoption by Indigenous community members and their households is the top level. Many factors are involved in a decision by community members and household to adopt a digital technology. Adoption within and by communities is the middle level. The community level includes how digital technologies are adopted by community organizations, and the regional community intermediary organizations that support community adoption. The base level is the infrastructure supporting digital technology adoption. Infrastructure issues such as availability, price, quality of service and/or experience, interoperability, ownership and accessibility are factors in digital technology adoption. Infrastructure also includes the middle mile and backhaul layer that affects bandwidth
-
-*Bing*
-
-- `score`:  13
-- `document name`: DM#2433173 - 2015-134 - Resp to RFI - 21 Sept - CNOC_AAC_14Aug15-5.pdf
-- `text`:
-enhance the efficiency and competitiveness, at the national and international levels, of Canadian telecommunications; (f) to foster increased reliance on market forces for the provision of telecommunications services and to ensure that regulation, where required, is efficient and effective; (h) to respond to the economic and social requirements of users of telecommunications services; Mandated wholesale access to subsidized facilities will also enable consumers to enjoy benefits beyond those provided solely by access to broadband Internet service at specified target speeds and similar to those available by end-users residing in more accessible and competitive markets. These benefits include, for example, competitive offers and access to innovative and differentiated services. 1 Section 7(b) of the Telecommunications Act states, “to render reliable and affordable telecommunications services of high quality
-
-
-**Most negative segments**
-
-*Afinn*
-
-- `score`:  -15
-- `document name`: DM#2395599 - 2015-134 - Response to request for information - 150714-The Companies-CRTC-7May15-7 TNC 2015-134.doc
-- `text`:
-customers seeking to limit or reduce the cost of their service.1. Bill management tools (i.e., Long Distance, Directory Assistance, Collect Call, Pay-per-use, 1-900 Restrictions)We offer a number of options that customers may use with their home phone services to exclude the use of pay-per-use (PPU) features or long distance charges. The option to not access PPU features and/or long distance calling gives customers more certainty and control over their monthly bills and serves as an important bill management tool. The specific options that may be added are as follows:· Long distance calling restriction: This prevents out-going long distance calls from being placed from the telephone line.· Collect calling (and 3rd Party Calling) block: This prevents collect calls or 3rd party billed calls from being placed or billed to a telephone line, eliminating unwanted charges.· Directory assistance: This prevents out-going calls from connecting to the 411 Directory Assistance service, which
-
-*Nrc*
-
-- `score`:   -7
-- `document name`: 2015-134.224015.2395444.Intervention Appendix A(1fcc401!).pdf
-- `text`:
-that the monies required to support any subsidy program should come from general tax revenues, not from taxes or charges on telecommunications services. “Contribution” payments by telecommunications providers to fund subsidies necessarily raise the cost of services provided by theses carriers and, therefore, require higher prices for these services, thereby discouraging their use. The loss in economic value from such narrowly-targeted support regimes is much greater than the loss that results from taxes that are collected from a much wider tax base. Hausman (1998) has estimated that the taxes levied by the FCC on U.S. international and interstate carrier revenues to support universal service more than double the economic cost of providing the universal service subsidies because they substantially reduce subscribers’ use of international and interstate services.40 If they were funded from general tax revenues, the economic welfare loss would be much lower
-
-*Bing*
-
-- `score`: -10
-- `document name`: DM#2597436 - 2015-134 - Res to RFI - 5 May - CNOC - CNOC(CRTC)25Apr16-2 TNC 2015-134 .pdf
-- `text`:
-example, may have difficulties for reasons of geography in ensuring that all households within an operating territory have access to speeds of at least 5 Mbps download and 1 Mbps upload. Similarly, a wireline operator may not be able to afford extending services delivered over FTTN or FTTP to some remote households in its operating territory. In such cases, without additional factors, it is hard to say that the discrimination or disadvantage suffered by those unable to access speeds of at least 5 Mbps download and 1 Mbps upload is unjust, undue, or unreasonable. For example, discrimination may not contravene subsection 27(2) of the Act if it is either founded on factors largely beyond the reasonable control of the Canadian carrier, or the effort required to remedy the discrimination 1 Broadcasting and Telecom Decision CRTC 2015-26, Complaint against Bell Mobility Inc. and Quebecor Media Inc., Videotron Ltd. and Videotron
-
+### Question1:
+ What positions on affordability are being taken by different types of intervenors?
 
 ### Summary stats:
 
+Category| In database | # of solr search results | # of doc2vec search results |
+--- | --- | --- | --- |
+Advocacy organizations |  264 | 112 | 120
+Chamber of commerce/economic dev agency |    4 | 0 | 0
+Government  | 156 | 54 | 53
+Network operator - Cable companies | 123 | 47 | 65
+Network operator: other | 278 | 102 | 108
+Network operator: Telecom Incumbents | 335 | 107| 138
+Other | 108 | 32 | 45
+Small incumbents  | 64  | 22  |40
+None  | 869 | 319  | 412
 
-`In database`:
 
-- 2235 documents in the database,
-- 1335 have organizations assigned,
-- 1331 have categories assigned,
-- 175 organization types,
-- 174 organizations have categories assigned.
+#### Top 10 most  common words:
 
-`Search results`:
-- 2627 segments,
-- 699 documents,
-- 415 have organizations assigned,
-- 414 have categories assigned.
+Advocacy organizations  | Government | Network operator - Cable companies |  Network operator: other|  Network operator: Telecom Incumbents  | None   | Other  | Small incumbents
+--- | --- | --- | --- | --- | --- | --- | ---
+ internet   2    |        service   2.9    |  service   2.6   |  service   2.7   |   service   1.9      |      service   2.1    |        service   2.3  |  service   2.4
+ services   1.4    |       services   1.8       |                services   2      |     services   1.9    |                   services   1.7     |     broadband   1.4       |      services   2    |    jtf   1.8
+ service   1.3    |       internet   1.6         |            internet   1.6   |       broadband   1.8     |                 broadband   1.6   |        services   1.2       |    internet   1.8  | services   1.5
+  crtc   1.1     |     broadband   1.2          |          broadband   1.6     |      internet   1.2        |                  telus   1.5      |           ay   1.2 | telecommunications   1.4   |    mbps   1.5
+ broadband    1.1  | telecommunications    0.9    |                     rogers   1      |       access   1.1             |          internet   1.2     |      internet   1.2     |     broadband   1.1 | broadband   1.4 |
+    access   1       |      access   0.9       |                  access   1      |   commission   0.9              |         commission   1     |        access   0.9      |       access   1.1 | commission   1.1
+ canada   0.8         |     basic   0.8           |        commission   0.8    |          basic   0.8                |        access   0.9          |       hw   0.8           |   basic   1.1    | internet   1
+ canadians   0.7        |      speed   0.8        |                 shaw   0.8 | telecommunications   0.8               |            bell   0.8          |  highway   0.7              |   pm   0.8    |   access   1 |
+telecommunications   0.7    |        subsidy   0.7     |                   basic   0.8     |     canadians   0.7     |                      mbps   0.7 | telecommunications   0.6   |       canadians   0.7   |    cost   0.9
+ basic   0.6     |    government   0.7         |                mbps   0.8        |        ssi   0.6       |      telecommunications   0.6     |    commission   0.6     |        canada   0.7    |   crtc   0.8
 
-`My stop words`:
-("1", "2", "100","25", "0", "document", "2015","134","14", "2011", "2013", "2014") - what else?
 
-*Top 10 most  common words*:
-- service  5980
-- services  4167
-- broadband  3885
-- internet  3018
-- access  2792
-- cost  2492
-- telecommunications  2175
-- canadians  1796
-- basic  1765
-- commission  1681
+#### Top 10 most  common trigrams:
 
-*Top 10 most  common word-pairs*:
- -  service services  1355
- -   service     cost  1187
- - broadband  service  1175
- -    access  service  1071
- - broadband services  1052
- -   service internet  1032
- -    access services   982
- - broadband   access   939
- -  services     cost   934
- -   service    basic   836
+Advocacy organizations    |                                 Government      |      Network operator - Cable companies    |                   Network operator: other     |     Network operator: Telecom Incumbents |                                     None              |                           Other                |           Small incumbents
+ --- | ---| --- | --- | --- | --- | --- | ---
+  basic   telecommunications   services   1.2 %  | basic   telecommunications   services   0.6 %  |basic   telecommunications   services   0.7 %  | basic   telecommunications   services   0.6 %  |    telus   communications   company   1.2 % |  highway   highway   highway   2 % | basic   telecommunications   services   0.8 %       |    revenue   cost   provide   1.2 %
+ city   postal   code   0.9 %   |   eeyou   communications   network   0.5 %      |     basic   service   objective   0.6 %       |    basic   service   objective   0.5 %    |    communications   company   tnc   0.7 %  | hig   hw   ay   1.3 %     |    communications   frpc   basic   0.3 %  | estimated   forecasted   revenues   0.9 %
+  postal   code   comment   0.9 %   |         cree   nation   government   0.5 %     |   broadband   internet   service   0.5 %    |    broadband   internet   service   0.3 %  | basic   telecommunications   services   0.5 % |  ay   hig   hw   1.2 %        |        frpc   basic   service   0.3 %             |     citc   jtf   page   0.8 %
+openmeida.ca   submission   crtc   0.9 %    |       basic   service   objective   0.4 %    |     broadband   internet   access   0.4 %    |     broadband   internet   access   0.3 %           |            dec   dec   dec   0.4 % | hw   ay   hig   1.2 %     |    broadband   internet   access   0.3 %       |     cap   usage   allowance   0.6 %
+  submission   crtc   review   0.9 %     |       speed   internet   service   0.4 %     |     internet   access   services   0.4 %    |   national   broadband   strategy   0.3 %        |         mbps   target   speed   0.3 % | ay   highw   ay   0.9 %     |    basic   service   obligations   0.2 %  |      basic   service   objective   0.6 %
+  email   medical   research   0.3 %    |     broadband   internet   access   0.2 %    |     telecom   regulatory   policy   0.3 %   |    backbone   assistance   program   0.3 %   | basic   telecommunications   service   0.3 % | highw   ay   highw   0.8 %      |     basic   service   objective   0.2 %   |   broadband   internet   access   0.6 %
+    homework   email   medical   0.3 %    |      basic   service   objectives   0.2 %   |    broadband   internet   services   0.3 %  | basic   telecommunications   service   0.3 %          |            tnc   2015   134   0.3 % | broadband   internet   access   0.3 %     |     basic   service   obligation   0.2 %        |      citc   jtf   response   0.6 %
+ affordable   access   coalition   0.2 %      |       local   service   subsidy   0.2 %        |     entry   level   broadband   0.3 %      |    consumer   broadband   offer   0.2 %        |          company   tnc   july   0.2 % | basic   telecommunications   services   0.3 %    |            tnoc   comments   july   0.2 %     |   broadband   internet   plan   0.5 %
+world   class   broadband   0.2 %    | nation   government   presentation   0.2 %      |   denotes   information   filed   0.2 %     |    canadian   radio   television   0.2 %         |        company   tnc   march   0.2 % |  basic   service   objective   0.2 %   |        http   www.crtc.gc.ca   eng   0.2 %     |   ii   marketing   strategies   0.5 %
+ affordable   world   class   0.2 %   |     broadband   internet   service   0.2 %   |      canadian   radio   television   0.2 %   |   satellite   served   communities   0.2 %       |    tnc   attachment   abridged   0.2 % |  ig   hw   ay   0.2 %    |      service   obligations   tnoc   0.2 % | canadian   independent   telephone   0.5 %
 
 *Top 10 most  correlated word-pairs*:
 
@@ -188,19 +60,7 @@ example, may have difficulties for reasons of geography in ensuring that all hou
 - funding   deployment   0.6124279
 - wireless       mobile   0.6115148
 
-Co-occurence plot:
-
-![cooc](images/co_all.png)
-
-Corellation plot:
-
-![coor](images/coor_all.png)
-
-Wordcloud:
-
-![cloud](images/cloud_all.png)
-
-Sentiment cloud:
+Sentiment cloud(Bing):
 
 ![s_cloud](images/scloud_all.png)
 
@@ -213,45 +73,10 @@ Sentiment-associated words that most often followed words:
 
 ![sent_as](images/sent_as.png)
 
-
-### By category (excluded documents that don't have category attached)
-
-Category| In database | Search results | doc2vec |
---- | --- | --- | --- |
-Advocacy organizations |  289 | 110 | 79 |
-Chamber of commerce/economic dev agency |    4 | 0 | 0 |
-Consumer advocacy organizations |    3  | 1 | 0 |
-Government  | 134 | 48 | 29 |
-Network operator - Cable companies | 118 | 41 | 34 |
-Network operator: other | 271 | 76 | 61 | 
-Network operator: Telecom Incumbents | 339 | 88 | 63 |
-Other | 107 | 30 | 32 |
-Small incumbents  | 66  | 20  | 20 | 
-
-*Summary by category*:
-
-![cat](images/cat.png)
-
-*Tf-idf by catgory*:
-
-![tf_idf](images/tf_idf.png)
-
-*Category correlation*:
-
-![cat_cor](images/cat_cor.png)
-
-*LDA 4 topics*:
-
-![cat_lda](images/cat_lda.png)
-
-*Topics distribution across categories*:
-
-![lda_dist](images/lda_dist.png)
-
-*Average sentiment score (Afinn)*:
+*Average sentiment score  by category (Afinn)*:
 
 ![avg_sent](images/avg_sent.png)
 
-*Top sentiment words*:
+*Top sentiment words by category*:
 
 ![top_sent](images/top_sent.png)
