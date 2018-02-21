@@ -14,20 +14,28 @@ Should broadband Internet service be defined as a basic telecommunications servi
 `Doc2VecSearch` 
 Should broadband Internet services be considered basic telecommunications services BTS?
 
+these counts were found with the following:
+```
+MATCH (Q:Question)<-[r:ABOUT]-(Qe:Query) <-[:MATCHES]-(s:Segment)-[:SEGMENT_OF]->(d:Document)<-[:SUBMITTED]-(o:Organization)
+WHERE r.method = 'doc2vec-MonteCarlo'
+AND Q.ref = 'Q9'
+RETURN count(distinct d), o.category
+```
+
 
 `Results`
 
 Category| In database | Solr # of documents | Doc2Vec # of documents |   
 --- | --- | --- | --- |  
-Advocacy organizations |  289 | 119 | 49 |  
+Advocacy organizations |  289 | 119 | 93 |  
 Chamber of commerce/economic dev agency |  4 | 0 | 0 |  
-Consumer advocacy organizations | 3 | 2  |  1 |
-Government  | 134 | 44 | 12  |  
-Network operator - Cable companies | 118 | 66 | 19  |  
-Network operator: other | 271 | 92 | 34  |   
-Network operator: Telecom Incumbents | 339 |  90 | 27 |   
-Other | 107 | 35 | 9 |  
-Small incumbents  | 66  | 25 | 15 |  
+Consumer advocacy organizations | 3 | 2  |  2 |
+Government  | 134 | 44 | 38 |  
+Network operator - Cable companies | 118 | 66 | 34 |  
+Network operator: other | 271 | 92 | 78  |   
+Network operator: Telecom Incumbents | 339 |  90 | 66 |   
+Other | 107 | 35 | 34 |  
+Small incumbents  | 66  | 25 | 16 |  
 
 
 *Solr search results*:
