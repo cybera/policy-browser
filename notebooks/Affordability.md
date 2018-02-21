@@ -3,16 +3,16 @@
 
 ### Summary stats:
 
-Category| In database | # of solr search results | # of doc2vec search results |
+Category| In database | # of solr search results | # of doc2vec segments|
 --- | --- | --- | --- |
-Advocacy organizations |  264 | 112 | 120
+Advocacy organizations |  264 | 112 | 1244
 Chamber of commerce/economic dev agency |    4 | 0 | 0
-Government  | 156 | 54 | 53
-Network operator - Cable companies | 123 | 47 | 65
-Network operator: other | 278 | 102 | 108
-Network operator: Telecom Incumbents | 335 | 107| 138
-Other | 108 | 32 | 45
-Small incumbents  | 64  | 22  |40
+Government  | 156 | 54 | 200
+Network operator - Cable companies | 123 | 47 | 113
+Network operator: other | 278 | 102 | 262
+Network operator: Telecom Incumbents | 335 | 107| 198
+Other | 108 | 32 | 140
+Small incumbents  | 64  | 22  | 49
 None  | 869 | 319  | 412
 
 
