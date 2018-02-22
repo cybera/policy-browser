@@ -46,16 +46,17 @@ repo for various CIRA project deliverables
   bin/scrape
   ```
 
-4. Start Neo4j and Solr
+4. Start required services: Neo4j, Solr, and Memcached
 
   ```
-  bin/neo4j start
-  bin/solr start
+  bin/all-services start
   ```
 
-  Persistent data for these containers will be stored under *data/neo4j* and *data/solr*. It is not intended to be checked in and is ignored by git.
+  Persistent data for the neo4j and solr containers will be stored under *data/neo4j* and *data/solr*. It is not intended to be checked in and is ignored by git. Memcached will be cleared every time it is restarted. Nothing critical is stored here and the browser can operate when it is down.
 
-  The neo4j database will be available at [localhost:7474](localhost:7474). In order to make the next step work, change the password to 'password'.
+  The neo4j database will be available at [localhost:7474](localhost:7474). Whatever you set as the password will need to be set in the config/neo4j.yml file as well.
+
+  To start/stop individual services, you can use `bin/neo4j start`, `bin/neo4j stop`, `bin/solr start`, `bin/solr stop`, `bin/memcached start`, and `bin/memcached stop`.
 
 5. Convert PDF, doc, etc. files to raw text
 
