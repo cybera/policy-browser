@@ -13,11 +13,10 @@ graph = startGraph("http://localhost:7474/db/data/", username = "neo4j", passwor
 
 #solr without organizations
 query_s1 ="MATCH (qe:Question{ref:\"Q1\"})
-MATCH (q:Query)-[:ABOUT{method:\"solr\"}]->(qe:Question)
+MATCH (q:Query)-[:ABOUT{method:\"solr\"}]->(qe)
 MATCH (q)<-[:MATCHES]-(s:Segment)
 MATCH (s)-[:SEGMENT_OF]->(d:Document)
-MATCH (d:Document) WHERE NOT (d)<-[:SUBMITTED]->()
-AND d.type<>'subdoc'
+WHERE NOT (d)<-[:SUBMITTED]->() AND d.type<>'subdoc'
 RETURN  s.content as content, d.name as doc_name"
 data_s1 = cypher(graph, query_s1)
 dim(data_s1)# 1350
@@ -28,7 +27,7 @@ data_s1$organization_category <- "None"
 
 #solr with organization
 query_s2 ="MATCH (qe:Question{ref:\"Q1\"})
-MATCH (q:Query)-[:ABOUT{method:\"solr\"}]->(qe:Question)
+MATCH (q:Query)-[:ABOUT{method:\"solr\"}]->(qe)
 MATCH (q)<-[:MATCHES]-(s:Segment)
 MATCH (s)-[:SEGMENT_OF]->(d:Document)
 MATCH (o:Organization)<-[:ALIAS_OF*0..1]-()-[:SUBMITTED]->(d)
@@ -46,11 +45,10 @@ data.frame(table(data_org$organization_category))
 
 ###doc2vec without Organization
 query_d1 = "MATCH (qe:Question{ref:\"Q1\"})
-MATCH (q:Query)-[r:ABOUT]->(qe:Question) WHERE r.method = 'doc2vec-MonteCarlo'
+MATCH (q:Query)-[r:ABOUT]->(qe) WHERE r.method = 'doc2vec-MonteCarlo'
 MATCH (q)<-[r1:MATCHES]-(s:Segment)
 MATCH (s)-[r2:SEGMENT_OF]->(d:Document)
-MATCH (d:Document) WHERE NOT (d)<-[:SUBMITTED]->()
-AND d.type<>'subdoc'
+WHERE NOT (d)<-[:SUBMITTED]->() AND d.type<>'subdoc'
 RETURN  s.content as content, d.name as doc_name"
 data_d1 = cypher(graph, query_d1)
 dim(data_d1)# 2787
@@ -61,7 +59,7 @@ data_d1$organization_category <- "None"
 
 #doc2vec with organization
 query_d2 ="MATCH (qe:Question{ref:\"Q1\"})
-MATCH (q:Query)-[r:ABOUT]->(qe:Question) WHERE r.method = 'doc2vec-MonteCarlo'
+MATCH (q:Query)-[r:ABOUT]->(qe) WHERE r.method = 'doc2vec-MonteCarlo'
 MATCH (q)<-[:MATCHES]-(s:Segment)
 MATCH (s)-[:SEGMENT_OF]->(d:Document)
 MATCH (o:Organization)<-[:ALIAS_OF*0..1]-()-[:SUBMITTED]->(d)

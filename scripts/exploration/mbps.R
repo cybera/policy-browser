@@ -45,7 +45,7 @@ get_mbps_index <- function(content, should_index, mbps_str) {
   tmp
 }
 
-plot.mbps <- function(df, mbps_colname, mbps_label="Mbps", threshold=NA, remove_dups=TRUE) {
+plot.mbps <- function(df, mbps_colname, mbps_label="Mbps", threshold=NA, remove_dups=TRUE,individual=FALSE) {
   df$mbps_col <- df[[mbps_colname]]
   if(is.na(threshold)) {
     threshold <- max(df$mbps_col, na.rm=TRUE)
@@ -65,10 +65,18 @@ plot.mbps <- function(df, mbps_colname, mbps_label="Mbps", threshold=NA, remove_
       distinct(content, .keep_all = TRUE) 
   }
   
-  
+ if (individual)
   ggplot(df.should_score) +
-    geom_jitter(data=df.no_should_score, aes(x=category, y = mbps_col), alpha=0.4) +
-    geom_jitter(aes(x=category, y=mbps_col, color=should_score), alpha=0.7) +
+    geom_jitter(data=df.no_should_score, aes(x=person,y = mbps_col), alpha=0.4) +
+    geom_jitter(aes(x=person,y=mbps_col, color=should_score), alpha=0.7) +
+    scale_colour_gradient2(low="yellow", mid="orange", high = "red", midpoint=0.07) +
+    labs(y=mbps_label, x="", color="'Should' score") +
+    coord_flip() +
+    theme(panel.background = element_blank(), axis.ticks.y = element_blank())
+else
+  ggplot(df.should_score) +
+    geom_jitter(data=df.no_should_score, aes(x=category,y = mbps_col), alpha=0.4) +
+    geom_jitter(aes(x=category,y=mbps_col, color=should_score), alpha=0.7) +
     scale_colour_gradient2(low="yellow", mid="orange", high = "red", midpoint=0.07) +
     labs(y=mbps_label, x="", color="'Should' score") +
     coord_flip() +
@@ -84,42 +92,32 @@ MATCH (question:Question { ref: $qref })
 MATCH (query:Query)-[:ABOUT]-(question)
 MATCH (query)<--(segment:Segment)-[:SEGMENT_OF]->(doc:Document)
 MATCH (org:Organization)-[:SUBMITTED]->(doc)
-RETURN segment.content AS content, org.category as category, 
+RETURN doc.name as doc_name, segment.content AS content, org.category as category, 
 org.name as organization
 "
+
 q.mbps.date <- "
 MATCH (question:Question { ref: $qref })
 MATCH (query:Query)-[:ABOUT]-(question)
 MATCH (query)<--(segment:Segment)-[:SEGMENT_OF]->(doc:Document)<--(s:Submission)
 MATCH (org:Organization)-[:SUBMITTED]->(doc)
 RETURN segment.content AS content, org.category as category, 
-org.name as organization, s.name AS submission_name, s.date_arrived AS date
-"
+org.name as organization, s.name AS submission_name, s.date_arrived AS date"
 
-q.mbps.html <- "
+q.mbps.html <-  "
 MATCH (question:Question { ref: $qref })
 MATCH (query:Query)-[:ABOUT]-(question)
 MATCH (query)<--(segment:Segment)-[:SEGMENT_OF]->(doc:Document)<--(s:Submission)
-MATCH (person:Person)-->(:Participant { role: 'Client' } )-->(s)
-RETURN segment.content AS content, 
-person.name as person, s.name AS submission_name, s.date_arrived AS date
-"
-q.mbps.test <- "
-MATCH (question:Question { ref: $qref})
-MATCH (query:Query)-[:ABOUT]-(question)
-MATCH (query)<--(segment:Segment)-[:SEGMENT_OF]->(doc:Document)<--(s:Submission)
-MATCH path=(person:Person)-[]-(p:Participant)-[]-(:Submission)-[]-(doc:Document {type:'html'})
+MATCH path=(person:Person)-[]-(p:Participant)-[]-(s:Submission)-[]-(d:Document)
 WHERE NOT (:Organization)-[]-(p)
-RETURN segment.content AS content, 
-person.name as person, s.name AS submission_name, s.date_arrived AS date
-"
+RETURN doc.name as doc_name, segment.content as content, person.name as person, s.name AS submission_name, s.date_arrived AS date"
 
 q.mbps.openmedia <- "
 MATCH (question:Question { ref: $qref })
 MATCH (query:Query)-[:ABOUT]-(question)
-MATCH (query)<--(segment:Segment)-[:SEGMENT_OF]->(doc:Document)
+MATCH (query)<--(segment:Segment)-[:SEGMENT_OF]->(doc:Document{type:'subdoc'})
 MATCH (person:Person)-[:SUBMITTED]->(doc)
-RETURN segment.content AS content, person.name as person, person.location as location
+RETURN  doc.name as doc_name, segment.content AS content, person.name as person, person.location as location
 "
 ########################
 
@@ -164,7 +162,10 @@ teststrs = c("5 Mbps upload / 6 Mbps download",
 extract_mbps_up(str_extract_all(teststrs, mbps.regex))
 
 
-df.mbps <- cypher(graph, q.mbps, qref="Q4-1")
+df.mbps <- cypher(graph, q.mbps, qref="Q4-1") #3917
+df.mbps <- df.mbps[!duplicated(df.mbps[c(1,2)]),] #2239
+df.mbps <- df.mbps[,c("content","category","organization")]
+
 df.mbps.extract <- df.mbps %>%
   mutate(mbps_str = str_extract_all(content, mbps.regex)) %>%
   unnest(mbps_str) %>%
@@ -215,9 +216,41 @@ df.mbps.intervention.extract %>% arrange(desc(should_score)) %>%
 ########################
 #Adding in openmedia docs
 
-df.mbps.openmedia <- cypher(graph, q.mbps.openmedia, qref="Q4-1")
-df.mbps.html <- cypher(graph, q.mbps.html, qref="Q4-1")
-df.mbps.test <- cypher(graph, q.mbps.test, qref="Q4-1")
+df.mbps.openmedia <- cypher(graph, q.mbps.openmedia, qref="Q4-1")  #147
+df.mbps.openmedia <- df.mbps.openmedia[!duplicated(df.mbps.openmedia[c(1,2)]),] #140
+df.mbps.openmedia <- df.mbps.openmedia[,c("content","person","location")]
+
+df.mbps.openmedia.extract <- 
+  df.mbps.openmedia %>%
+  mutate(mbps_str = str_extract_all(content, mbps.regex)) %>%
+  unnest(mbps_str) %>%
+  mutate(mbps_down = extract_mbps_down(mbps_str)) %>%
+  mutate(mbps_up = extract_mbps_up(mbps_str)) %>%
+  mutate(should_index=get_should_index(content)) %>%
+  mutate(mbps_index=get_mbps_index(content, should_index, mbps_str)) %>%
+  mutate(should_score=1/(mbps_index - should_index))
+
+plot.mbps(df.mbps.openmedia.extract, "mbps_down", "Mbps down", 50, remove_dups = TRUE, individual=TRUE)
+plot.mbps(df.mbps.openmedia.extract, "mbps_up", "Mbps up", 50, remove_dups = TRUE, individual=TRUE)
+
+#Individual submissions docs
+df.mbps.html <- cypher(graph, q.mbps.html, qref="Q4-1") #1347
+df.mbps.html <- df.mbps.html[!duplicated(df.mbps.html[c(1,2)]),] #905
+df.mbps.html <- df.mbps.html[,c("content","person","submission_name", "date")]
+
+df.mbps.html.extract <- 
+  df.mbps.html %>%
+  mutate(mbps_str = str_extract_all(content, mbps.regex)) %>%
+  unnest(mbps_str) %>%
+  mutate(mbps_down = extract_mbps_down(mbps_str)) %>%
+  mutate(mbps_up = extract_mbps_up(mbps_str)) %>%
+  mutate(should_index=get_should_index(content)) %>%
+  mutate(mbps_index=get_mbps_index(content, should_index, mbps_str)) %>%
+  mutate(should_score=1/(mbps_index - should_index))
+
+plot.mbps(df.mbps.html.extract, "mbps_down", "Mbps down", 50, remove_dups = TRUE,individual=TRUE)
+plot.mbps(df.mbps.html.extract, "mbps_up", "Mbps up", 50, remove_dups = TRUE,individual=TRUE)
+
 ########################
 
 ########################

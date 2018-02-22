@@ -1,4 +1,3 @@
-
 #### Question9:
 
 Should broadband Internet service be defined as a basic telecommunications service? What other services, if any, should be defined as basic telecommunications services?
@@ -11,7 +10,7 @@ Should broadband Internet service be defined as a basic telecommunications servi
 - bin/segment 'content:"internet, basic telecommunications service"~10 OR "broadband, basic telecommunications service"~10' --add --rows=82
 - bin/segment 'content: "What other services, if any, should be defined as basic telecommunications services?"' --add --rows=28
 
-`Doc2VecSearch` 
+`Doc2VecSearch`
 Should broadband Internet services be considered basic telecommunications services BTS?
 
 these counts were found with the following:
