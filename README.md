@@ -5,6 +5,7 @@ repo for various CIRA project deliverables
 
 - [hey-cira](#hey-cira)
 	- [Running w/ Docker](#running-w-docker)
+  - [Configuration](#configuration)
 	- [Getting started with Neo4j](#getting-started-with-neo4j)
 		- [Adding data to Neo4J](#adding-data-to-neo4j)
 	- [Getting started with Solr](#getting-started-with-solr)
@@ -64,27 +65,22 @@ repo for various CIRA project deliverables
 
   This will create both copies of the original files and .txt conversions named using a sha256 hash of the contents of the original file. The copies will be found under *data/processed/hashed*, and the .txt conversions will be found under *data/processed/raw_text*. Metadata for the files, including the filenames is stored in .json files under *data/processed/meta* by this process (although, ideally, this should be done in the scraping process, as noted in some code comments there).
 
-6. Import data into Neo4j
-  This step requires a number of files it seeks to import into the database. These can be downloaded from [here](https://cloud.cybera.ca/project/containers/container/hey-cira/processed).
-
-  ```
-  bin/wrangle-neo4j
-  ```
-
-7. Import and modify various other pieces of the Neo4j database  
+6. Import and modify various other pieces of the Neo4j database  
   See the [Transformation Scripts](#transformation-scripts) section for more details.
 
   ```
   bin/transform
   ```
 
-8. Import Neo4j Document nodes into Solr for fuzzy text searches
+## Configuration
 
-  ```
-  bin/script import/neo4j-to-solr.py
-  ```
+You'll need to create configuration files for logging into Neo4J and getting access to administrative functions on the browser. There are already templates in the *config* folder (with a *".example"* extension). Make a copy of the files where the extension is removed and update the Neo4J username and password to whatever you set for Neo4J. Update the browser admin password to whatever password you want to use to log in as an admin (it simply has to match what's submitted).
 
-  Currently, this is a one-time process, though we should probably consider making it a script that can be run multiple times, simply importing new Document nodes or ones that have changed since the last run.
+```
+cd config
+cp browser.yml.example browser.yml
+cp neo4j.yml.example neo4j.yml
+```
 
 ## Getting started with Neo4j
 
@@ -262,16 +258,6 @@ Currently on my data set, that search seems to provide matches for 39 out of 128
 ## The Hey CIRA Browser
 
 The "prototype browser" has been refactored, renamed, and moved to the *app* folder. It uses Sinatra as a basic framework, with ERB templates and Bootstrap CSS.
-
-### Configuration
-
-You'll need to create configuration files for logging into Neo4J and getting access to administrative functions on the browser. There are already templates in the *config* folder (with a *".example"* extension). Make a copy of the files where the extension is removed and update the Neo4J username and password to whatever you set for Neo4J. Update the browser admin password to whatever password you want to use to log in as an admin (it simply has to match what's submitted).
-
-```
-cd config
-cp browser.yml.example browser.yml
-cp neo4j.yml.example neo4j.yml
-```
 
 ### Running the browser
 
