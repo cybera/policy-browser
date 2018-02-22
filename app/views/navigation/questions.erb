@@ -8,9 +8,11 @@
       <a class="btn btn-default btn-xs btn-primary" href='<%= "/browser?ppn=#{ppn}&question=#{q['id']}&navigation=questions&detail=question_segments" %>'>
         Segments
       </a>
-      <a class="btn btn-default btn-xs btn-primary" href='<%= "/browser?ppn=#{ppn}&question=#{q['id']}&navigation=questions&detail=question_queries" %>'>
-        Link Queries
-      </a>
+      <% if authorized? %>
+        <a class="btn btn-default btn-xs btn-primary" href='<%= "/browser?ppn=#{ppn}&question=#{q['id']}&navigation=questions&detail=question_queries" %>'>
+          Link Queries
+        </a>
+      <% end %>
       <a class="btn btn-default btn-xs btn-primary" href='<%= "/csv/#{q['id']}" %>'>
         CSV
       </a>

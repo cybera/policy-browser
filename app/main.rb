@@ -5,6 +5,7 @@ require "sinatra/base"
 require "active_support"
 require "active_support/core_ext"
 require "csv"
+require "sinatra/simple_auth"
 
 $:.unshift File.expand_path("..", __FILE__)
 
@@ -17,6 +18,7 @@ require "lib/solr"
 require "lib/config"
 
 set :bind, '0.0.0.0'
+enable :sessions
 
 Neo4JQueries::connect(Config::Neo4J.username, Config::Neo4J.password)
 include Neo4JQueries
@@ -68,15 +70,17 @@ solr_search = lambda do
     results = solr_query(query, **search_params)
     results_to_add = nil
 
-    if params[:action] == "add_all" && params[:visible_hits] < params[:search_hits]
-      add_all_params = search_params.dup
-      add_all_params[:rows] = params[:search_hits].to_i || 6000
-      results_to_add = solr_query(query, **add_all_params)
-    elsif params[:action] == "add_all" || params[:action] == "add_visible"
-      results_to_add = results
-    end
+    if authorized?
+      if params[:action] == "add_all" && params[:visible_hits] < params[:search_hits]
+        add_all_params = search_params.dup
+        add_all_params[:rows] = params[:search_hits].to_i || 6000
+        results_to_add = solr_query(query, **add_all_params)
+      elsif params[:action] == "add_all" || params[:action] == "add_visible"
+        results_to_add = results
+      end
 
-    results_to_add.add if results_to_add    
+      results_to_add.add if results_to_add
+    end
   end
 
   solr_query_string = (params['solr_query_string'] || "").gsub('"','&quot;')
@@ -90,6 +94,8 @@ get '/search', &solr_search
 post '/search', &solr_search
 
 post '/question/:question_id/link/:query_id' do
+  protected!
+
   quality = params[:quality].to_f || 0.2
 
   results = graph_query("""
@@ -105,6 +111,8 @@ post '/question/:question_id/link/:query_id' do
 end
 
 post '/question/:question_id/unlink/:query_id' do
+  protected!
+
   quality = (params[:quality].to_f || 0.2) - 0.2
   graph_query("""
     MATCH (query:Query)-[r:ABOUT]->(question:Question)
@@ -143,4 +151,13 @@ get '/csv/:question' do
     CSV.generate_line(row, { :force_quotes => true }).strip.gsub(/\n/,"\\n")
   end.join("\n")
   str
+end
+
+# Very simple authentication for the admin user.
+# See: https://github.com/vast/sinatra-simple-auth
+set :password, Config::Admin.password
+set :home, '/'
+
+get '/login/?' do
+  erb :login, :layout => :layout # page with auth form
 end

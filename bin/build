@@ -3,7 +3,7 @@
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PROJECT_DIR="$(dirname $SCRIPT_DIR)"
 
-VERSION=1.3
+VERSION=1.4
 
 # Build the ruby image
 RUBY_IMG=cybera/hey-cira/ruby;

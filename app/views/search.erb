@@ -29,12 +29,14 @@
                   Showing <b><%= results.docs.count %></b> of <b><%= results.hits %></b> document hits
                 </div>
               </div>
-              <div class="col-sm-6">
-                    <button class="btn btn-default btn-block" type="submit" name="action" value="add_all">Add All</button>
-              </div>
-              <div class="col-sm-6">
-                    <button class="btn btn-default btn-block" type="submit" name="action" value="add_visible">Add Visible</button>
-              </div>
+              <% if authorized? %>
+                <div class="col-sm-6">
+                      <button class="btn btn-default btn-block" type="submit" name="action" value="add_all">Add All</button>
+                </div>
+                <div class="col-sm-6">
+                      <button class="btn btn-default btn-block" type="submit" name="action" value="add_visible">Add Visible</button>
+                </div>
+              <% end %>
             </div>
             <input type="hidden" name="search_hits" value="<%= results.hits %>"/>
             <input type="hidden" name="visible_hits" value="<%= results.docs.count %>"/>
