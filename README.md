@@ -263,6 +263,16 @@ Currently on my data set, that search seems to provide matches for 39 out of 128
 
 The "prototype browser" has been refactored, renamed, and moved to the *app* folder. It uses Sinatra as a basic framework, with ERB templates and Bootstrap CSS.
 
+### Configuration
+
+You'll need to create configuration files for logging into Neo4J and getting access to administrative functions on the browser. There are already templates in the *config* folder (with a *".example"* extension). Make a copy of the files where the extension is removed and update the Neo4J username and password to whatever you set for Neo4J. Update the browser admin password to whatever password you want to use to log in as an admin (it simply has to match what's submitted).
+
+```
+cd config
+cp browser.yml.example browser.yml
+cp neo4j.yml.example neo4j.yml
+```
+
 ### Running the browser
 
 ```
