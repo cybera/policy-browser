@@ -16,7 +16,9 @@ cypher(graph, q.docs_total)
 
 #Number of organizations who submitted
 q.orgs_total <- "
-  MATCH (o:Organization) RETURN count(o)
+ MATCH (org:Organization) 
+WHERE NOT (org)-[:ALIAS_OF]->()
+RETURN COUNT(org)
 "
 orgs_total <- cypher(graph, q.orgs_total)
 print(orgs_total)
@@ -37,7 +39,7 @@ orgs_total
 
 #Individual html submissions
 q.html_submissions <- "
-  MATCH path=(:Person)-[]-(p:Participant)-[]-(:Submission)-[]-(d:Document {type:'html'})
+  MATCH path=(:Person)-[]-(p:Participant)-[]-(:Submission)-[]-(d:Document)
   WHERE NOT (:Organization)-[]-(p)
   RETURN COUNT(d)
 "
@@ -48,8 +50,7 @@ acorn_total <- 289
 
 #OpenMedia individual submissions
 q.openmedia_submissions <- "
-  match ()-[o]-() where o.method = 'divide-big-docs'
-  return count(distinct o)
+  MATCH (doc:Document{type:'subdoc'}) RETURN COUNT(doc)
 "
 openmedia_total <- cypher(graph, q.openmedia_submissions)
 
