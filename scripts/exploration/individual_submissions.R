@@ -1,3 +1,4 @@
+# setwd to the project root
 library(widyr)
 library(ggplot2)
 library(igraph)
@@ -14,7 +15,7 @@ library(textcat)
 library(proustr)
 library(readtext)
 
-graph = startGraph("http://localhost:7474/db/data/", username = "neo4j", password = "password")
+source("scripts/exploration/neo4j.R")
 
 ##OpenMedia
 ##All OpenMedia Submissions

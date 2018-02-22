@@ -1,3 +1,4 @@
+# setwd to the project root
 library(widyr)
 library(ggplot2)
 library(tidytext)
@@ -9,7 +10,7 @@ library(reshape2)
 library(tidyr)
 #library(SnowballC)
 
-graph = startGraph("http://localhost:7474/db/data/", username = "neo4j", password = "password")
+source("scripts/exploration/neo4j.R")
 
 #solr without organizations
 query_s1 ="MATCH (qe:Question{ref:\"Q1\"})
