@@ -2,7 +2,9 @@ module Sinatra
   module DetailHelpers
     class QuestionInfo < DetailHelper
       def data
-        results = self.related_data
+        question_id = params[:question]
+        results = cache_get("question-segments.#{question_id}") { self.related_data.map { |r| r.to_h.stringify_keys } }
+
         orgs = results.group_by { |r| r['organization'] }
         categories = results.group_by { |r| r['category'] }
         queries = results.group_by { |r| r['query'] }
@@ -52,21 +54,21 @@ module Sinatra
       def related_organization_clause(missing=false)
         missing_str = missing ? "NOT " : ""
         """
-          MATCH (org:Organization)<-[:ALIAS_OF*0..1]-()-[:SUBMITTED]->(doc:Document)
-          MATCH (question:Question)<--(query:Query)
-          WHERE 
-            NOT (org)-[:ALIAS_OF]->() AND
-            ID(question) = $question AND
-            #{missing_str}(query)<--(:Segment)-->(doc)<-[:SUBMITTED]-()-[:ALIAS_OF*0..1]->(org)
+          MATCH (question:Question)
+          WHERE ID(question) = $question
+          WITH question
+          MATCH (org:Organization)
+          WHERE NOT (org)-[:ALIAS_OF]->() AND
+                #{missing_str} (org)<-[:ALIAS_OF*0..1]-(:Organization)-->(:Document)<--(:Segment)-->(:Query)-->(question)
         """
       end
 
       def related_data
         graph_query("""
           MATCH (question:Question)
-          MATCH (query:Query)-[r:ABOUT]-(question)
+          MATCH (query:Query)-[r:ABOUT]->(question)
           MATCH (query)<--(segment:Segment)-[:SEGMENT_OF]->(doc:Document)
-          MATCH (org:Organization)<-[:ALIAS_OF*0..1]-()-[:SUBMITTED]->(doc)
+          MATCH (org:Organization)<-[:ALIAS_OF*0..1]-(:Organization)-[:SUBMITTED]->(doc)
           WHERE ID(question) = $question AND
                 NOT (org)-[:ALIAS_OF]->()
           RETURN ID(segment) AS segment_id, query.str as query, org.category as category, 

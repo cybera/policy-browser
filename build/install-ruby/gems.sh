@@ -11,3 +11,4 @@ gem install neo4j
 gem install rubyzip
 gem install rsolr
 gem install sinatra-simple-auth
+gem install dalli # memcached client

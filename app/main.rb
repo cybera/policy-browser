@@ -6,6 +6,7 @@ require "active_support"
 require "active_support/core_ext"
 require "csv"
 require "sinatra/simple_auth"
+require "dalli"
 
 $:.unshift File.expand_path("..", __FILE__)
 
@@ -16,6 +17,7 @@ require "helpers/detail"
 require "helpers/navigation"
 require "lib/solr"
 require "lib/config"
+require "lib/memcached"
 
 set :bind, '0.0.0.0'
 enable :sessions
@@ -24,6 +26,8 @@ Neo4JQueries::connect(Config::Neo4J.username, Config::Neo4J.password)
 include Neo4JQueries
 SolrQueries::connect()
 include SolrQueries
+Memcached::connect()
+include Memcached
 
 def default_ppn
   if !@default_ppn
@@ -106,6 +110,10 @@ post '/question/:question_id/link/:query_id' do
     SET r.quality = $quality
   """, question:params[:question_id].to_i, query:params[:query_id].to_i, quality:quality)
 
+  cache_delete("question-segments.#{params[:question_id]}")
+  cache_delete("question-segment-texts.#{params[:question_id]}")
+  cache_delete("csv.#{params[:question_id]}")
+
   content_type :json
   { linked: true, quality: quality }.to_json
 end
@@ -119,6 +127,10 @@ post '/question/:question_id/unlink/:query_id' do
     WHERE ID(question) = $question AND ID(query) = $query
     #{quality > 0.0 ? 'SET r.quality = $quality' : 'DELETE r'}
   """, question:params[:question_id].to_i, query:params[:query_id].to_i, quality:quality)
+
+  cache_delete("question-segments.#{params[:question_id]}")
+  cache_delete("question-segment-texts.#{params[:question_id]}")
+  cache_delete("csv.#{params[:question_id]}")
 
   content_type :json
   { linked: false, quality: quality }.to_json
@@ -145,12 +157,14 @@ get '/csv/:question' do
   content_type :csv
   headers["Content-Disposition"] = "attachment;filename=#{question['ref']}-segments.csv"
 
-  str = ""
-  str += CSV.generate_line(csv_data.columns, { :force_quotes => true })
-  str += csv_data.rows.map do |row|
-    CSV.generate_line(row, { :force_quotes => true }).strip.gsub(/\n/,"\\n")
-  end.join("\n")
-  str
+  cache_get("csv.#{params[:question]}") do
+    str = ""
+    str += CSV.generate_line(csv_data.columns, { :force_quotes => true })
+    str += csv_data.rows.map do |row|
+      CSV.generate_line(row, { :force_quotes => true }).strip.gsub(/\n/,"\\n")
+    end.join("\n")
+    str
+  end
 end
 
 # Very simple authentication for the admin user.
