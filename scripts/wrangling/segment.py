@@ -14,6 +14,7 @@ from wrangling.util import neo4jtx as neo4j
 from wrangling.util import sha256str
 
 parser = OptionParser()
+parser.add_option("-o", "--OMexclude", action="store_true", dest="OMexclude")
 parser.add_option("-a", "--add", action="store_true", dest="add")
 parser.add_option("-r", "--rows", action="store", dest="maxrows", default=10)
 (options, args) = parser.parse_args(sys.argv)
@@ -48,6 +49,9 @@ search_config = {
   'rows':options.maxrows
 }
 
+if options.OMexclude:
+    search_config['fq'] = search_config['fq'] + ' -type:"subdoc"'
+    
 search_results = solr.search(search_query, **search_config)
 
 docs = {}

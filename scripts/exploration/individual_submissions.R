@@ -1,3 +1,4 @@
+# setwd to the project root
 library(widyr)
 library(ggplot2)
 library(igraph)
@@ -14,7 +15,7 @@ library(textcat)
 library(proustr)
 library(readtext)
 
-graph = startGraph("http://localhost:7474/db/data/", username = "neo4j", password = "password")
+source("scripts/exploration/neo4j.R")
 
 ##OpenMedia
 ##All OpenMedia Submissions
@@ -434,3 +435,31 @@ sentiment_messages_html %>%
   arrange(sentiment)
 
 data_html[data_html$sha256=="8f47bb74dcd6cb96a54e06f8b1da0b3d62cb6e59a522ec578d7799b3fe465b18",]$content
+
+###NRC part for ACORN (not included to MD)
+sentiment_nrc <- result_acorn %>% 
+  inner_join(get_sentiments("nrc")) %>% 
+  count(id, sentiment) %>%
+  spread(sentiment, n, fill=0) %>%
+  setNames(c(names(.)[1],paste0('nrc_', names(.)[-1]))) %>%
+  mutate(score_nrc = nrc_positive - nrc_negative) %>%
+  ungroup()
+
+data_sentiments <- Reduce(full_join,
+                          list(sentiment_nrc) )%>% 
+  mutate_each(funs(replace(., which(is.na(.)), 0)))
+
+data_full <- full_join(acorn_comment, data_sentiments)  %>% 
+  mutate_each(funs(replace(., which(is.na(.)), 0)), starts_with("score"), starts_with("nrc"))
+
+data_full %>%
+  top_n(1, score_nrc) %>%
+  select(id, score_nrc, content) 
+
+data_full %>%
+  top_n(1, nrc_anger) %>%
+  select(id, nrc_anger, content) 
+
+data_full %>%
+  top_n(1, nrc_sadness) %>%
+  select(id, nrc_sadness, content)

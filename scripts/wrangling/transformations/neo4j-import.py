@@ -240,12 +240,12 @@ def doc_topic():
     readCSV = csv.reader(csvfile)
     next(readCSV)
     for row in readCSV:
-        #print(row[2],row[3])
+        #print(row[1],row[2])
         with transaction() as tx:
                 tx.run("""
                        MATCH (d:Document {sha256:$sha256}), (t:Topic {id:$topic_id})
                        CREATE (d)-[:HAS_TOPIC]->(t)
-                       """, sha256=row[2],topic_id=int(row[3]))
+                       """, sha256=row[1],topic_id=int(row[2]))
                
 def doc_french():
   csv.field_size_limit(sys.maxsize)

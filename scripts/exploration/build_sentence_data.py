@@ -8,7 +8,7 @@ import scrubadub
 
 # this is used to make a pandas dataframe of all the sentences from each document. 
 
-datadir = '/Users/alextennant/CIRA/hey-cira/data/processed/raw_text/'
+datadir = 'your data directory'
 
 # here Sentence Number is the TOTAL sentence number. Cumulative over all documents.
 

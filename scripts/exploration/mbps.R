@@ -13,8 +13,6 @@ library(stringr)
 
 source("scripts/exploration/neo4j.R")
 
-graph <- startGraph("http://localhost:7474/db/data/", username = "neo4j", password = "password")
-
 ########################
 #Functions setup
 extract_mbps_down <- function(mbps_str) {
@@ -65,10 +63,9 @@ plot.mbps <- function(df, mbps_colname, mbps_label="Mbps", threshold=NA, remove_
       distinct(content, .keep_all = TRUE) 
   }
   
-  
-  ggplot(df.should_score) +
-    geom_jitter(data=df.no_should_score, aes(x=category, y = mbps_col), alpha=0.4) +
-    geom_jitter(aes(x=category, y=mbps_col, color=should_score), alpha=0.7) +
+  gplot(df.should_score) +
+    geom_jitter(data=df.no_should_score, aes(x=category,y = mbps_col), alpha=0.4) +
+    geom_jitter(aes(x=category,y=mbps_col, color=should_score), alpha=0.7) +
     scale_colour_gradient2(low="yellow", mid="orange", high = "red", midpoint=0.07) +
     labs(y=mbps_label, x="", color="'Should' score") +
     coord_flip() +
@@ -84,43 +81,32 @@ MATCH (question:Question { ref: $qref })
 MATCH (query:Query)-[:ABOUT]-(question)
 MATCH (query)<--(segment:Segment)-[:SEGMENT_OF]->(doc:Document)
 MATCH (org:Organization)-[:SUBMITTED]->(doc)
-RETURN segment.content AS content, org.category as category, 
+RETURN doc.name as doc_name, segment.content AS content, org.category as category, 
 org.name as organization
 "
+
 q.mbps.date <- "
 MATCH (question:Question { ref: $qref })
 MATCH (query:Query)-[:ABOUT]-(question)
 MATCH (query)<--(segment:Segment)-[:SEGMENT_OF]->(doc:Document)<--(s:Submission)
 MATCH (org:Organization)-[:SUBMITTED]->(doc)
-RETURN segment.content AS content, org.category as category, 
-org.name as organization, s.name AS submission_name, s.date_arrived AS date
-"
+RETURN doc.name as doc_name, segment.content AS content, org.category as category, 
+org.name as organization, s.name AS submission_name, s.date_arrived AS date"
 
-q.mbps.html <- "
+q.mbps.html <-  "
 MATCH (question:Question { ref: $qref })
 MATCH (query:Query)-[:ABOUT]-(question)
 MATCH (query)<--(segment:Segment)-[:SEGMENT_OF]->(doc:Document)<--(s:Submission)
-MATCH (person:Person)-->(:Participant { role: 'Client' } )-->(s)
-RETURN segment.content AS content, 
-person.name as person, s.name AS submission_name, s.date_arrived AS date
-"
-q.mbps.test <- "
-MATCH (question:Question { ref: $qref})
-MATCH (query:Query)-[:ABOUT]-(question)
-MATCH (query)<--(segment:Segment)-[:SEGMENT_OF]->(doc:Document)<--(s:Submission)
-MATCH path=(person:Person)-[]-(p:Participant)-[]-(:Submission)-[]-(doc:Document {type:'html'})
+MATCH path=(person:Person)-[]-(p:Participant)-[]-(s:Submission)-[]-(d:Document)
 WHERE NOT (:Organization)-[]-(p)
-RETURN segment.content AS content, 
-person.name as person, s.name AS submission_name, s.date_arrived AS date
-"
+RETURN doc.name as doc_name, segment.content as content, person.name as person, s.name AS submission_name, s.date_arrived AS date"
 
 q.mbps.openmedia <- "
 MATCH (question:Question { ref: $qref })
 MATCH (query:Query)-[:ABOUT]-(question)
-MATCH (query)<--(segment:Segment)-[:SEGMENT_OF]->(doc:Document)
+MATCH (query)<--(segment:Segment)-[:SEGMENT_OF]->(doc:Document{type:'subdoc'})-[:IN_COLLECTION]->(d:Document)<--(s:Submission)
 MATCH (person:Person)-[:SUBMITTED]->(doc)
-RETURN segment.content AS content, person.name as person, person.location as location
-"
+RETURN  doc.name as doc_name, segment.content AS content, person.name as person, s.name AS submission_name, s.date_arrived AS date"
 ########################
 
 # solr queries (should be added via bin/transform):
@@ -164,8 +150,24 @@ teststrs = c("5 Mbps upload / 6 Mbps download",
 extract_mbps_up(str_extract_all(teststrs, mbps.regex))
 
 
-df.mbps <- cypher(graph, q.mbps, qref="Q4-1")
-df.mbps.extract <- df.mbps %>%
+df.mbps <- cypher(graph, q.mbps, qref="Q4-1") #3917
+df.mbps <- df.mbps[!duplicated(df.mbps[c(1,2)]),] #2239
+df.mbps <- df.mbps[,c("content","organization", "category")]
+
+df.mbps.openmedia <- cypher(graph, q.mbps.openmedia, qref="Q4-1")  #147
+df.mbps.openmedia <- df.mbps.openmedia[!duplicated(df.mbps.openmedia[c(1,2)]),] #140
+df.mbps.openmedia <- df.mbps.openmedia[,c("content","person")]
+colnames(df.mbps.openmedia) <- c("content", "organization")
+df.mbps.openmedia$category <- "Individual OpenMedia"
+
+df.mbps.html <- cypher(graph, q.mbps.html, qref="Q4-1") #424
+df.mbps.html <- df.mbps.html[!duplicated(df.mbps.html[c(1,2)]),] #142
+df.mbps.html <- df.mbps.html[,c("content","person")]
+colnames(df.mbps.html) <- c("content", "organization")
+df.mbps.html$category <- "Individual"
+
+
+df.mbps.extract <- rbind(df.mbps,df.mbps.openmedia,df.mbps.html) %>%
   mutate(mbps_str = str_extract_all(content, mbps.regex)) %>%
   unnest(mbps_str) %>%
   mutate(mbps_down = extract_mbps_down(mbps_str)) %>%
@@ -189,11 +191,27 @@ ggsave("notebooks/images/mbps-up-50.png", plot.mbps.up.50, remove_dups=TRUE)
 #Looking only at intervention docs
 
 df.mbps.dates <- cypher(graph, q.mbps.date, qref="Q4-1")
-df.mbps.intervention <- df.mbps.dates %>% 
+df.mbps.dates <- df.mbps.dates[!duplicated(df.mbps[c(1,2)]),] #2239
+df.mbps.dates <- df.mbps.dates[,c("content","organization","submission_name", "date","category")]
+
+
+df.mbps.openmedia <- cypher(graph, q.mbps.openmedia, qref="Q4-1")  #147
+df.mbps.openmedia <- df.mbps.openmedia[!duplicated(df.mbps.openmedia[c(1,2)]),] #140
+df.mbps.openmedia <- df.mbps.openmedia[,c("content","person","submission_name", "date")]
+colnames(df.mbps.openmedia) <- c("content","organization","submission_name", "date")
+df.mbps.openmedia$category <- "Individual OpenMedia"
+
+df.mbps.html <- cypher(graph, q.mbps.html, qref="Q4-1") #424
+df.mbps.html <- df.mbps.html[!duplicated(df.mbps.html[c(1,2)]),] #142
+df.mbps.html <- df.mbps.html[,c("content","person","submission_name", "date")]
+colnames(df.mbps.html) <- c("content","organization","submission_name", "date")
+df.mbps.html$category <- "Individual"
+
+df.mbps.intervention <- rbind(df.mbps.dates,df.mbps.html) %>% 
   filter(submission_name %in% c("Intervention", "Interventions", "Intervention ")) 
 
 df.mbps.intervention.extract <- 
-  df.mbps.intervention %>%
+  rbind(df.mbps.intervention,df.mbps.openmedia) %>%
   mutate(mbps_str = str_extract_all(content, mbps.regex)) %>%
   unnest(mbps_str) %>%
   mutate(mbps_down = extract_mbps_down(mbps_str)) %>%
@@ -210,14 +228,6 @@ df.mbps.intervention.extract %>% arrange(desc(should_score)) %>%
   distinct(content, .keep_all = TRUE) %>% filter((should_score > 0.05) & (mbps_up > 0))
 df.mbps.intervention.extract %>% arrange(desc(should_score)) %>% 
   distinct(content, .keep_all = TRUE) %>% filter((should_score > 0.05) & (mbps_down > 0))
-########################
-
-########################
-#Adding in openmedia docs
-
-df.mbps.openmedia <- cypher(graph, q.mbps.openmedia, qref="Q4-1")
-df.mbps.html <- cypher(graph, q.mbps.html, qref="Q4-1")
-df.mbps.test <- cypher(graph, q.mbps.test, qref="Q4-1")
 ########################
 
 ########################
