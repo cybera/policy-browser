@@ -9,9 +9,10 @@ import csv
 import sys
 from glob import glob
 import json
+from wrangling import config
 
 uri = "bolt://neo4j:7687"
-driver = GraphDatabase.driver(uri, auth=("neo4j", "password"))
+driver = GraphDatabase.driver(uri, auth=(config.neo4j.username, config.neo4j.password))
 
 @contextmanager
 def transaction():

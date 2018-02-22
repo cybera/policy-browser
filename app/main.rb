@@ -14,10 +14,11 @@ require "helpers/basic"
 require "helpers/detail"
 require "helpers/navigation"
 require "lib/solr"
+require "lib/config"
 
 set :bind, '0.0.0.0'
 
-Neo4JQueries::connect("neo4j", "password")
+Neo4JQueries::connect(Config::Neo4J.username, Config::Neo4J.password)
 include Neo4JQueries
 SolrQueries::connect()
 include SolrQueries

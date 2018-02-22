@@ -5,6 +5,7 @@ from os import path
 import importlib.util
 import inspect
 import re
+from wrangling import config
 
 def sha256(path, open_func=open, open_flags='rb'):
   hash_sha256 = hashlib.sha256()
@@ -19,7 +20,7 @@ def sha256str(text):
   return hash_sha256.hexdigest()
 
 neo4j_uri = "bolt://neo4j:7687"
-neo4j_driver = GraphDatabase.driver(neo4j_uri, auth=("neo4j", "password"))
+neo4j_driver = GraphDatabase.driver(neo4j_uri, auth=(config.neo4j.username, config.neo4j.password))
 
 @contextmanager
 def neo4jtx():

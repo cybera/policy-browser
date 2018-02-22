@@ -7,7 +7,11 @@ from contextlib import contextmanager
 import json
 import pysolr
 from optparse import OptionParser
-from util import sha256str
+
+sys.path.append("scripts")
+
+from wrangling.util import neo4jtx as neo4j
+from wrangling.util import sha256str
 
 parser = OptionParser()
 parser.add_option("-a", "--add", action="store_true", dest="add")
@@ -16,15 +20,7 @@ parser.add_option("-r", "--rows", action="store", dest="maxrows", default=10)
 
 search_query = args[1]
 
-uri = "bolt://neo4j:7687"
-driver = GraphDatabase.driver(uri, auth=("neo4j", "password"))
 solr = pysolr.Solr('http://solr:8983/solr/cira', timeout=10)
-
-@contextmanager
-def transaction():
-  with driver.session() as session:
-    with session.begin_transaction() as tx:
-      yield tx
 
 search_config = {
   'hl.fl': 'content', 
@@ -73,7 +69,7 @@ for r in search_results.docs:
 
 
 if options.add:
-  with transaction() as tx:
+  with neo4j() as tx:
     for sha256 in docs:
       for hlhit in docs[sha256]:
         hit = re.sub(r'<em>(.*?)</em>','\\1', hlhit)
