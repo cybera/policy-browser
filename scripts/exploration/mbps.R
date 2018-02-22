@@ -1,3 +1,5 @@
+# setwd to the project root
+
 library(RNeo4j)
 library(dplyr)
 library(tidytext)
@@ -8,6 +10,8 @@ library(readr)
 library(data.table)
 library(text2vec)
 library(stringr)
+
+source("scripts/exploration/neo4j.R")
 
 graph <- startGraph("http://localhost:7474/db/data/", username = "neo4j", password = "password")
 
