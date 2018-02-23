@@ -50,6 +50,14 @@ module SolrQueries
       @results["response"]["numFound"]
     end
 
+    def doc_count
+      @docs.count
+    end
+
+    def segment_count
+      @docs.map { |doc| doc["segments"].count }.sum
+    end
+
     def add
       this = self
       neo4j_db.queries do

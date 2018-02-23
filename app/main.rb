@@ -58,39 +58,53 @@ end
 solr_search = lambda do
   results = EmptySolrResults.new
 
+  error_message = nil
+  status_message = nil
+
   if request.env["REQUEST_METHOD"] == "POST"
-    query = params[:solr_query_string]
+    begin
+      query = params[:solr_query_string]
 
-    search_params = {
-      "hl.fragsize": params[:solr_segment_size] || 500
-    }
+      search_params = {
+        "hl.fragsize": params[:solr_segment_size] || 500
+      }
 
-    if params[:action] == "show_all"
-      search_params[:rows] = params[:search_hits].to_i || 6000
-    elsif params[:visible_hits].to_i > 10 && params[:action] != "search"
-      search_params[:rows] = params[:visible_hits].to_i
-    end
-
-    results = solr_query(query, **search_params)
-    results_to_add = nil
-
-    if authorized?
-      if params[:action] == "add_all" && params[:visible_hits] < params[:search_hits]
-        add_all_params = search_params.dup
-        add_all_params[:rows] = params[:search_hits].to_i || 6000
-        results_to_add = solr_query(query, **add_all_params)
-      elsif params[:action] == "add_all" || params[:action] == "add_visible"
-        results_to_add = results
+      if params[:action] == "show_all"
+        search_params[:rows] = params[:search_hits].to_i || 6000
+      elsif params[:visible_hits].to_i > 10 && params[:action] != "search"
+        search_params[:rows] = params[:visible_hits].to_i
       end
 
-      results_to_add.add if results_to_add
+      results = solr_query(query, **search_params)
+      results_to_add = nil
+
+      if authorized?
+        if params[:action] == "add_all" && params[:visible_hits] < params[:search_hits]
+          add_all_params = search_params.dup
+          add_all_params[:rows] = params[:search_hits].to_i || 6000
+          results_to_add = solr_query(query, **add_all_params)
+        elsif params[:action] == "add_all" || params[:action] == "add_visible"
+          results_to_add = results
+        end
+
+        if results_to_add
+          results_to_add.add
+          status_message = "Added #{results_to_add.segment_count} segments from #{results_to_add.doc_count} documents."
+        end  
+      end
+    rescue RSolr::Error::Http => e
+      if e.response[:status] == 400
+        error_message = "Invalid Solr query"
+      else
+        error_message = "Unknown error: #{e}"
+      end
     end
   end
 
   solr_query_string = (params['solr_query_string'] || "").gsub('"','&quot;')
   solr_segment_size = params['solr_segment_size'] || "500"
   erb :search, :locals => { results: results, solr_query_string: solr_query_string, 
-                            solr_segment_size: solr_segment_size,
+                            solr_segment_size: solr_segment_size, error_message: error_message, status_message: status_message
                           }
 end
 

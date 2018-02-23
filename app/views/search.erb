@@ -20,28 +20,40 @@
               <input type="text" class="form-control" name="solr_segment_size" value="<%= solr_segment_size %>"></input>
             </div>
           </div>
-          <% if results.docs.count > 0 %>
-            <div class="form-group">
-              <div class="col-sm-12">
+          <div class="form-group">
+            <div class="col-sm-12">
+              <% if !results.is_a? EmptySolrResults %>
                 <div class="alert alert-success" role="alert">
-                  <button class="btn btn-xs alert-link" style="float:right" type="submit"
-                          name="action" value="show_all">Show All</button>
+                  <% if results.docs.count < results.hits %>
+                    <button class="btn btn-xs alert-link" style="float:right" type="submit"
+                            name="action" value="show_all">Show All</button>
+                  <% end %>
                   Showing <b><%= results.docs.count %></b> of <b><%= results.hits %></b> document hits
-                </div>
-              </div>
-              <% if authorized? %>
-                <div class="col-sm-6">
-                      <button class="btn btn-default btn-block" type="submit" name="action" value="add_all">Add All</button>
-                </div>
-                <div class="col-sm-6">
-                      <button class="btn btn-default btn-block" type="submit" name="action" value="add_visible">Add Visible</button>
                 </div>
               <% end %>
             </div>
-            <input type="hidden" name="search_hits" value="<%= results.hits %>"/>
-            <input type="hidden" name="visible_hits" value="<%= results.docs.count %>"/>
-          <% end %>
+            <% if authorized? && results.docs.count > 0 %>
+              <div class="col-sm-6">
+                    <button class="btn btn-default btn-block" type="submit" name="action" value="add_all">Add All</button>
+              </div>
+              <div class="col-sm-6">
+                    <button class="btn btn-default btn-block" type="submit" name="action" value="add_visible">Add Visible</button>
+              </div>
+            <% end %>
+          </div>
+          <input type="hidden" name="search_hits" value="<%= results.hits %>"/>
+          <input type="hidden" name="visible_hits" value="<%= results.docs.count %>"/>
         </form>
+        <% if error_message %>
+          <div class="alert alert-danger" role="alert">
+            <%= error_message %>
+          </div>
+        <% end %>
+        <% if status_message %>
+          <div class="alert alert-success" role="alert">
+            <%= status_message %>
+          </div>
+        <% end %>
       </div>
     </div>
   </div>
