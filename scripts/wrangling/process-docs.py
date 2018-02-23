@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+import sys
+
+sys.path.append("scripts")
+
 from os.path import join, splitext, exists as path_exists, basename
 from requests import put
 from ftfy import fix_encoding
