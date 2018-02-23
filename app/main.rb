@@ -98,7 +98,7 @@ solr_search = lambda do
         error_message = "Invalid Solr query"
         error_details = e
       else
-        error_message = "Unknown error: #{e}"
+        error_message = "Unknown error"
         error_details = e
       end
     rescue RSolr::Error::ConnectionRefused => e
