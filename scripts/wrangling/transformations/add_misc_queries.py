@@ -54,6 +54,14 @@ class AddMiscQueries(TransformBase):
 
 
   def match(self):
+    # Check to see if we actually have documents imported into solr before
+    # trying to import actual search results. If the field doesn't exist at
+    # all, any search will throw a SolrError exception.
+    try:
+      self.solr.search("content:000000", **self.SOLR_CONFIG)
+    except pysolr.SolrError:
+      return False
+
     updates = []
 
     # Short out if the question doesn't exist yet

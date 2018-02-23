@@ -1,5 +1,5 @@
 import os
-
+import pysolr
 
 class AnswerQuestionsSolr(TransformBase):
 
@@ -32,6 +32,15 @@ class AnswerQuestionsSolr(TransformBase):
         
 
      def match(self):
+        # Check to see if we actually have documents imported into solr before
+        # trying to import actual search results. If the field doesn't exist at
+        # all, any search will throw a SolrError exception.
+        try:
+            solr = pysolr.Solr('http://solr:8983/solr/crtc-docs', timeout=10)
+            solr.search("content:000000")
+        except pysolr.SolrError:
+            return False
+
         queries = self.Qe
         questions=self.qref
         existing_query = neo4j_count("MATCH (q:Query) WHERE q.str IN $quer", quer=queries)
