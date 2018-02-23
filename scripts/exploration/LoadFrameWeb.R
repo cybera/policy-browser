@@ -60,4 +60,4 @@ ggraph(bigram_graph, layout = 'fr')+
   theme_void() + 
   ggtitle("Discussion of Affordability by All Groups")
 
-ggsave("../hey-cira/notebooks/images/all_doc2vec_afford_filter.png", height=5, width= 5)
+ggsave("../policy-browser/notebooks/images/all_doc2vec_afford_filter.png", height=5, width= 5)

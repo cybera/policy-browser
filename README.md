@@ -1,9 +1,9 @@
-# hey-cira
+# policy-browser
 repo for various CIRA project deliverables
 
 <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
-- [hey-cira](#hey-cira)
+- [policy-browser](#policy-browser)
   - [Running w/ Docker](#running-w-docker)
   - [Configuration](#configuration)
   - [Getting started with Neo4j](#getting-started-with-neo4j)
@@ -13,7 +13,7 @@ repo for various CIRA project deliverables
     - [Web interface](#web-interface)
     - [Solr Query Basics](#solr-query-basics)
     - [Segment script](#segment-script)
-  - [The Hey CIRA Browser](#the-hey-cira-browser)
+  - [The Policy Browser Browser](#the-policy-browser-browser)
     - [Running the browser](#running-the-browser)
     - [Adding new styles of navigation](#adding-new-styles-of-navigation)
     - [Adding to the navigation selector](#adding-to-the-navigation-selector)
@@ -161,7 +161,7 @@ Plus, [they used it on the Panama Papers](https://neo4j.com/blog/analyzing-panam
 
 ### Web interface
 
-The web interface can be accessed from [http://localhost:8983](http://localhost:8983/) after Solr has been started. In practice, this isn't quite as useful as the Neo4j web interface. Since API requests are also sent directly as HTTP requests, your code will reference something very similar: "solr:8983/solr/cira". Again, since our code is generally **not** running directly on the host machine, but within its own Docker container, we're using the Docker compose reference of "solr" instead of "localhost".
+The web interface can be accessed from [http://localhost:8983](http://localhost:8983/) after Solr has been started. In practice, this isn't quite as useful as the Neo4j web interface. Since API requests are also sent directly as HTTP requests, your code will reference something very similar: "solr:8983/solr/crtc-docs". Again, since our code is generally **not** running directly on the host machine, but within its own Docker container, we're using the Docker compose reference of "solr" instead of "localhost".
 
 ### Solr Query Basics
 
@@ -190,7 +190,7 @@ Some other usefult Solr query parameters:
 - `fl=`: a comma-separated list of fields to include in the search. To cut down on clutter, you could use something like `fl=id,sha256,name`, which would avoid bringing back the full text of a document. If you're using a highlighter to return matched blocks, you don't really need to see the full document in this context anyway.
 - `rows=`: the maximum number of rows to return. The default is 10. Often, we're going to want to return *all* results and re-import them into Neo4j.
 
-All of these query parameters can be added to a Solr search by joining them with `&` on the URL. A quick way to get started in a browser is to go to either [the admin query interface](http://localhost:8983/solr/#/cira/query) or [the browse interface](http://localhost:8983/solr/cira/browse).
+All of these query parameters can be added to a Solr search by joining them with `&` on the URL. A quick way to get started in a browser is to go to either [the admin query interface](http://localhost:8983/solr/#/crtc-docs/query) or [the browse interface](http://localhost:8983/solr/crtc-docs/browse).
 
 ### Segment script
 
@@ -256,7 +256,7 @@ Comparing that with a simple count of organizations allows us to figure out how 
 
 Currently on my data set, that search seems to provide matches for 39 out of 128 identified companies.
 
-## The Hey CIRA Browser
+## The Policy Browser Browser
 
 The "prototype browser" has been refactored, renamed, and moved to the *app* folder. It uses Sinatra as a basic framework, with ERB templates and Bootstrap CSS.
 
@@ -470,7 +470,7 @@ with neo4j() as tx:
   tx.run("MATCH (n) RETURN COUNT(n)")
 ```
 
-You also have access to `neo4j_summary` (described above), `neo4j_count` (add a `RETURN COUNT(*)` to an initial match clause and extract the single integer response), the `os.path` module (accessible as `path`), and various project paths via `project_root` (`project_root` gives you "/mnt/hey-cira", `project_root.data` gives you "/mnt/hey-cira/data", and so on).
+You also have access to `neo4j_summary` (described above), `neo4j_count` (add a `RETURN COUNT(*)` to an initial match clause and extract the single integer response), the `os.path` module (accessible as `path`), and various project paths via `project_root` (`project_root` gives you "/mnt/policy-browser", `project_root.data` gives you "/mnt/policy-browser/data", and so on).
 
 You can add other helper functions in one of two ways:
 
@@ -527,7 +527,7 @@ Here are the advantages that you get for free when you follow the above conventi
 5. Change to the root project directory and check that it's using rbenv's ruby:
 
   ```
-  cd hey-cira
+  cd policy-browser
   ruby -v
   ```
 

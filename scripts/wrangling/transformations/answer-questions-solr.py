@@ -44,25 +44,25 @@ class AnswerQuestionsSolr(TransformBase):
        
      def transform(self, data):
         #Q1
-        os.system("python /mnt/hey-cira/scripts/wrangling/segment.py 'content:\"internet, expensive\"~10 OR content:\"broadband, expensive\"~10 OR content:\"services, expensive\"~10 OR content:\"service, expensive\"~10' --add --rows=117 --OMexclude")
-        os.system("python /mnt/hey-cira/scripts/wrangling/segment.py 'content:\"internet, cheap\"~10 OR content:\"broadband, cheap\"~10 OR content:\"services, cheap\"~10 OR content:\"service, cheap\"~10' --add --rows=6 --OMexclude")  
-        os.system("python /mnt/hey-cira/scripts/wrangling/segment.py 'content:\"internet, affordable\"~10 OR content:\"broadband, affordable\"~10 OR content:\"services, affordable\"~10 OR content:\"service, affordable\"~10'  --rows=372 --add --OMexclude")  
-        os.system("python /mnt/hey-cira/scripts/wrangling/segment.py 'content:\"internet, affordability\"~10 OR content:\"broadband, affordability\"~10 OR content:\"services, affordability\"~10 OR content:\"service, affordability\"~10' --add --rows=242 --OMexclude")  
-        os.system("python /mnt/hey-cira/scripts/wrangling/segment.py 'content:\"internet, cost\"~10 OR content:\"broadband, cost\"~10 OR content:\"services, cost\"~10 OR content:\"service, cost\"~10' --add --rows=501 --OMexclude")  
-        os.system("python /mnt/hey-cira/scripts/wrangling/segment.py 'content:\"internet, price\"~10 OR content:\"broadband, price\"~10 OR content:\"services, price\"~10 OR content:\"service, price\"~10' --rows=410 --add --OMexclude")  
+        os.system("python /mnt/policy-browser/scripts/wrangling/segment.py 'content:\"internet, expensive\"~10 OR content:\"broadband, expensive\"~10 OR content:\"services, expensive\"~10 OR content:\"service, expensive\"~10' --add --rows=117 --OMexclude")
+        os.system("python /mnt/policy-browser/scripts/wrangling/segment.py 'content:\"internet, cheap\"~10 OR content:\"broadband, cheap\"~10 OR content:\"services, cheap\"~10 OR content:\"service, cheap\"~10' --add --rows=6 --OMexclude")  
+        os.system("python /mnt/policy-browser/scripts/wrangling/segment.py 'content:\"internet, affordable\"~10 OR content:\"broadband, affordable\"~10 OR content:\"services, affordable\"~10 OR content:\"service, affordable\"~10'  --rows=372 --add --OMexclude")  
+        os.system("python /mnt/policy-browser/scripts/wrangling/segment.py 'content:\"internet, affordability\"~10 OR content:\"broadband, affordability\"~10 OR content:\"services, affordability\"~10 OR content:\"service, affordability\"~10' --add --rows=242 --OMexclude")  
+        os.system("python /mnt/policy-browser/scripts/wrangling/segment.py 'content:\"internet, cost\"~10 OR content:\"broadband, cost\"~10 OR content:\"services, cost\"~10 OR content:\"service, cost\"~10' --add --rows=501 --OMexclude")  
+        os.system("python /mnt/policy-browser/scripts/wrangling/segment.py 'content:\"internet, price\"~10 OR content:\"broadband, price\"~10 OR content:\"services, price\"~10 OR content:\"service, price\"~10' --rows=410 --add --OMexclude")  
         #Q4
-        os.system("python /mnt/hey-cira/scripts/wrangling/segment.py 'content:\"What are the roles of the private sector and the various levels of government (federal, provincial, territorial, and municipal) in ensuring that investment in telecommunications infrastructure results in the availability of modern telecommunications services to all Canadians?\"' --add --rows=26 --OMexclude")
+        os.system("python /mnt/policy-browser/scripts/wrangling/segment.py 'content:\"What are the roles of the private sector and the various levels of government (federal, provincial, territorial, and municipal) in ensuring that investment in telecommunications infrastructure results in the availability of modern telecommunications services to all Canadians?\"' --add --rows=26 --OMexclude")
         #Q9
-        os.system("python /mnt/hey-cira/scripts/wrangling/segment.py 'content:\"basic telecommunications service\"' --rows=180 --add --OMexclude")
-        os.system("python /mnt/hey-cira/scripts/wrangling/segment.py 'content:\"basic telecommunications services\"' --rows=625 --add --OMexclude")
-        os.system("python /mnt/hey-cira/scripts/wrangling/segment.py 'content:\"internet, basic telecommunications service\"~10 OR \"broadband, basic telecommunications service\"~10' --add --rows=82 --OMexclude")
-        os.system("python /mnt/hey-cira/scripts/wrangling/segment.py 'content: \"What other services, if any, should be defined as basic telecommunications services?\"' --add --rows=28 --OMexclude")
+        os.system("python /mnt/policy-browser/scripts/wrangling/segment.py 'content:\"basic telecommunications service\"' --rows=180 --add --OMexclude")
+        os.system("python /mnt/policy-browser/scripts/wrangling/segment.py 'content:\"basic telecommunications services\"' --rows=625 --add --OMexclude")
+        os.system("python /mnt/policy-browser/scripts/wrangling/segment.py 'content:\"internet, basic telecommunications service\"~10 OR \"broadband, basic telecommunications service\"~10' --add --rows=82 --OMexclude")
+        os.system("python /mnt/policy-browser/scripts/wrangling/segment.py 'content: \"What other services, if any, should be defined as basic telecommunications services?\"' --add --rows=28 --OMexclude")
         #Q9-1
-        os.system("python /mnt/hey-cira/scripts/wrangling/segment.py 'content:\"internet, basic service\"~10 OR \"broadband, basic service\"~10' --add --rows=267 --OMexclude")
+        os.system("python /mnt/policy-browser/scripts/wrangling/segment.py 'content:\"internet, basic service\"~10 OR \"broadband, basic service\"~10' --add --rows=267 --OMexclude")
         #Q12
-        os.system("python /mnt/hey-cira/scripts/wrangling/segment.py 'content:\"services, subsidies\"~10 OR \"service, subsidies\"' --add --rows=113 --OMexclude")
-        os.system("python /mnt/hey-cira/scripts/wrangling/segment.py 'content:\"services, subsidy\"~10 OR \"service, subsidy\"' --rows=141 --add --OMexclude")
-        os.system("python /mnt/hey-cira/scripts/wrangling/segment.py 'content:\"services, subsidized\"~10 OR \"service, subsidized\"~10' --add --rows=92 --OMexclude")
+        os.system("python /mnt/policy-browser/scripts/wrangling/segment.py 'content:\"services, subsidies\"~10 OR \"service, subsidies\"' --add --rows=113 --OMexclude")
+        os.system("python /mnt/policy-browser/scripts/wrangling/segment.py 'content:\"services, subsidy\"~10 OR \"service, subsidy\"' --rows=141 --add --OMexclude")
+        os.system("python /mnt/policy-browser/scripts/wrangling/segment.py 'content:\"services, subsidized\"~10 OR \"service, subsidized\"~10' --add --rows=92 --OMexclude")
         
         # add relationships between queries and questions
         tx_results = []

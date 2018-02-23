@@ -41,4 +41,4 @@ The metadata provides a convenient way to subtype the submissions that were rece
 - Type of organization that submitted (e.g. NFP, ILEC, etc)
 - Which province they came from
 - Consultation stage
-- Also see the metadata [wishlist](https://github.com/cybera/hey-cira/blob/master/scripts/test/metadata.py)
+- Also see the metadata [wishlist](https://github.com/cybera/policy-browser/blob/master/scripts/test/metadata.py)

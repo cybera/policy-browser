@@ -1,4 +1,4 @@
-# setwd("your/hey-cira/project/root") before running
+# setwd("your/policy-browser/project/root") before running
 
 library(xml2)
 library(purrr)

@@ -5,9 +5,9 @@ SCRIPTARGS="${@:2}"
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PROJECT_DIR="$(dirname $SCRIPT_DIR)"
-MOUNT_DIR=/mnt/hey-cira
-RUBY_IMG=cybera/hey-cira/ruby
-PYTHON_IMG=cybera/hey-cira/python
+MOUNT_DIR=/mnt/policy-browser
+RUBY_IMG=cybera/policy-browser/ruby
+PYTHON_IMG=cybera/policy-browser/python
 
 ruby_script() {
 	script_name=$1

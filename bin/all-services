@@ -12,5 +12,5 @@ if [[ $action == 'start' ]]; then
 elif [[ $action == 'stop' ]]; then
   $PROJECT_DIR/bin/memcached stop
   $PROJECT_DIR/bin/solr stop
-  $PROJECT_DIR/bin/neo4j start
+  $PROJECT_DIR/bin/neo4j stop
 fi

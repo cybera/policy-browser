@@ -6,7 +6,7 @@ class Neo4JToSolr(TransformBase):
   CHUNK_SIZE = 500
 
   def preconditions(self):
-    self.solr = pysolr.Solr('http://solr:8983/solr/cira', timeout=10)
+    self.solr = pysolr.Solr('http://solr:8983/solr/crtc-docs', timeout=10)
 
   def match(self):
     with neo4j() as tx:

@@ -7,7 +7,7 @@ module SolrQueries
   mattr_accessor :solr_db
 
   class << self
-    def connect(path="solr/cira", hostname="solr", port=8983)
+    def connect(path="solr/crtc-docs", hostname="solr", port=8983)
       SolrQueries.solr_db = RSolr.connect :url => "http://#{hostname}:#{port}/#{path}"
     end
   end

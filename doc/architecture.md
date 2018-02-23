@@ -36,20 +36,20 @@ If we do end up using machine learning techniques, they'll likely be focused in 
 
 ## Systems
 
-Story: As hey-cira makers, we'd like to not have to always think about rebuilding the database whenever there's a change or addition to data refinement scripts.  
+Story: As policy-browser makers, we'd like to not have to always think about rebuilding the database whenever there's a change or addition to data refinement scripts.  
 Tasks:
   - Set up a server in RAC that can run our Docker containers
   - Set it to build a new version of the docs.db when changes are made to "wrangling" scripts
-  - When finished, push a new version of the docs.db to our hey-cira Swift container
+  - When finished, push a new version of the docs.db to our policy-browser Swift container
 
-Story: As hey-cira makers, we're worried that continually crawling the CRTC website and downloading fresh documents all the time might get us blocked by their network folks, so it would be nice to only do that when we absolutely have to. Even though we're less likely to get into trouble rebuilding the database from already downloaded documents, we want those rebuilds to be as quick as possible.  
+Story: As policy-browser makers, we're worried that continually crawling the CRTC website and downloading fresh documents all the time might get us blocked by their network folks, so it would be nice to only do that when we absolutely have to. Even though we're less likely to get into trouble rebuilding the database from already downloaded documents, we want those rebuilds to be as quick as possible.  
 Tasks:
   - Review scraping script to ensure that it won't download documents that are already downloaded
   - Consider using versioning (experimentally being used in the "wrangling" scripts) to help avoid even having to scrape certain sections at all (if they've already been scraped with the latest "version" of the scraper)
   - Use existing versioning to smartly avoid re-generating metadata when the scripts that produced it haven't changed. Make sure to also cover the case where the script has already been run, but a document has been added. Can we run the entire processing pipeline and have it just pick up those new documents?
   - Use existing versioning (and/or perhaps other mechanisms) to smartly re-generate metadata that's dependent on other metadata when that earlier metadata is regenerated
 
-Story: As hey-cira makers, it would really be nice to have a more centralized source of truth for a lot of this stuff. When do we graduate from SQLite?  
+Story: As policy-browser makers, it would really be nice to have a more centralized source of truth for a lot of this stuff. When do we graduate from SQLite?  
 Tasks:
   - Before diving in, review whether we're really at the point of needing to do this.
   - Create a real database!
@@ -60,9 +60,9 @@ Tasks:
 
 ## Tools
 
-Story: As hey-cira makers, occasionally we just want a quick notebook to be able to play around with some ideas.  
+Story: As policy-browser makers, occasionally we just want a quick notebook to be able to play around with some ideas.  
 Tasks:
-  - Create a "bin" script that uses the "cybera/hey-cira/python" docker container (which has the Anaconda distro) to fire up a Jupyter notebook session
+  - Create a "bin" script that uses the "cybera/policy-browser/python" docker container (which has the Anaconda distro) to fire up a Jupyter notebook session
   - Create a notebooks folder in our project and point the jupyter notebook to that initially (but leave the Docker container pointing at the project root) for easy saving/opening of existing notebooks
   - Figure out how to set any default paths, etc. that make it easier to try out an idea quickly.
 

@@ -2,9 +2,9 @@
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PROJECT_DIR="$(dirname $SCRIPT_DIR)"
-MOUNT_DIR=/mnt/hey-cira
+MOUNT_DIR=/mnt/policy-browser
 
-PYTHON_IMG=cybera/hey-cira/python
+PYTHON_IMG=cybera/policy-browser/python
 
 docker run -it --rm \
   -v $PROJECT_DIR:$MOUNT_DIR \

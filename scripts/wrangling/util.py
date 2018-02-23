@@ -124,7 +124,7 @@ class PathBuilder(str):
       fullpath = path.join(self.root,subpath)
       setattr(self, subpath, PathBuilder(fullpath))
 
-project_root = PathBuilder("/mnt/hey-cira")
+project_root = PathBuilder("/mnt/policy-browser")
 project_root.add("data", "scripts")
 project_root.data.add("raw", "processed")
 project_root.data.processed.add("hashed", "meta", "raw_text", "sorted")

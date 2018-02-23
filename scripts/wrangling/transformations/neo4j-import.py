@@ -282,8 +282,8 @@ class Neo4JImport(TransformBase):
     merge_submitter("Client")
     merge_submitter("Designated Representative")
     merge_dates()
-    topics()
-    doc_topic()
-    doc_french()
+    #topics()
+    #doc_topic()
+    #doc_french()
 
     return [ "Did initial Neo4J import" ]

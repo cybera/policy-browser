@@ -19,8 +19,8 @@ Comment from DS-323:
 ** e.g. Fig. 3.4 and 4.1 in [tidy textmining](https://www.tidytextmining.com/ngrams.html)  
 
 * what is the overall sentiment of the intervenor groups  
-** e.g. Fig. 2.4 in [tidy textmining](https://www.tidytextmining.com/ngrams.html) or "Which words had the most effect on sentiment scores overall(Afinn)" in [Tatiana's doc](https://github.com/cybera/hey-cira/blob/neo4j/notebooks/Affordability.md) along with an actual sentiment score for each document for each category  
-** e.g. Sentiment cloud in [Tatiana's doc](https://github.com/cybera/hey-cira/blob/neo4j/notebooks/Affordability.md)  
+** e.g. Fig. 2.4 in [tidy textmining](https://www.tidytextmining.com/ngrams.html) or "Which words had the most effect on sentiment scores overall(Afinn)" in [Tatiana's doc](https://github.com/cybera/policy-browser/blob/neo4j/notebooks/Affordability.md) along with an actual sentiment score for each document for each category  
+** e.g. Sentiment cloud in [Tatiana's doc](https://github.com/cybera/policy-browser/blob/neo4j/notebooks/Affordability.md)  
 ** are there differences in positivity and/or negativity in how the groups talk about internet as a basic service  
 ** are there differences in sentiment between individual submissions and submissions from organizations - use NRC dictionary  
 ** are there common keywords associated with statements of negative sentiment about internet as a basic service?  

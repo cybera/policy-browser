@@ -21,7 +21,7 @@ parser.add_option("-r", "--rows", action="store", dest="maxrows", default=10)
 
 search_query = args[1]
 
-solr = pysolr.Solr('http://solr:8983/solr/cira', timeout=10)
+solr = pysolr.Solr('http://solr:8983/solr/crtc-docs', timeout=10)
 
 search_config = {
   'hl.fl': 'content', 

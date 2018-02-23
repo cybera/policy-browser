@@ -4,7 +4,7 @@ import os
 from glob import glob
 from os.path import join as path_join, basename, splitext
 
-project_dir = "/mnt/hey-cira"
+project_dir = "/mnt/policy-browser"
 data_dir = path_join(project_dir, "data")
 sorted_dir = path_join(data_dir, "processed", "sorted")
 

@@ -30,12 +30,12 @@ sudo apt-get install docker-compose
 sudo curl -L https://github.com/docker/compose/releases/download/1.18.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 
-#Clone Neo4j branch of cybera/hey-cira git repo
+#Clone Neo4j branch of cybera/policy-browser git repo
 cd /home/ubuntu
-git clone -b neo4j git@github.com:cybera/hey-cira.git
-cd /home/ubuntu/hey-cira
+git clone -b neo4j git@github.com:cybera/policy-browser.git
+cd /home/ubuntu/policy-browser
 
-#Build `hey-cira` project
+#Build `policy-browser` project
 bin/build
 
 #Scrape and process CRTC documents
@@ -62,7 +62,7 @@ bin/process-docs
 bin/wrangle-neo4j
 bin/transform
 bin/script import/neo4j-to-solr.py
-#see github readme for more instructions on how to work with Solr and Neo4j https://github.com/cybera/hey-cira/tree/neo4j
+#see github readme for more instructions on how to work with Solr and Neo4j https://github.com/cybera/policy-browser/tree/neo4j
 
 
 #Load Balancing

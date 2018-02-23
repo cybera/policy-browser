@@ -36,7 +36,7 @@ data_om$content <- unlist(data_om$content)
 write.csv(data_om,"data_om.csv")
 
 ###ACORN
-#setwd("~/DS/hey-cira/data/raw")
+#setwd("~/DS/policy-browser/data/raw")
 #filename1 = "2015-134.224035.2409354.Intervention(1fn2$01!).pdf"
 #filename2 = "2015-134.224035.2409353.Intervention(1fn2h01!).pdf"
 #doc1 <- readtext(filename1, encoding="UTF-8")

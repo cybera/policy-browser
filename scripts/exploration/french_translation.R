@@ -4,7 +4,7 @@
 library(RNeo4j)
 library(textcat)
 
-#setwd("~/DS/hey-cira/data/processed")
+#setwd("~/DS/policy-browser/data/processed")
 
 graph = startGraph("http://localhost:7474/db/data/", username = "neo4j", password = "password")
 query = "MATCH (n:Document) RETURN  n.sha256 AS sha256, n.content as content"

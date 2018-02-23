@@ -15,33 +15,33 @@ services:
       NEO4J_dbms_memory_pagecache_size: 1048576
 
   python-shell:
-    image: cybera/hey-cira/python
+    image: cybera/policy-browser/python
     networks:
       - default
     volumes:
-      - ../:/mnt/hey-cira
+      - ../:/mnt/policy-browser
     stdin_open: true
     tty: true
   ruby-shell:
-    image: cybera/hey-cira/ruby
+    image: cybera/policy-browser/ruby
     networks:
       - default
     volumes:
-      - ../:/mnt/hey-cira
+      - ../:/mnt/policy-browser
     stdin_open: true
     tty: true
   python-script:
-    image: cybera/hey-cira/python
+    image: cybera/policy-browser/python
     networks:
       - default
     volumes:
-      - ../:/mnt/hey-cira
+      - ../:/mnt/policy-browser
   ruby-script:
-    image: cybera/hey-cira/ruby
+    image: cybera/policy-browser/ruby
     networks:
       - default
     volumes:
-      - ../:/mnt/hey-cira
+      - ../:/mnt/policy-browser
   tika:
     image: logicalspark/docker-tikaserver
     ports:
@@ -58,7 +58,7 @@ services:
       - default
     entrypoint:
       - solr-precreate
-      - cira
+      - crtc-docs
   memcached:
     image: memcached
     ports:

@@ -50,7 +50,7 @@ class AddMiscQueries(TransformBase):
   MAX_HITS_PER_QUERY = 6000
 
   def preconditions(self):
-    self.solr = pysolr.Solr('http://solr:8983/solr/cira', timeout=10)
+    self.solr = pysolr.Solr('http://solr:8983/solr/crtc-docs', timeout=10)
 
 
   def match(self):

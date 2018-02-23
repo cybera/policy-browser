@@ -7,7 +7,7 @@ library(magrittr)
 library(tsne)
 library(stringr)
 
-#setwd("~/DS/hey-cira/data/processed")
+#setwd("~/DS/policy-browser/data/processed")
 
 docs <- read.csv("data_english.csv",fileEncoding="UTF-8", stringsAsFactors =F)
 docs_fr <- read.csv("data_french.csv",fileEncoding="UTF-8", stringsAsFactors =F)
