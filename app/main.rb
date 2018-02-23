@@ -60,6 +60,7 @@ solr_search = lambda do
 
   error_message = nil
   status_message = nil
+  error_details = nil
 
   if request.env["REQUEST_METHOD"] == "POST"
     begin
@@ -95,16 +96,21 @@ solr_search = lambda do
     rescue RSolr::Error::Http => e
       if e.response[:status] == 400
         error_message = "Invalid Solr query"
+        error_details = e
       else
         error_message = "Unknown error: #{e}"
+        error_details = e
       end
+    rescue RSolr::Error::ConnectionRefused => e
+      error_message = "Solr service doesn't appear to be running"
+      error_details = e
     end
   end
 
   solr_query_string = (params['solr_query_string'] || "").gsub('"','&quot;')
   solr_segment_size = params['solr_segment_size'] || "500"
-  erb :search, :locals => { results: results, solr_query_string: solr_query_string, 
-                            solr_segment_size: solr_segment_size, error_message: error_message, status_message: status_message
+  erb :search, :locals => { results: results, solr_query_string: solr_query_string, solr_segment_size: solr_segment_size, 
+                            error_message: error_message, status_message: status_message, error_details: error_details
                           }
 end
 

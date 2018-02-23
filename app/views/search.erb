@@ -46,7 +46,15 @@
         </form>
         <% if error_message %>
           <div class="alert alert-danger" role="alert">
-            <%= error_message %>
+            <p><%= error_message %></p>
+            <% if error_details %>
+              <br/>
+              <p><a href="#" class="alert-link error-details">Details</a></p>
+              <div class="error-details hidden" style="overflow-wrap: break-word;">
+                <br/>
+                <%= error_details %>
+              </div>
+            <% end %>
           </div>
         <% end %>
         <% if status_message %>
