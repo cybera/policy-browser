@@ -7,16 +7,23 @@ require 'neo4j/core/cypher_session/adaptors/bolt'
 
 module Neo4JQueries
   mattr_accessor :neo4j_db
+  mattr_accessor :connect_string
 
   class << self
-    def connect(username, password, hostname="neo4j", port=7687)
-      connect_string = "bolt://#{username}:#{password}@#{hostname}:#{port}"
-      bolt_adaptor = Neo4j::Core::CypherSession::Adaptors::Bolt.new(connect_string, timeout: 30)
+    def connect(username, password, hostname="neo4j", port=7474)
+      Neo4JQueries.connect_string = "http://#{username}:#{password}@#{hostname}:#{port}"
+      bolt_adaptor = Neo4j::Core::CypherSession::Adaptors::HTTP.new(Neo4JQueries.connect_string, timeout: 30)
       Neo4JQueries.neo4j_db = Neo4j::Core::CypherSession.new(bolt_adaptor)
     end
   end
 
   def graph_query(query, *params)
-    self.neo4j_db.query(query, *params)
+    begin
+      self.neo4j_db.query(query, *params)
+    rescue RuntimeError => e
+      puts e
+      bolt_adaptor = Neo4j::Core::CypherSession::Adaptors::Bolt.new(self.connect_string, timeout: 30)
+      self.neo4j_db = Neo4j::Core::CypherSession.new(bolt_adaptor)
+    end
   end
 end
