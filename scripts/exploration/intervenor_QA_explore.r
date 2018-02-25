@@ -133,12 +133,12 @@ Qs_asked_received %>% group_by(org_category) %>% summarise(total_delta = sum(del
 #What rounds do intervenors ask questions?
 interrogs_gathered %>% filter(Type %in% q_list) %>% 
   ggplot(aes(Questioner_reformat)) + geom_bar(aes(fill=fct_rev(Type)), position = position_stack()) + 
-  theme(axis.text = element_text(angle = 90, vjust = 0.9, hjust = 1)) +
-  labs(fill = "Question Round", x = "")
+  theme(axis.text = element_text(angle = 60, vjust = 0.9, hjust = 1)) +
+  labs(fill = "Question Round", x = "", y = "Number of Questions")
 
 interrogs_gathered %>% filter(Type %in% q_list) %>% 
   ggplot(aes(Responder_reformat)) + geom_bar(aes(fill=fct_rev(Type)), position = position_stack()) + 
-  theme(axis.text = element_text(angle = 90, vjust = 0.9, hjust = 1)) +
+  theme(axis.text = element_text(angle = 60, vjust = 0.9, hjust = 1)) +
   labs(fill = "Question Round", x = "")
 
 
