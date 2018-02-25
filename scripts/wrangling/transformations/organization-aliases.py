@@ -24,6 +24,7 @@ class OrganizationAliases(TransformBase):
     "SaskTel": [ "Saskatchewan Telecommunications (SaskTel)" ],
     "Shaw": [ "Shaw Cablesystems G.P.", "Shaw Communications", "Shaw Communications Inc." ],
     "TekSavvy": [ "TekSavvy Solutions Inc." ],
+    "Telus": [ "TELUS Communications Company", "Telus Communications" ],
     "Thetis Island Resident's Association": [ "Thetis Island Residents Assoc" ],
     "Union des Consommateurs": [ "Union des consommateurs" ],
     "Xplornet": [ "Xplornet Communications Inc." ],
