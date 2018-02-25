@@ -1,0 +1,226 @@
+<div class="row">
+  <div class="col-sm-8" style="text-align:left; margin:0 auto; float: none;">
+    <h1>Policy Browser - By Cybera</h1>
+
+    <p>
+      The Policy Browser allows you to search and easily view all documents submitted to the CRTC during the consultation process. Currently, the only process loaded and displayed in the Policy Browser is for public process 2015-134.
+    </p>
+
+    <h2>Browser</h2>
+
+    <p>
+      The browser tab of the website provides functionality for the user to search through documents submitted to the CRTC in several ways outlined below. We note that some artifacts from the conversion of .pdf or .docx to raw text format do exist within some of the submissions available as searchable items through the browser. 
+    </p>
+
+    <h3>Timeline</h3>
+
+    <p>
+      The “Timeline” tab allows you to view the documents that were submitted in reverse chronological order as they were submitted to the CRTC. In order to view the content of each submission, simply click on the blue link of the submission, and its content should be displayed to the right of the timeline tab. It is also possible to expand/collapse the file lists by clicking the date header. 
+    </p>
+
+    <h3>Organizations</h3>
+
+    <p>
+      Under the organizations tab the documents have been sorted by which organization submitted them to the CRTC. The organizations in this tab are ordered alphabetically,and like the timeline view, simply click on the document name to view the submission,or the organization name to collapse their entries.
+    </p>
+
+    <h3>Queries</h3>
+
+    <p>
+      Under the queries tab it is possible to view the results of saved queries from both solr searches and doc2vec results. Under this tab you can click the exact search term that was used, and the results will be displayed on the right. Additionally the number of text segments that resulted from the search will appear below the search field. 
+    </p>
+
+    <h3>Questions</h3>
+
+    <p>
+      Under the questions tab you can view (some of) the questions asked by the CRTC as well as some additional sub-questions that we had and looked into. 
+    </p>
+
+    <% if authorized? %>
+      <p>
+        Additional questions can be added by directly inserting Question nodes in the underlying Neo4J database. There is currently no browser interface for creating Questions, but if an administrator with access to the hosting server modifies the <code>scripts/wrangling/transformations/create-questions.py</code> script to add additional questions, they will be added the next time <code>bin/transform</code> is run.
+      </p>
+    <% end %>
+
+    <h4>The Summary Button</h4>
+
+    <p>
+      To begin, each question has a blue “Summary” button which can be used to display important statistics about the text pulled via various queries meant to help answer the question.
+    </p>
+    <p>
+      There are currently four major summary components.
+      <ol>
+        <li>
+          The number of organizations with segments matching queries associated with the question out of all of the known organizations in the database.
+        </li>
+        <li>
+          <strong>Categories matched:</strong> A summary table of coverage per category of organization. This shows the number of segments for a given category, along with the maximum quality value of any of those segments.
+        </li>
+        <li>
+          <strong>Queries used:</strong> Every query associated with the question, along with how many segments match it, how many categories of organization those segments represent, how many organizations they represent, and the maximum quality of the segments.
+        </li>
+        <li>
+          <strong>Missing organizations:</strong> A list of all the organizational groups that are known to have submitted a document to the CRTC whose document(s) did not appear to contain relevant text to the question at hand. 
+        </li>
+      </ol>
+    </p>
+
+    <h5>What is "Quality"?</h5>
+    
+    <p>
+      A logged in administrator can assign every query a <code>quality</code> score from 0.0 to 1.0. Currently, through the interface, it is only possible to assign a <code>quality</code> score of 0.2, 0.4, 0.6, 0.8, or 1.0. Via the database or future refinements, a continuous scale of <code>quality</code> scores could be assigned.
+    </p>
+
+    <p>
+      The <code>quality</code> score assigned to a query is purely subjective. It is meant to deal with the following problem when collecting segments of text for further analysis on a question: Specific queries may return very high quality data but have very poor coverage. If you want to have high quality data <strong>and</strong> great coverage, you will likely want several very targeted queries which may not have great coverage, combined with some more general queries with greater coverage. The more targeted queries should be given a higher <code>quality</code> score, which will allow someone doing downstream analyis to do things like select the top 5 highest quality segments per organization or category by simply filtering on a column of a data frame.
+    </p>
+
+    <h4>The Segments Button</h4>
+
+    <p>
+      By clicking this button under a particular question the browser will display the segments of text that have been machine located as relevant to the question at hand. By default you’ll see an expanded view of the results, where all results are displayed at once. However, it is possible to expand/collapse these results by clicking either “Categories” or “Organizations” From there the results are sorted by both category and organization to facilitate easy browsing of answers by either their organizational category, or by the organization themself. 
+    </p>
+
+    <p>
+      To cut down on the amount of information in this view, only the top 5 results (as ordered by descending <code>quality</code> score) are shown per category or organization. If that category/organization has fewer than 5 results total, it may show fewer results. The intent of this view is to provide an overview of the kind of segments getting collected for a category/organization. If you wish to look at all of the segments, you can download the full CSV for further analysis.
+    </p>
+
+    <% if authorized? %>
+      <h4>The Link Queries Button</h4>
+
+      <p>
+        Clicking this button will display a list of all queries where results have been saved back into the database. Five stars will be displayed to the right of each query, each of them either empty or filled. Think of these as a <code>quality</code> rating system. If you give a query "5 stars", you are giving it a <code>quality</code> score of 1.0. 1 star, 2 stars, 3 stars, and 4 stars represent <code>quality</code> scores of 0.2, 0.4, 0.6, and 0.8 respectively.
+      </p>
+
+      <p>
+        If a Query has zero stars, it is also unlinked from the Question (so none of the segments that match this Query will show up in the Summary or Segments views, nor will they be downloaded as CSV).
+      </p>
+
+      <p>
+        The intent of this page is to allow quick decisions on which queries you want to use to answer a Question and how good you think they are at answering the Question. If finer grained <code>quality</code> scores prove useful, or if <code>quality</code> scores on individual segment matches are desired, these would currently need custom transformation scripts and/or changes to the interface.
+      </p>
+    <% end %>
+
+    <h4>The CSV Button</h4>
+
+    <p>
+      This button allows you to download these categorized text segments for your own analysis as a CSV. Simply click the link to download the file, and the file is ready for import into Excel, R, Python, etc. to be manipulated and analysed as you see fit. The CSV files will have the following headings:
+    </p>
+
+    <table class="table table-condensed table-hover">
+      <thead><tr>
+        <th>document</th>
+        <th>segment</th>
+        <th>query</th>
+        <th>category</th>
+        <th>organization</th>
+        <th>quality</th>
+      </tr></thead>
+      <tbody><tr>
+        <td>...</td>
+        <td>...</td>
+        <td>...</td>
+        <td>...</td>
+        <td>...</td>
+        <td>...</td>
+      </tr><tr>
+        <td>...</td>
+        <td>...</td>
+        <td>...</td>
+        <td>...</td>
+        <td>...</td>
+        <td>...</td>
+      </tr></tbody>
+    </table>
+  
+    <h5>Definitions</h5>
+    <ul>
+      <li><strong>document</strong>: the name of the document the segment is from</li>
+      <li><strong>segment</strong>: the actual text string pulled from the document</li>
+      <li><strong>query</strong>: the search string used to find the segment</li>
+      <li><strong>category</strong>: organizational category of the document submitter</li>
+      <li><strong>organization</strong>: the name of the organization submitting the text</li>
+      <li><strong>quality</strong>: subjective measure of quality of the text segment, derived from the <code>quality</code> score assigned to the query it matches (see above)</li>
+    </ul>
+
+    <h2>Search</h2>
+
+    <p>
+      Under this tab of the browser you are provided with the functionality to search through the CRTC documents for keywords/terms you supply yourself using Solr. This will allow you the functionality to perform your own fuzzy text searches through the documents. As a basic example of a Solr search through the data, let’s look for the term “affordable access” in the search bar, you would type:
+    </p>
+
+    <p>
+      <pre>content:"affordable access"</pre>
+    </p>
+
+    <p>
+      Where this search will look for all word-pairs (case insensitive) “affordable access” from within the documents. However, sometimes those words won’t appear next to each other in the text, for example this would not find terms like “affordable and equal access” as  our search terms are not adjacent. If we wanted some more flexibility, we can modify our query to allow for some space to be between our search terms as follows:
+    </p>
+
+    <p>
+      <pre>content:"affordable access"~5</pre>
+    </p>
+
+    <p>
+      Where the “~5” tells solr that our search term(s) can be separated by up to five words in the text. 
+    </p>
+
+    <p>
+      Of course, there are more complex queries you could apply. For example, another important keyword is OR which allows you to search for multiple terms at once. For example, suppose we wanted to search for “should be defined” and “should not be defined” simultaneously. To do that we make use of the OR keyword as follows:
+    </p>
+
+    <p>
+      <pre>content:("should be defined" OR "should not be defined")</pre>
+    </p>
+
+    <p>
+      Where now we’re looking for exact matches to both those strings simultaneously, rather than having to rely on the allowing space to be in between terms. Note the addition of parenthesis around the search term. 
+    </p>
+
+    <p>
+      One final basic term of note is the <code>AND</code> clause, which will allow you to search for two separate strings simultaneously. For example, suppose we wanted to search relevant to broadband speeds. In which case, a logical query would include “greater than” and “mbps”. This can be done with the following query:
+    </p>
+
+    <p>
+      <pre>content:("greater than" && "mbps")</pre>
+    </p>
+
+    <p>
+      Where we are now asking solr to find both of those terms. 
+    </p>
+
+    <p>
+      Expanding on the above example it is possible to combine keywords directly. Perhaps we want to search for both “greater than” and “less than” simultaneously in the above query, rather than making two searches separately. These can be combined using the OR clause as follows:
+    </p>
+
+    <p>
+      <pre>content:(("greater than" OR "less than") && "mbps")</pre>
+    </p>
+
+    <p>
+      Where we again note the addition of further parenthesis. In this case we are now looking for either “greater than” or “less than” as well as “mbps”. 
+    </p>
+
+    <p>
+      This basic functionality should be enough to get you started using the solr search function. We strongly encourage you to look at the <a href="https://lucene.apache.org/solr/guide/6_6/the-standard-query-parser.html" target="_blank">Solr documentation</a> as well, as there are many more options and combinations of search terms which will allow you to refine your solr queries to be both more efficient, and find segments of text that you may find to be more relevant. 
+    </p>
+
+    <h5>Solr Fields</h5>
+    <p>
+      Most queries will likely be on the <code>content</code> field, as this contains the actual unstructured text (which is a primary driver for using Solr in the first place!). However, you are not limited to using only this field. Here is the full list of fields that have been imported into Solr that you may use:
+    </p>
+
+    <ul>
+      <li><strong>id</strong>: The Solr ID that can reference the document. Solr's default ID scheme has been overridden to use the sha256 hashes of document content that are used in the Neo4J graph database.</li>
+      <li><strong>sha256</strong>: The sha256 hash of the document contents. Even if the name of the document changes, this should remain the same, as long as the content in the document doesn't change.</li>
+      <li><strong>case</strong>: The case number from the CRTC site.</li>
+      <li><strong>ppn</strong>: The public process number from the CRTC site (right now, we only have documents for ppn 2015-134.</li>
+      <li><strong>dmid</strong>: The document management ID from the CRTC site. This should be uniqu per document and could be used to get back to the original document that was scraped.</li>
+      <li><strong>label</strong>: The Neo4J label associated with the node. Right now,everything in Solr will have the label "Document", but other types of nodes with unstructured text could be imported and differentiated here.</li>
+      <li><strong>name</strong>: The name of the document, either from the document scraper, or from its internal zipfile entry.</li>
+      <li><strong>submission_name</strong>: The name of the submission set the document was a part of (if it exists).</li>
+      <li><strong>type</strong>: The type of document. Generally, this is going to be "pdf", "doc", "docx", "html", "xls", etc., representing the original form of the document. There is one special type: "subdoc". This identifies Documents that weren't seperate on the original scrape, but derived from much larger documents. Some of the documents submitted were really collections of individual responses, so it made sense to split these up.</li>
+      <li><strong>content</strong>: The unstructured text contained within the document. This is pulled from the <code>content</code> field of the related Neo4J node</li>
+    </ul>
+  </div>
+</div>

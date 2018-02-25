@@ -195,3 +195,7 @@ set :home, '/'
 get '/login/?' do
   erb :login, :layout => :layout # page with auth form
 end
+
+get '/about' do
+  erb :about, :layout => :layout
+end
