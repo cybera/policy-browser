@@ -30,3 +30,43 @@ span.badge a {
 .list-group-item, .panel-body {
   overflow-wrap: break-word;
 }
+
+.question-segment-body {
+
+}
+
+.question-segment-footer {
+  background-color: #fcf8e3;
+  margin-top: 10px;
+  margin-bottom: -10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+
+.question-segment-footer .question-segment-query {
+  display: block;
+}
+
+.question-segment-footer .question-segment-query code {
+  background-color: transparent;
+}
+
+.question-segment-footer .question-segment-organization {
+  display: block;
+}
+
+.badge-container-footer {
+}
+
+.badge-container-footer .badge {
+  float: right;
+  color: black;
+  background-color: #77777724;
+}
+
+.question-segment-footer .segment-meta {
+  font-size: 12px;
+}

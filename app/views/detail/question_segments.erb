@@ -13,11 +13,24 @@
     <ul class="list-group query-matches panel-collapse collapse in" id="<%= category_header_id %>">
       <% segments[0...5].each do | segment | %>
         <li class="list-group-item">
-          <%= smart_paragraphs(segment[:content]) %>
-          <br/>
-          <span class="label label-default"><%= segment[:query] %></span>
-          <span class="badge"><%= segment[:quality] %></span>
-          <span class="label label-default"><%= segment[:organization] %></span>          
+          <div class="question-segment-body">
+            <%= smart_paragraphs(segment[:content]) %>
+          </div>
+          <div class="row question-segment-footer">
+            <div class="col-md-11 segment-meta">
+              <span class="question-segment-query">
+                <strong>Query:</strong>
+                <code><%= segment[:query] %></code>
+              </span>
+              <span class="question-segment-organization">
+                <strong>Organization:</strong>
+                <%= segment[:organization] %>
+              </span>
+            </div> 
+            <div class="badge-container-footer col-md-1">
+              <span class="badge"><%= segment[:quality] %></span>
+            </div>
+          </div>
         </li>
       <% end %>
     </ul>
@@ -37,10 +50,20 @@
     <ul class="list-group query-matches panel-collapse collapse in" id="<%= organization_header_id %>">
       <% segments[0...5].each do | segment | %>
         <li class="list-group-item">
-          <%= smart_paragraphs(segment[:content]) %>
-          <br/>
-          <span class="label label-default"><%= segment[:query] %></span>
-          <span class="badge"><%= segment[:quality] %></span>
+          <div class="question-segment-body">
+            <%= smart_paragraphs(segment[:content]) %>
+          </div>
+          <div class="row question-segment-footer">
+            <div class="col-md-11 segment-meta">
+              <span class="question-segment-query">
+                <strong>Query:</strong>
+                <code><%= segment[:query] %></code>
+              </span>
+            </div> 
+            <div class="badge-container-footer col-md-1">
+              <span class="badge"><%= segment[:quality] %></span>
+            </div>
+          </div>
         </li>
       <% end %>
     </ul>
