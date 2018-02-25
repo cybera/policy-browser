@@ -70,3 +70,12 @@ span.badge a {
 .question-segment-footer .segment-meta {
   font-size: 12px;
 }
+
+.navbar-brand {
+  padding-top: 5px;
+}
+
+.navbar-brand img {
+  height: 18px;
+  margin-bottom: 2px;
+}
