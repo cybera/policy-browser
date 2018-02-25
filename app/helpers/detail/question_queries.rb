@@ -18,7 +18,7 @@ module Sinatra
         """, question:params[:question].to_i)
 
         { 
-          queries: queries.sort_by { |q| [ q['linked'] ? 0 : 1, q['str'] ] }, 
+          queries: queries.sort_by { |q| [ q['linked'] ? 0 : 1, q['id'] ] }, 
           question: question.first
         }
       end

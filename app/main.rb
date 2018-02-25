@@ -126,8 +126,9 @@ post '/question/:question_id/link/:query_id' do
     MATCH (question:Question)
     MATCH (query:Query)
     WHERE ID(question) = $question AND ID(query) = $query
-    MERGE (query)-[r:ABOUT { method:'browser' }]->(question)
+    MERGE (query)-[r:ABOUT]->(question)
     SET r.quality = $quality
+    SET r.method = 'browser'
   """, question:params[:question_id].to_i, query:params[:query_id].to_i, quality:quality)
 
   cache_delete("question-segments.#{params[:question_id]}")
