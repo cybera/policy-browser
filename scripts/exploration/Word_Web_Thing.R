@@ -12,8 +12,7 @@ library(data.table)
 
 # This creates *.csv files in order to create graphs using the filter provided
 # by agentdave 
-
-graph <- startGraph("http://localhost:7474/db/data/", username = "neo4j", password = "password")
+source("scripts/exploration/neo4j.R")
 
 
 filter_me_words <- function(filtered, savefile)

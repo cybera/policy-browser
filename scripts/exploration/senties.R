@@ -12,8 +12,8 @@ library(knitr)
 
 # This is an R script that runs sentiment analysis over the answers to questions. 
 
-graph <- startGraph("http://localhost:7474/db/data/", username = "neo4j", password = "password")
 
+source("scripts/exploration/neo4j.R")
 
 scaler <- function(x)
 {  
@@ -245,7 +245,7 @@ save = c("AllOrgsAffordsolr.png", "OtherNetworkOpAfford.png",
 #PlotMyQuery(queries,save, titles,graph)
 
 q()
-graph <- startGraph("http://localhost:7474/db/data/", username = "neo4j", password = "password")
+
 
 queries <- c(
             "MATCH (Q:Question)<-[:ABOUT]-(Qe:Query) <-[:MATCHES]-(s:Segment)-[:SEGMENT_OF]->(d:Document)<-[:SUBMITTED]-(o:Organization)
