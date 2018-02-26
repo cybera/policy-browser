@@ -3,3 +3,4 @@
 password: password
 google_analytics: false
 google_analytics_id: set-your-id
+session_secret: some_long_character_string

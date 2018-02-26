@@ -18,7 +18,12 @@ module Config
   module Browser
     mattr_accessor :google_analytics
     mattr_accessor :google_analytics_id
+    mattr_accessor :domain
+    mattr_accessor :session_secret
+
     @@google_analytics = BROWSER_CONFIG["google_analytics"]
     @@google_analytics_id = BROWSER_CONFIG["google_analytics_id"]
+    @@domain = BROWSER_CONFIG["domain"]
+    @@session_secret = BROWSER_CONFIG["session_secret"]
   end
 end

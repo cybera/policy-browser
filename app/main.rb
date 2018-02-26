@@ -20,7 +20,10 @@ require "lib/config"
 require "lib/memcached"
 
 set :bind, '0.0.0.0'
-enable :sessions
+use Rack::Session::Cookie, :key => 'rack.session',
+                           :path => '/',
+                           :expire_after => 2592000, # In seconds
+                           :secret => Config::Browser.session_secret
 
 Neo4JQueries::connect(Config::Neo4J.username, Config::Neo4J.password)
 include Neo4JQueries
