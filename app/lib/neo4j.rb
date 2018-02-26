@@ -12,8 +12,8 @@ module Neo4JQueries
   class << self
     def connect(username, password, hostname="neo4j", port=7474)
       Neo4JQueries.connect_string = "http://#{username}:#{password}@#{hostname}:#{port}"
-      bolt_adaptor = Neo4j::Core::CypherSession::Adaptors::HTTP.new(Neo4JQueries.connect_string, timeout: 30)
-      Neo4JQueries.neo4j_db = Neo4j::Core::CypherSession.new(bolt_adaptor)
+      http_adaptor = Neo4j::Core::CypherSession::Adaptors::HTTP.new(Neo4JQueries.connect_string, timeout: 30)
+      Neo4JQueries.neo4j_db = Neo4j::Core::CypherSession.new(http_adaptor)
     end
   end
 
@@ -22,8 +22,8 @@ module Neo4JQueries
       self.neo4j_db.query(query, *params)
     rescue RuntimeError => e
       puts e
-      bolt_adaptor = Neo4j::Core::CypherSession::Adaptors::Bolt.new(self.connect_string, timeout: 30)
-      self.neo4j_db = Neo4j::Core::CypherSession.new(bolt_adaptor)
+      http_adaptor = Neo4j::Core::CypherSession::Adaptors::HTTP.new(Neo4JQueries.connect_string, timeout: 30)
+      self.neo4j_db = Neo4j::Core::CypherSession.new(http_adaptor)
     end
   end
 end
