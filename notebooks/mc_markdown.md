@@ -92,11 +92,9 @@ QuerySentiment <- function(query,graph, sentiment_library)
     results <- dplyr::mutate(data_raw, id=as.integer(rownames(data_raw)))
     tibbled_data <- as_tibble(results)
 
-    # CHECK IF YOU NEED THE END BIT
+
     cleaned_text <- tibbled_data  %>%
-        filter(str_detect(Segment, "^[^>]+[A-Za-z\\d]") | Segment == "",
-        !str_detect(Segment, "writes(:|\\.\\.\\.)$"),
-        !str_detect(Segment, "^In article <"))
+        filter(str_detect(Segment, "^[^>]+[A-Za-z\\d]"))
 
     use_words <- cleaned_text %>%
          unnest_tokens(word, Segment) %>%
