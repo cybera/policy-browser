@@ -67,5 +67,18 @@
     <script type="text/javascript" src="js/question_queries.js"></script>
     <script type="text/javascript" src="js/question_segments.js"></script>
     <script type="text/javascript" src="js/search.js"></script>
+
+    <% if Config::Browser.google_analytics %>
+      <!-- Global site tag (gtag.js) - Google Analytics -->
+      <!-- If you're deploying your own version of -->
+      <script async src="https://www.googletagmanager.com/gtag/js?id=<%= Config::Browser.google_analytics_id %>"></script>
+      <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', '<%= Config::Browser.google_analytics_id %>');
+      </script>
+    <% end %>
   </body>
 </html>

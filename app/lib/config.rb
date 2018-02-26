@@ -14,4 +14,11 @@ module Config
     mattr_accessor :password
     @@password = BROWSER_CONFIG["password"]
   end
+
+  module Browser
+    mattr_accessor :google_analytics
+    mattr_accessor :google_analytics_id
+    @@google_analytics = BROWSER_CONFIG["google_analytics"]
+    @@google_analytics_id = BROWSER_CONFIG["google_analytics_id"]
+  end
 end

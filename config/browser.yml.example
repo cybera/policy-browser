@@ -1,3 +1,5 @@
 # Set the password for admin functionality
 
 password: password
+google_analytics: false
+google_analytics_id: set-your-id
