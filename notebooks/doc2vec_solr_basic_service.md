@@ -90,6 +90,7 @@ Again, the main cluster seems to be primarily a restatement of the question itse
 #### #filter
 
 Here the doc2vec results are only showing pairs which occur with $N>4$ times and solr has $N>3$, with a minimum cosine similarity to the filter words of 0.6
+
 ![alt-text](images/doc2vec_cable_filter_bts.png)![alt-text](images/solr_cable_filter_bts.png)
 
 #### Potential Narrative?
