@@ -507,5 +507,4 @@ This is also related to noise, as 'sentences' of random strings of characters th
 ### Ambiguity
 As many of the questions we're setting out to answer may have ambiguous or vague answers, there may not be one 'universal' search that find all the answers, with the exception of a `solr` search for the actual CRTC question. As well, I don't think sentiment or topic analysis will give us concrete answers, simply common terms and language used in sentence fragments. In terms of possible solutions, I'm not sure if there's an automated approach. We can probably narrow down relevant sections from documents for the telecoms using `Neo4j`.
 
-## Coming Soon: Topic Analysis?
-I haven't done this yet but that might be the plan for this week.
+
