@@ -55,7 +55,7 @@ Here the doc2vec results are only showing pairs which occur with $N>30$ times, s
 ![alt-text-1](images/doc2vec_advocacy2_filter_bts.png)![alt-text-2](images/solr_advocacy_filter_bts.png)
 
 
-#### Potential Narrative?
+#### What we might be seeing
 Narrative aside, there are considerably more hits with `doc2vec` and `solr` from the advocacy groups than there are any other group for the basic service question, which we can tell easily from the $N>30$ for word pairs. Meaning that in terms of answering this question, this group answered significantly more. I might toss all the telecom groups together to see if their response was similar, as there is probably just more advocacy groups than there are incumbents.
 
 In terms of a narrative however this isn't as "clear" as it was before for the affordability question where there was clear differences between how the groups discuss it. In this case I _think_ the interesting bits might actually end up being outside of the main cluster. for example there's a lot of talk about education, jobs, staying connected etc. that may be interesting in terms of "sub-topics" that we find. However, the affordability things may be noise due to statement proximity.
@@ -77,7 +77,7 @@ Here the doc2vec results are only showing pairs which occur with $N>5$ times and
 
 ![alt-text](images/doc2vec_government_filter_bts.png) ![alt-text-2](images/solr_government_filter_bts.png)
 
-#### Potential Narrative?
+#### What we might be seeing
 Government groups seem to talk about either themselves or other governments quite about when surrounding the basic service question. Besides that the main cluster of frequent word pairs are very similar to that of the Advocacy groups, however there is also talk of online education and social requirements which might be of interest Besides that the main cluster of points is basically the same as everywhere else, and I think that could be an artifact of everyone restating the question in their response. Which while nice for reading responses by hand, sometimes may make things more difficult for text mining.
 
 ### Cable Companies
@@ -90,9 +90,10 @@ Again, the main cluster seems to be primarily a restatement of the question itse
 #### #filter
 
 Here the doc2vec results are only showing pairs which occur with $N>4$ times and solr has $N>3$, with a minimum cosine similarity to the filter words of 0.6
+
 ![alt-text](images/doc2vec_cable_filter_bts.png)![alt-text](images/solr_cable_filter_bts.png)
 
-#### Potential Narrative?
+#### What we might be seeing
 
 
 ### Telecom Incumbents
@@ -106,7 +107,7 @@ Here the telecom word-pairs are limited to those that appear $N>8$ times, solr i
 
 ![alt-text](images/doc2vec_telecom_filter_bts.png)![alt-text-2](images/solr_telecom_filter_bts.png)
 
-#### Potential Narrative?
+#### What we might be seeing
 
 This is a little more interesting than the cable company word web I have to admit. There's a sub cluster that seems to be about service adoption issues, and there's a branch of the word "basic" which seems to be about internet modernization which could be an interesting analysis route. However, besides that, the main cluster still looks the same to me as every other main cluster.
 
@@ -120,7 +121,7 @@ Here the doc2vec results are only showing pairs which occur with $N>5$ times, so
 
 ![alt-text](images/doc2vec_otherincumbents_filter_bts.png)![alt-text](images/solr_otherincumbents_filter_bts.png)
 
-#### Potential Narrative?
+#### What we might be seeing
 
 These look a little different than the other incumbents, but that may partially be due to the different amounts of data. Theres's a few new things such as "satellite" and "yukon", however, I don't think that's something worth looking into as I feel like these are providers of those more niche/remote services.
 
@@ -132,7 +133,7 @@ These look a little different than the other incumbents, but that may partially 
 Here both solr and doc2vec results are only showing pairs which occur with $N>1$ times, with a minimum cosine similarity to the filter words of 0.6
 ![alt-text](images/doc2vec_smallincumbents_filter_bts.png)![alt-text](images/solr_smallincumbents_filter_bts.png)
 
-#### Potential Narriative?
+#### What we might be seeing
 
 ### "Other"
 
@@ -143,7 +144,7 @@ Here both solr and doc2vec results are only showing pairs which occur with $N>1$
 
 ![alt-text](images/doc2vec_other_filter_bts.png)![alt-text](images/solr_other_filter_bts.png)
 
-#### Potential Narriative?
+#### What we might be seeing
 Truth be told, I don't think there's enough data here to make any claims about what they're talking about.
 
 
