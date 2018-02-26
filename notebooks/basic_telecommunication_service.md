@@ -23,6 +23,7 @@ RETURN count(distinct d), o.category
 
 
 `Results`
+Note that these numbers are subject to change depending on what version of analysis scripts you're running. 
 
 Category| In database | Solr # of documents | Doc2Vec # of documents |   
 --- | --- | --- | --- |  
