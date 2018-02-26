@@ -1,7 +1,9 @@
 ### Question1:
- What positions on affordability are being taken by different types of intervenors?
+ What positions on affordability are being taken by different types of intervenors? 
 
 ### Summary stats:
+Note: Numbers may be variable depending on what version of the application you're currently using. 
+
 
 Category| In database | # of solr search results | # of doc2vec segments|
 --- | --- | --- | --- |
