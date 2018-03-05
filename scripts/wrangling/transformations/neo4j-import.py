@@ -57,7 +57,7 @@ def merge_core():
 def merge_expert_knowledge():
   with transaction() as tx:
     tx.run("""
-    MATCH (p:PublicProcess { ppn: '2015-134' })
+    MATCH (p:PublicProcess { ppn: '2018-0046-7' })
     MERGE (phase1:Phase { name: 'Phase 1' })
     MERGE (phase2:Phase { name: 'Phase 2' })
     MERGE (p)-[:CONSISTING_OF]->(phase1)
@@ -97,17 +97,18 @@ def merge_content():
     """)
     for r in results:
       content = None
-      if r["type"] == "html":
-        doc = HTMLSubmission(r["raw_html"])
-        content = doc.comment()
-      else:
-        content = r["raw_text"]
+      if r["raw_html"] is not None:
+        if r["type"] == "html":
+          doc = HTMLSubmission(r["raw_html"])
+          content = doc.comment()
+        else:
+          content = r["raw_text"]
 
-      tx.run("""
-        MATCH (d:Document)
-        WHERE ID(d) = $id
-        SET d.content = $content
-      """, id=r["id"], content=content)
+        tx.run("""
+          MATCH (d:Document)
+          WHERE ID(d) = $id
+          SET d.content = $content
+        """, id=r["id"], content=content)
   
 def merge_participant(name, title, organization, role):
   if not (name or title or organization):
@@ -153,30 +154,31 @@ def merge_submitter(role):
       WHERE NOT (:Participant { role: $role })-[:PARTICIPATES_IN]->(s:Submission) 
       RETURN ID(s) AS id, d.raw_html AS raw_html
     """, role=role)
-
+    
     for r in results:
-      doc = HTMLSubmission(r["raw_html"])
-      role_function = None
-      if role == "Client":
-        role_function = doc.client_info
-      elif role == "Designated Representative":
-        role_function = doc.designated_representative
+      if r["raw_html"] is not None:
+        doc = HTMLSubmission(r["raw_html"])
+        role_function = None
+        if role == "Client":
+          role_function = doc.client_info
+        elif role == "Designated Representative":
+          role_function = doc.designated_representative
 
-      person_name = role_function("Name")
-      person_title = role_function("Title")
-      org_name = role_function("On behalf of company")
-      submission_id = r["id"]
+        person_name = role_function("Name")
+        person_title = role_function("Title")
+        org_name = role_function("On behalf of company")
+        submission_id = r["id"]
 
-      participant_id = merge_participant(person_name, person_title, org_name, role)
-      if participant_id:
-        tx.run("""
-          MATCH (s:Submission)
-          WHERE ID(s) = $submission_id
-          WITH s
-          MATCH (r)
-          WHERE ID(r) = $participant_id
-          MERGE (r)-[:PARTICIPATES_IN]->(s)
-        """, submission_id=submission_id, participant_id=participant_id)
+        participant_id = merge_participant(person_name, person_title, org_name, role)
+        if participant_id:
+          tx.run("""
+            MATCH (s:Submission)
+            WHERE ID(s) = $submission_id
+            WITH s
+            MATCH (r)
+            WHERE ID(r) = $participant_id
+            MERGE (r)-[:PARTICIPATES_IN]->(s)
+          """, submission_id=submission_id, participant_id=participant_id)
 
 def ymd_to_int(year, month, day):
   return year * 10000 + month * 100 + day
@@ -195,18 +197,19 @@ def merge_dates():
       WHERE NOT EXISTS(s.date_arrived)
       RETURN ID(s) as id, d.raw_html as raw_html
     """)
-
+    
     for r in results:
-      doc = HTMLSubmission(r["raw_html"])
-      date_arrived = doc.top_level("Date Arrived")
-      if date_arrived:
-        ymd = re.match(r"(\d{4})-(\d{2})-(\d{2})", date_arrived).groups()
-        date_arrived_val = ymd_to_int(*[int(n) for n in ymd])
-        tx.run("""
-          MATCH (s:Submission)
-          WHERE ID(s) = $id
-          SET s.date_arrived = $date_arrived
-        """, id=r['id'], date_arrived=date_arrived_val)   
+      if r["raw_html"] is not None:
+        doc = HTMLSubmission(r["raw_html"])
+        date_arrived = doc.top_level("Date Arrived")
+        if date_arrived:
+          ymd = re.match(r"(\d{4})-(\d{2})-(\d{2})", date_arrived).groups()
+          date_arrived_val = ymd_to_int(*[int(n) for n in ymd])
+          tx.run("""
+            MATCH (s:Submission)
+            WHERE ID(s) = $id
+            SET s.date_arrived = $date_arrived
+          """, id=r['id'], date_arrived=date_arrived_val)   
 
 def topics():
   print("Creating topics")
@@ -282,8 +285,8 @@ class Neo4JImport(TransformBase):
     merge_submitter("Client")
     merge_submitter("Designated Representative")
     merge_dates()
-    topics()
-    doc_topic()
-    doc_french()
+    #topics()
+    #doc_topic()
+    #doc_french()
 
     return [ "Did initial Neo4J import" ]
