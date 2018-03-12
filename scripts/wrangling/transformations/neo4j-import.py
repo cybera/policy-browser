@@ -13,6 +13,7 @@ from wrangling import config
 
 uri = "bolt://neo4j:7687"
 driver = GraphDatabase.driver(uri, auth=(config.neo4j.username, config.neo4j.password))
+process_num = config.neo4j.ppn
 
 @contextmanager
 def transaction():
@@ -57,13 +58,13 @@ def merge_core():
 def merge_expert_knowledge():
   with transaction() as tx:
     tx.run("""
-    MATCH (p:PublicProcess { ppn: '2018-0046-7' })
+    MATCH (p:PublicProcess { ppn: $ppn })
     MERGE (phase1:Phase { name: 'Phase 1' })
     MERGE (phase2:Phase { name: 'Phase 2' })
     MERGE (p)-[:CONSISTING_OF]->(phase1)
     MERGE (p)-[:CONSISTING_OF]->(phase2)
     MERGE (phase1)-[:FOLLOWED_BY]->(phase2)
-    """)
+    """, ppn=process_num)
 
 def merge_raw_text():
   print("Parsing text and merging as raw_text on Documents")
@@ -285,8 +286,8 @@ class Neo4JImport(TransformBase):
     merge_submitter("Client")
     merge_submitter("Designated Representative")
     merge_dates()
-    #topics()
-    #doc_topic()
-    #doc_french()
+    topics()
+    doc_topic()
+    doc_french()
 
     return [ "Did initial Neo4J import" ]

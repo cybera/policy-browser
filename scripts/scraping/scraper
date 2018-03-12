@@ -204,6 +204,7 @@ rows.each do |row|
       row_name = row.css('td[1]/a').text.match(/\d{4}+-\d{3}\b+|\d{4}+-\d{2}\b+/)
       print("row name \n#{row_name}\n")
     elsif consultation_status.to_s.include?("Yes")
+      #for ongoing consultations, simply grab the first column and change filter to work with this further below
       row_name = row.css('td[1]/a')
       print("part2")
     end
@@ -225,6 +226,8 @@ end
 
 #print("all rows\n #{text_all_rows}\n")
 
+#If the scraper stops on a certain page of interventions, can change this number in order to resume
+#where it left off.
 start_page = 0
 
 print("consultation \n #{consultation}\n #{consultation_nohyphen}")
@@ -246,7 +249,7 @@ text_all_rows.each do |key, value|
       link = links[val]
       type = types[val]
       link_params['en'] = key
-      print("Link: \n #{link}\n")
+      print("BLink: \n #{link}\n")
 
       if link.to_s.include? "OpenDocument.aspx"
         link_parameters = CGI::parse(URI.parse(link['href']).query)
@@ -254,12 +257,17 @@ text_all_rows.each do |key, value|
         link_params['href'] = link['href']
         link_params['ID'] = link_parameters["Key"][0]
         link_params['DMID'] = 1000001
-        #download_document(link_params, link)
-      #elsif link.to_s.include? "ListeInterventionList"
-      elsif link.to_s.include? "Phase 2"
+        download_document(link_params, link)
+      elsif link.to_s.include? "ListeInterventionList"
+      #elsif link.to_s.include? "Phase 2"
           
           intervention_page_one = link.follow_link
+          print("page one\n")
+          #print("#{intervention_page_one}\n")
           #blahx = intervention_page_one.xpath('//div[@id="divView"]/span/@id').text
+          #For links including ListeInterventionList, grab the number of results and calculate the total number of pages
+          #to download from; without this, the scraper would only grab the first 7 pages (even though there were 151 pages
+          #for consultation 2018-0046-7 at the time of writing)
           total_results = intervention_page_one.xpath('//span[@id="ctl00_MainContent_lblRecords"]').text
           #blahx = intervention_page_one.css('span id')[0]
           total_num = total_results.match(/\d+/)
@@ -275,14 +283,17 @@ text_all_rows.each do |key, value|
           event_no = link.link_params['en'][0]
           print("event_no\n")
           print("#{event_no}\n")  
-          request_url = "https://services.crtc.gc.ca/pub/ListeInterventionList/Default-Defaut.aspx?en=#{event_no}&dt=i&lang=e"
-          print("#{request_url}\n")
+          #request_url = "https://services.crtc.gc.ca/pub/ListeInterventionList/Default-Defaut.aspx?en=#{event_no}&dt=i&lang=e"
+          request_url = link['href']
+          print("Request url: \n#{request_url}\n")
+          linkhref = link['href']
+          print("Linkhref:\n #{linkhref}\n") 
           agent = Mechanize.new()
           page = agent.get(request_url)
           
           form = page.form_with(:id => 'aspnetForm')
           # edge case: the first page of results
-          max_page_val_visited = 1
+          max_page_val_visited = 0
           page_links = intervention_page_one.get_all_pages()
           print("Page_links\n #{page_links}\n")
           # Get related documents by loading each page.
@@ -299,8 +310,10 @@ text_all_rows.each do |key, value|
               max_page_val_visited = p_num.to_i==0 ? max_page_val_visited+1 : p_num.to_i
               print("max page \n #{max_page_val_visited}\n")
               form['__EVENTTARGET'] = TARGET
+              print("target: \n #{TARGET}\n")
               form['__EVENTARGUMENT'] = num
               my_page = form.submit
+              print("my_page: \n #{my_page}\n")
               sleep 1
         
               # Convert Mechanize Page to Nokogiri html page
@@ -323,10 +336,12 @@ text_all_rows.each do |key, value|
           link_params['ID'] = 100001
           link_params['DMID'] = 1000001
 
-          #download_document(link_params, link)       
+          download_document(link_params, link)       
       end
 
      end
   end
 
 end
+
+
