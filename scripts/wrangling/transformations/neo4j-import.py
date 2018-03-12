@@ -214,58 +214,67 @@ def merge_dates():
 
 def topics():
   print("Creating topics")
-  topics = os.path.join(csvdir, 'topics.csv')
-  with open(topics) as csvfile:
-    readCSV = csv.reader(csvfile)
-    next(readCSV)
-    i=1
-    for row in readCSV:
-        #print(row[6], row[1],row[2],row[3],row[4],row[5])
-        with transaction() as tx:
-                tx.run("""
-                       MERGE (to:Topic { label:$label,id: $id})
-                       MERGE (te1:Term { word: $word1 })
-                       MERGE (te2:Term { word: $word2 })
-                       MERGE (te3:Term { word: $word3 })
-                       MERGE (te4:Term { word: $word4 })
-                       MERGE (te5:Term { word: $word5 })
-                       MERGE (to)-[r1:RANK {rank:1}]->(te1)
-                       MERGE (to)-[r2:RANK {rank:2}]->(te2)
-                       MERGE (to)-[r3:RANK {rank:3}]->(te3)
-                       MERGE (to)-[r4:RANK {rank:4}]->(te4)
-                       MERGE (to)-[r5:RANK {rank:5}]->(te5)
-                       """, id=i,label=row[6], word1=row[1], word2=row[2], word3=row[3], word4=row[4], word5=row[5])
-        i=i+1
+  if os.path.isfile(os.path.join(csvdir, 'topics.csv')): 
+    topics = os.path.join(csvdir, 'topics.csv')
+    with open(topics) as csvfile:
+      readCSV = csv.reader(csvfile)
+      next(readCSV)
+      i=1
+      for row in readCSV:
+          #print(row[6], row[1],row[2],row[3],row[4],row[5])
+          with transaction() as tx:
+                  tx.run("""
+                         MERGE (to:Topic { label:$label,id: $id})
+                         MERGE (te1:Term { word: $word1 })
+                         MERGE (te2:Term { word: $word2 })
+                         MERGE (te3:Term { word: $word3 })
+                         MERGE (te4:Term { word: $word4 })
+                         MERGE (te5:Term { word: $word5 })
+                         MERGE (to)-[r1:RANK {rank:1}]->(te1)
+                         MERGE (to)-[r2:RANK {rank:2}]->(te2)
+                         MERGE (to)-[r3:RANK {rank:3}]->(te3)
+                         MERGE (to)-[r4:RANK {rank:4}]->(te4)
+                         MERGE (to)-[r5:RANK {rank:5}]->(te5)
+                         """, id=i,label=row[6], word1=row[1], word2=row[2], word3=row[3], word4=row[4], word5=row[5])
+          i=i+1
+  else:
+    print("No topics.csv file found")
 
 def doc_topic():
   print("Creating relationship between topics and documents")
-  doc_topics = os.path.join(csvdir, 'doc_topics.csv')
-  with open(doc_topics) as csvfile:
-    readCSV = csv.reader(csvfile)
-    next(readCSV)
-    for row in readCSV:
-        #print(row[1],row[2])
-        with transaction() as tx:
-                tx.run("""
-                       MATCH (d:Document {sha256:$sha256}), (t:Topic {id:$topic_id})
-                       CREATE (d)-[:HAS_TOPIC]->(t)
-                       """, sha256=row[1],topic_id=int(row[2]))
+  if os.path.isfile(os.path.join(csvdir, 'doc_topics.csv')): 
+    doc_topics = os.path.join(csvdir, 'doc_topics.csv')
+    with open(doc_topics) as csvfile:
+      readCSV = csv.reader(csvfile)
+      next(readCSV)
+      for row in readCSV:
+          #print(row[1],row[2])
+          with transaction() as tx:
+                  tx.run("""
+                         MATCH (d:Document {sha256:$sha256}), (t:Topic {id:$topic_id})
+                         CREATE (d)-[:HAS_TOPIC]->(t)
+                         """, sha256=row[1],topic_id=int(row[2]))
+  else:
+    print("No doc_topics.csv file found")
                
 def doc_french():
   csv.field_size_limit(sys.maxsize)
   print("Adding french translation")
-  french_data = os.path.join(csvdir, 'data_french.csv')
-  with open(french_data) as csvfile:
-    readCSV = csv.reader(csvfile)
-    next(readCSV)
-    for row in readCSV:
-        #print(row[1], row[3])
-        with transaction() as tx:
-                tx.run("""
-                       MATCH (d:Document {sha256:$sha256})
-                       WHERE NOT EXISTS(d.translated)
-                       SET d.translated = $translated
-                       """, sha256=row[1],translated=row[3])
+  if os.path.isfile(os.path.join(csvdir, 'data_french.csv')): 
+    french_data = os.path.join(csvdir, 'data_french.csv')
+    with open(french_data) as csvfile:
+      readCSV = csv.reader(csvfile)
+      next(readCSV)
+      for row in readCSV:
+          #print(row[1], row[3])
+          with transaction() as tx:
+                  tx.run("""
+                         MATCH (d:Document {sha256:$sha256})
+                         WHERE NOT EXISTS(d.translated)
+                         SET d.translated = $translated
+                         """, sha256=row[1],translated=row[3])
+  else:
+    print("No data_french.csv file found")
 
 class Neo4JImport(TransformBase):
   DESCRIPTION = "Base import of data into Neo4J after scraping"
@@ -275,7 +284,7 @@ class Neo4JImport(TransformBase):
     # specific matching, but for now, this should work to make sure the transformation runs when
     # it has to (as long as additional changes aren't made to this file – as it won't get run
     # again after these objects are first created).
-    return neo4j_count("MATCH (n) WHERE n:PublicProcess OR n:Intervention OR n:Phase") == 0
+    return neo4j_count("MATCH (n {ppn:$ppn_id}) WHERE n:PublicProcess", ppn_id=process_num) == 0
 
   def transform(self, data):
     create_indices()

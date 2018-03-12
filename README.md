@@ -87,26 +87,29 @@ cp neo4j.yml.example neo4j.yml
 ## Working with other Consultations
 The scripts and instructions as outlined herein were all tailored for CRTC consultation 2015-134. However, much of the code provided can also be applied to any other CRTC consultation. In particular, it will be possible to download, process, and import all documents into neo4j that can then be browsed using the policy browser and queried using SolR. In order to do so, the following files will have to be modified.
 
+NB: If you want to import a second consultation, make sure you archive any data that was already imported into neo4j (i.e. from `data/raw` and `data/processed`).
 
+1. For the `bin/scrape` step:
 ```
 config/docker/scraper.yml
 ```
 This files tells the scraper which consultation to look at, where to place the files (ensure the folder exists), and whether it is a currently ongoing consultation or not.
 
-
+2. For the `bin/transform` step:  
+a)
 ```
-scripts/wrangling/config/neo4j.yml
+config/neo4j.yml
 ```
-Make sure the db name and pw are set and specify which consultation is being imported.
-
-
+Make sure the db name and pw are set and specify which consultation is being imported.   
+b)
 ```
 .skip-transforms
 ```
 This file is used to indicate which DB transformations to execute. Given that the repo is set up specific for consultation 2015-134, other consultations will not be able to use some of the transformation scripts used. Most likely, only Neo4JImport
 and Neo4JToSolr will be applicable.
 
-In order to help demonstrate how to run the code on another consultation, sample config files are given with a suffix of _201800467, which will scrape and import all documents related to that consultation.
+### Sample Config files
+In order to help demonstrate how to run the code on another consultation, sample config files are given with a suffix of _201708231, which will scrape and import all documents related to that consultation.
 
 ## Getting started with Neo4j
 
