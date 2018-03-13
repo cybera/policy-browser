@@ -34,14 +34,14 @@ include Memcached
 
 def default_ppn
   if !@default_ppn
-    public_processes = graph_query("MATCH (p:PublicProcess) RETURN p.ppn as ppn")
+    public_processes = graph_query("MATCH (p:PublicProcess) RETURN p.ppn as ppn ORDER BY ppn")
     @default_ppn = public_processes.map { |r| r[:ppn] }.first
   end
   @default_ppn
 end
 
 get '/' do
-  redirect "/browser?ppn=#{default_ppn}"
+  redirect "/browser?ppn=#{params[:ppn] || default_ppn}"
 end
 
 get '/browser' do

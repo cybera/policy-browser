@@ -33,9 +33,9 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="<%= navigation_active_css('/browser') %>"><a href="/browser?ppn=<%= default_ppn %>">Browser</a></li>
-            <li class="<%= navigation_active_css('/search') %>"><a href="/search">Search</a></li>
-            <li><a href="/about">About</a></li>
+            <li class="<%= navigation_active_css('/browser') %>"><a href="/browser?ppn=<%= params[:ppn] %>">Browser</a></li>
+            <li class="<%= navigation_active_css('/search') %>"><a href="/search?ppn=<%= params[:ppn] %>">Search</a></li>
+            <li><a href="/about?ppn=<%= params[:ppn] %>">About</a></li>
             <li ><a href="https://www.cybera.ca" rel="noopener noreferrer" target="_blank">Cybera.ca</a></li>
           </ul>
 
@@ -43,9 +43,9 @@
           
           <ul class="nav navbar-nav" style="float: right">
             <% if authorized? %>
-              <li><a href="/logout">Logout</a></li>
+              <li><a href="/logout?ppn=<%= params[:ppn] %>">Logout</a></li>
             <% else %>
-              <li><a href="/login">Login</a></li>
+              <li><a href="/login?ppn=<%= params[:ppn] %>">Login</a></li>
             <% end %>
           </ul>
         </div><!--/.nav-collapse -->
