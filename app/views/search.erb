@@ -43,6 +43,7 @@
           </div>
           <input type="hidden" name="search_hits" value="<%= results.hits %>"/>
           <input type="hidden" name="visible_hits" value="<%= results.docs.count %>"/>
+          <input type="hidden" name="ppn" value="<%= params[:ppn] %>"/>
         </form>
         <% if error_message %>
           <div class="alert alert-danger" role="alert">
