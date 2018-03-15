@@ -3,6 +3,8 @@
 python -m nltk.downloader popular
 
 pip install neo4j-driver
+
+conda update -n base conda
 conda install -c conda-forge scrapy
 
 pip install ftfy
