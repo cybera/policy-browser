@@ -3,4 +3,3 @@
 .Rhistory
 *.pyc
 .vscode
-.skip-transforms
