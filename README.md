@@ -42,14 +42,22 @@ repo for various CIRA project deliverables
   bin/build
   ```
 
-3. Scrape CRTC site for documents
+3. Create your configuration files
+
+  *config/neo4j.yml*, *config/browser.yml*, and *config/docker/scraper.yml* all need to be created. You can either use the *.example* version of the file as a template and create them yourself, or you can use the configuration script:
+
+  ```
+  bin/configure
+  ```
+
+4. Scrape CRTC site for documents
 
   By default, this repository is set up to scrape consultation 2015-134, which was used in our project. In order to apply it to another consultation, see the section [Working with other Consultations.](#Working-with-other-Consultations)
   ```
   bin/scrape
   ```
 
-4. Start required services: Neo4j, Solr, and Memcached
+5. Start required services: Neo4j, Solr, and Memcached
 
   ```
   bin/all-services start
@@ -61,7 +69,7 @@ repo for various CIRA project deliverables
 
   To start/stop individual services, you can use `bin/neo4j start`, `bin/neo4j stop`, `bin/solr start`, `bin/solr stop`, `bin/memcached start`, and `bin/memcached stop`.
 
-5. Convert PDF, doc, etc. files to raw text
+6. Convert PDF, doc, etc. files to raw text
 
   ```
   bin/process-docs
@@ -69,7 +77,7 @@ repo for various CIRA project deliverables
 
   This will create both copies of the original files and .txt conversions named using a sha256 hash of the contents of the original file. The copies will be found under *data/processed/hashed*, and the .txt conversions will be found under *data/processed/raw_text*. Metadata for the files, including the filenames is stored in .json files under *data/processed/meta* by this process (although, ideally, this should be done in the scraping process, as noted in some code comments there).
 
-6. Import and modify various other pieces of the Neo4j database  
+7. Import and modify various other pieces of the Neo4j database  
   See the [Transformation Scripts](#transformation-scripts) section for more details.
 
   ```

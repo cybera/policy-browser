@@ -183,7 +183,7 @@ entry_url = scraper_config['entry_url']
 DOWNLOAD_FOLDER = scraper_config['download_folder']
 #REGEX = /javascript:__doPostBack\('ctl00$MainContent$gvData','(Page\$\d+)'\)/
 TARGET = 'ctl00$MainContent$gvData'
-consultation_status = scraper_config['ongoing_consultation']
+ongoing_consultation = scraper_config['ongoing_consultation']
 consultation = scraper_config['consultation']
 consultation_nohyphen = consultation.gsub('-', '')
 
@@ -197,9 +197,9 @@ rows = table.css('tr')
 text_all_rows = Hash.new
 rows.each do |row|
     # we get the notice number from first row
-    if consultation_status.to_s.include?("No")
+    if !ongoing_consultation
       row_name = row.css('td[1]/a').text.match(/\d{4}+-\d{3}\b+|\d{4}+-\d{2}\b+/)
-    elsif consultation_status.to_s.include?("Yes")
+    else
       #for ongoing consultations, simply grab the first column and change filter to work with this further below
       row_name = row.css('td[1]/a')
     end
