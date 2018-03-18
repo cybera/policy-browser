@@ -1,4 +1,4 @@
 entry_url: https://services.crtc.gc.ca/pub/instances-proceedings/Default-Defaut.aspx?S=O&PA=A&PT=A&PST=A 
 download_folder: /mnt/policy-browser/data/raw
-ongoing_consultation: "Yes"
+ongoing_consultation: true
 consultation: 2017-0823-1
