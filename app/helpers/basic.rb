@@ -21,7 +21,7 @@ module Sinatra
     end
 
     def smart_paragraphs(newlines_str)
-      paragraphs = newlines_str.gsub("\u00A0", " ").split(/\n+/).select do |para| 
+      paragraphs = newlines_str.to_s.gsub("\u00A0", " ").split(/\n+/).select do |para| 
         para.strip != ""
       end
       
