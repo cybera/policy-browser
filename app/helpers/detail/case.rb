@@ -61,7 +61,7 @@ module Sinatra
       end
 
       def obfuscate_content_phone_number!(content)
-        content.gsub!(/(\d\.?|\+\d\.?)?\(?\d{3}(\.| |-|\))\d{3}(\.| |-)\d{4}/, "*-***-****")
+        content.gsub!(/(\d\.?|\+\d\.?)?\(?\d{3}(\.| |-|\))\d{3}(\.| |-)\d{4}/, "*-***-***-****")
 
       end
     end
