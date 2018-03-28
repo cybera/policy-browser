@@ -57,9 +57,12 @@ module Sinatra
       end
 
       def obfuscate_content_emails!(content)
+        content.gsub!(/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b/i, "******@***.com")
       end
 
       def obfuscate_content_phone_number!(content)
+        content.gsub!(/(\d\.?|\+\d\.?)?\(?\d{3}(\.| |-|\))\d{3}(\.| |-)\d{4}/, "*-***-****")
+
       end
     end
   end
