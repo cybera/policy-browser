@@ -14,10 +14,36 @@ module Sinatra
                    org.name AS organization, person.name AS person, submission.name AS submission_name
           """, id:params[:submission].to_i)
 
+          documents.each do |document|
+            obfuscate_content_names!(document[:content])
+            obfuscate_content_emails!(document[:content])
+            obfuscate_content_phone_number!(document[:content])
+          end
+
           { documents: documents }
         else
           { documents: [] }
         end
+      end
+      
+      def obfuscate_content_names!(content)
+        # lazily initialize an instance variable for @names
+        @names ||= graph_query("MATCH (p:Person) RETURN p.name AS name").map do | record |
+          record[:name].split(/\s+/)
+        end.flatten.uniq.reject do | name | 
+          name.length < 3
+        end
+
+        @names.each do |name|
+          content.gsub!("#{name} ", "**#{name}** ")
+          content.gsub!(" #{name}", " **#{name}**")
+        end
+      end
+
+      def obfuscate_content_emails!(content)
+      end
+
+      def obfuscate_content_phone_number!(content)
       end
     end
   end

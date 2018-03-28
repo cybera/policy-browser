@@ -45,11 +45,28 @@ module Sinatra
       end
     end
 
+    def obfuscate_person_name(name)
+      return nil if name.to_s.empty?
+
+      # lazily initialize a module level variable to keep track of names
+      @@people_to_refs ||= {}
+      @@person_ref_seq ||= 1
+
+      if !@@people_to_refs[name]
+        @@people_to_refs[name] = @@person_ref_seq
+        @@person_ref_seq += 1
+      end
+
+      "Intervenor #{@@people_to_refs[name]}"
+    end
+
     def author(data_row, organization_name_key=:organization, person_name_key=:person)
-      if !(data_row[organization_name_key].to_s.empty? || data_row[person_name_key].to_s.empty?)
-        "#{data_row[organization_name_key]} (#{data_row[person_name_key]})"
+      person_name = obfuscate_person_name(data_row[person_name_key])
+
+      if !(data_row[organization_name_key].to_s.empty? || person_name.nil?)
+        "#{data_row[organization_name_key]} (#{person_name})"
       else
-        data_row[organization_name_key].to_s.empty? ? data_row[person_name_key] : data_row[organization_name_key]
+        data_row[organization_name_key].to_s.empty? ? person_name : data_row[organization_name_key]
       end
     end
 
