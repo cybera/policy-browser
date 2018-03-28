@@ -26,17 +26,33 @@ module Sinatra
         end
       end
       
-      def obfuscate_content_names!(content)
+      def obfuscate_content_names!(content, debug_mode=false)
+        replacement = debug_mode ? "\\1**\\2**\\3" : "\\1****\\3"
+
         # lazily initialize an instance variable for @names
-        @names ||= graph_query("MATCH (p:Person) RETURN p.name AS name").map do | record |
-          record[:name].split(/\s+/)
-        end.flatten.uniq.reject do | name | 
-          name.length < 3
+        @names ||= begin 
+          name_words = graph_query("MATCH (p:Person) RETURN p.name AS name").map do | record |
+            record[:name].split(/\s+/)
+          end.flatten.map(&:strip).uniq.reject do | name | 
+            name !~ /[A-Z][a-z]+/ ||
+            name.length < 3
+          end
+
+          org_words = graph_query("MATCH (o:Organization) RETURN o.name AS name").map do | record |
+            record[:name].split(/\s+/)
+          end.flatten.map(&:strip).uniq.reject do | name | 
+            name !~ /[A-Z][a-z]+/
+          end
+
+          # Just a list of random words that seem to have gotten caught up in some of the names and we don't
+          # really want to hide.
+          whitelist = ["You", "Storm"]
+
+          (name_words - org_words) - whitelist
         end
 
         @names.each do |name|
-          content.gsub!("#{name} ", "**#{name}** ")
-          content.gsub!(" #{name}", " **#{name}**")
+          content.gsub!(/(^|\s)(#{name})([^A-Za-z'])/, replacement)
         end
       end
 
