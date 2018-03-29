@@ -18,6 +18,7 @@ module Sinatra
             obfuscate_content_names!(document[:content])
             obfuscate_content_emails!(document[:content])
             obfuscate_content_phone_number!(document[:content])
+            obfuscate_content_postal_code!(document[:content])
           end
 
           { documents: documents }
@@ -64,6 +65,11 @@ module Sinatra
         content.gsub!(/(\d\.?|\+\d\.?)?\(?\d{3}(\.| |-|\))\d{3}(\.| |-)\d{4}/, "*-***-***-****")
 
       end
+
+      def obfuscate_content_postal_code!(content)
+          content.gsub!(/[ABCEGHJKLMNPRSTVXY]{1}\d{1}[A-Z]{1} *\d{1}[A-Z]{1}\d{1}/, "*** ***")
+      end
+
     end
   end
 end
