@@ -73,6 +73,59 @@ module Sinatra
     def authored_by(text, author)
       "#{text}#{!author.to_s.empty? ? ': ' : ''}#{author}"
     end
+
+    class ::String
+      def obfuscate
+        text = self.dup
+        obfuscate_content_names!(text)
+        obfuscate_content_emails!(text)
+        obfuscate_content_phone_number!(text)
+        obfuscate_content_postal_code!(text)
+        text
+      end
+
+      def obfuscate_content_names!(content, debug_mode=false)
+        replacement = debug_mode ? "\\1**\\2**\\3" : "\\1****\\3"
+
+        # lazily initialize an instance variable for @names
+        @@names ||= begin 
+          name_words = graph_query("MATCH (p:Person) RETURN p.name AS name").map do | record |
+            record[:name].split(/\s+/)
+          end.flatten.map(&:strip).uniq.reject do | name | 
+            name !~ /[A-Z][a-z]+/ ||
+            name.length < 3
+          end
+
+          org_words = graph_query("MATCH (o:Organization) RETURN o.name AS name").map do | record |
+            record[:name].split(/\s+/)
+          end.flatten.map(&:strip).uniq.reject do | name | 
+            name !~ /[A-Z][a-z]+/
+          end
+
+          # Just a list of random words that seem to have gotten caught up in some of the names and we don't
+          # really want to hide.
+          whitelist = ["You", "Storm"]
+
+          (name_words - org_words) - whitelist
+        end
+        @@names_regexp ||= @@names.join("|")
+
+        content.gsub!(/(^|\s)(#{@@names_regexp})([^A-Za-z'])/, replacement)
+      end
+
+      def obfuscate_content_emails!(content)
+        content.gsub!(/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b/i, "******@***.com")
+      end
+
+      def obfuscate_content_phone_number!(content)
+        content.gsub!(/(\d\.?|\+\d\.?)?\(?\d{3}(\.| |-|\))\d{3}(\.| |-)\d{4}/, "*-***-***-****")
+
+      end
+
+      def obfuscate_content_postal_code!(content)
+          content.gsub!(/[ABCEGHJKLMNPRSTVXY]{1}\d{1}[A-Z]{1} *\d{1}[A-Z]{1}\d{1}/, "*** ***")
+      end
+    end
   end
 
   helpers BasicHelpers
