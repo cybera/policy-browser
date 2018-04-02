@@ -98,18 +98,17 @@ def merge_content():
     """)
     for r in results:
       content = None
-      if r["raw_html"] is not None:
-        if r["type"] == "html":
-          doc = HTMLSubmission(r["raw_html"])
-          content = doc.comment()
-        else:
-          content = r["raw_text"]
+      if r["raw_html"] is not None and r["type"] == "html":
+        doc = HTMLSubmission(r["raw_html"])
+        content = doc.comment()
+      else:
+        content = r["raw_text"]
 
-        tx.run("""
-          MATCH (d:Document)
-          WHERE ID(d) = $id
-          SET d.content = $content
-        """, id=r["id"], content=content)
+      tx.run("""
+        MATCH (d:Document)
+        WHERE ID(d) = $id
+        SET d.content = $content
+      """, id=r["id"], content=content)
   
 def merge_participant(name, title, organization, role):
   if not (name or title or organization):
