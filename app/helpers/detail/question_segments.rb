@@ -58,8 +58,8 @@ module Sinatra
           WHERE ID(question) = $question AND
                 NOT (org)-[:ALIAS_OF]->() AND
                 ID(segment) IN $segment_ids
-          RETURN segment.content AS content, query.str as query, org.category as category, 
-          org.name as organization, COALESCE(r.quality, 0.2) AS quality
+          RETURN org.category AS category, org.name AS organization, COALESCE(r.quality, 0.2) AS quality, 
+                 query.str AS query, COALESCE(segment.content_obfuscated, segment.content) AS content
         """, question:params[:question].to_i, segment_ids:segment_ids)
       end
     end

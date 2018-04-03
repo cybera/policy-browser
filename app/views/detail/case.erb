@@ -5,7 +5,7 @@
       <h5>Document Name: <%= document[:name] %></h5>
     </div>
     <div class="panel-body">
-      <%= smart_paragraphs(document[:content]).obfuscate %>
+      <%= smart_paragraphs(document[:content]) %>
     </div>
   </div>
 <% end %>
