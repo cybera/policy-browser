@@ -49,19 +49,27 @@ data_acorn = cypher(graph, query_acorn)
 acorn_content <- paste(data_acorn$content[1],data_acorn$content[2])
 
 ###Individual html submissions 
-query_html= "MATCH path=(:Person)-[]-(p:Participant)-[]-(:Submission)-[]-(d:Document{type:\"html\"})
-WHERE NOT (:Organization)-[]-(p)
+#query_html= "MATCH path=(:Person)-[]-(p:Participant)-[]-(:Submission)-[]-(d:Document{type:\"html\"})
+#WHERE NOT (:Organization)-[]-(p)
+#RETURN d.content as content, d.sha256 as sha256, d.translated as translated"
+query_html="MATCH (d:Document)<-[r:CONTAINING]-(s:Submission{name:\"Interventions Phase 2\"})
 RETURN d.content as content, d.sha256 as sha256, d.translated as translated"
-data_html = cypher(graph, query_html) #dim 266
+data_html = cypher(graph, query_html) 
+dim(data_html) #dim 619
 data_html <- data_html[!data_html$content== "Copie envoyée au demandeur et à tout autre intimé si applicable / Copy sent to applicant and to any respondent if applicable: Non/No",]
-data_html_english <- data_html[is.na(data_html$translated),] #dim 239
-data_html_french <- data_html[!is.na(data_html$translated),] #dim 27
+data_html <- data_html[!data_html$content== "Copie envoyée au demandeur et à tout autre intimé si applicable / Copy sent to applicant and to any respondent if applicable: Oui/Yes",]
+data_html$content <- lapply(data_html$content, function(x) gsub("\\n+ |\\t |\\s+", " ", x))
+data_html$content <- unlist(data_html$content)
+data_html <- data_html[!data_html$content== " ",]
+dim(data_html) #502
+data_html_english <- data_html[is.na(data_html$translated),] #dim 483
+data_html_french <- data_html[!is.na(data_html$translated),] #dim 93
 data_html_french <-data_html_french[,c("sha256","translated")]
 data_html_english <-data_html_english[,c("sha256","content")]
 colnames(data_html_french) <- colnames(data_html_english)
 data_html <- rbind(data_html_french, data_html_english) 
 #Some cleaning
-data_html$content <- gsub('\u009c|\u00F0',' ',data_html$content)
+data_html$content <- gsub('\u009c|\u00F0|\u0093|\u0094|\u0092',' ',data_html$content)
 data_html$content <- gsub('Raisons pour comparaitre / Reasons for appearance', ' ',data_html$content)
 
 ##Question about pricing (ACORN)
@@ -95,8 +103,9 @@ acorn_comment <- dplyr::mutate(acorn_comment, id = as.integer(rownames(acorn_com
 acorn_comment$content <- gsub('informa on','information',acorn_comment$content)
 acorn_comment$content <- gsub('op on','option',acorn_comment$content)
 acorn_comment$content <- gsub('transac on','transaction',acorn_comment$content)
-acorn_comment$content <- gsub('ac vit','active',acorn_comment$content)
-acorn_comment$content <- gsub('ac ve','activit',acorn_comment$content)
+acorn_comment$content <- gsub('ac vi es','activities',acorn_comment$content)
+acorn_comment$content <- gsub('ac vity','activity',acorn_comment$content)
+acorn_comment$content <- gsub('ac ve','active',acorn_comment$content)
 acorn_comment$content <- gsub('essen al','essential',acorn_comment$content)
 acorn_comment$content <- gsub('communica ','communicati',acorn_comment$content)
 acorn_comment$content <- gsub('ge ng','getting',acorn_comment$content)
@@ -122,6 +131,7 @@ acorn_comment$content <- gsub('ac- cess','access',acorn_comment$content)
 
 #########################  Word count
 my_stopwords <- data_frame(word = c(as.character(1:10),"canada","service","canadians", "canadian", "services"))
+stopwords_html <- data_frame(word = c(as.character(1:10),"http","14","879x", "00058", "refhub.elsevier.com", "s2213","www.scribd.com","87308119","takebackyourpower.net","sbref0005", "témiscsmingue","2012","2014"))
 
 result_om <- data_om[,c("sha256","content")] %>% 
   unnest_tokens(word, content) %>% 
@@ -147,7 +157,9 @@ counts_acorn$n <- counts_acorn$n*100/sum(counts_acorn$n)
 result_html <- data_html%>% 
   unnest_tokens(word, content) %>% 
   anti_join(stop_words)  %>%
-  anti_join(my_stopwords)
+  anti_join(my_stopwords) %>%
+  anti_join(stopwords_html) %>%
+  filter(!str_detect(word, "\\bsbref\\w+"))#,!str_detect(word, "\\b[[:alpha:]]{15,}\\b"),!str_detect(word, "[[:digit:]]+"))
 
 counts_html <- result_html %>%
   count(word, sort = TRUE)
@@ -170,10 +182,17 @@ bigram_graph_om <- bigram_counts_om %>%
   graph_from_data_frame()
 
 set.seed(1234)
-ggraph(bigram_graph_om, layout = "fr") +
-  geom_edge_link() +
-  geom_node_point() +
-  geom_node_text(aes(label = name), vjust = 1, hjust = 1)
+graph_om <- ggraph(bigram_graph_om, layout = "fr") +
+  geom_edge_link(
+    aes(edge_alpha=n), 
+    show.legend=FALSE,
+    end_cap = circle(0.03, 'inches')) +
+  geom_node_point(color="palevioletred", size=4) +
+  geom_node_text(aes(label=name), repel=TRUE, size=4) +
+  theme_void() 
+
+
+ggsave("notebooks/images/2gram_om.png", graph_om)
 
 
 bigram_counts_acorn <- acorn_comment %>%
@@ -193,32 +212,46 @@ bigram_graph_acorn <- bigram_counts_acorn%>%
   graph_from_data_frame()
 
 set.seed(4321)
-ggraph(bigram_graph_acorn, layout = "fr") +
-  geom_edge_link() +
-  geom_node_point() +
-  geom_node_text(aes(label = name), vjust = 1, hjust = 1)
+graph_acorn <- ggraph(bigram_graph_acorn, layout = "fr") +
+  geom_edge_link(
+    aes(edge_alpha=n), 
+    show.legend=FALSE,
+    end_cap = circle(0.03, 'inches')) +
+  geom_node_point(color="palevioletred", size=4) +
+  geom_node_text(aes(label=name), repel=TRUE, size=4) +
+  theme_void() 
 
+ggsave("notebooks/images/2gram_acorn.png", graph_acorn)
 
 bigram_counts_html <- data_html%>%
   unnest_tokens(bigram, content, token = "ngrams", n = 2)%>%
   separate(bigram, c("word1", "word2"), sep = " ")%>%
   filter(!word1 %in% stop_words$word) %>%
-  filter(!word2 %in% stop_words$word) %>% 
+  filter(!word2 %in% stop_words$word) %>%
+  filter(!word1 %in% stopwords_html$word) %>%
+  filter(!word2 %in% stopwords_html$word) %>% 
+  #filter(!str_detect(word1, "\\bsbref\\w+"),!str_detect(word1, "\\b[[:alpha:]]{15,}\\b"),!str_detect(word1, "[[:digit:]]+"))%>%
+  #filter(!str_detect(word2, "\\bsbref\\w+"),!str_detect(word2, "\\b[[:alpha:]]{15,}\\b"),!str_detect(word2, "[[:digit:]]+"))%>%
   count(word1, word2, sort = TRUE)
 
 bigram_counts_html2 <- bigram_counts_html
 bigram_counts_html2$n <- bigram_counts_html$n*100/sum(bigram_counts_html$n)
 
 bigram_graph_html <- bigram_counts_html %>%
-  filter(n > 5) %>%
+  filter(n > 25) %>%
   graph_from_data_frame()
 
 set.seed(1234)
-ggraph(bigram_graph_html, layout = "fr") +
-  geom_edge_link() +
-  geom_node_point() +
-  geom_node_text(aes(label = name), vjust = 1, hjust = 1)
+graph_html <- ggraph(bigram_graph_html, layout = "fr") +
+  geom_edge_link(
+    aes(edge_alpha=n), 
+    show.legend=FALSE,
+    end_cap = circle(0.03, 'inches')) +
+  geom_node_point(color="palevioletred", size=4) +
+  geom_node_text(aes(label=name), repel=TRUE, size=4) +
+  theme_void() 
 
+ggsave("notebooks/images/2gram_html.png", graph_html)
 ############## Trigramms
 
 trigram_om <- data_om[,c("sha256","content")] %>%
@@ -250,6 +283,9 @@ trigram_html <- data_html %>%
   filter(!word1 %in% stop_words$word,
          !word2 %in% stop_words$word,
          !word3 %in% stop_words$word) %>%
+  filter(!word1 %in% stopwords_html$word,
+         !word2 %in% stopwords_html$word,
+         !word3 %in% stopwords_html$word) %>% 
   count(word1, word2, word3, sort = TRUE)
 
 trigram_html$n <- trigram_html$n*100/sum(trigram_html$n)
@@ -267,16 +303,18 @@ dtm_om <- words50_om %>%
 
 lda_om <- LDA(dtm_om, k = 5, control = list(seed = 1234))
 
-lda_om %>%
+topics_om <-lda_om %>%
   tidy() %>%
   group_by(topic) %>%
   top_n(8, beta) %>%
   ungroup() %>%
   mutate(term = reorder(term, beta)) %>%
   ggplot(aes(term, beta, fill = factor(topic))) +
+  theme(text = element_text(size=15)) +
   geom_col(show.legend = FALSE) +
   facet_wrap(~ topic, scales = "free_y") +
   coord_flip()
+ggsave("notebooks/images/topicsOM.png", topics_om)
 
 words50_acorn <- result_acorn %>%
   group_by(word) %>%
@@ -289,16 +327,18 @@ dtm_acorn <- words50_acorn %>%
 
 lda_acorn <- LDA(dtm_acorn, k = 5, control = list(seed = 1234))
 
-lda_acorn %>%
+topics_acorn <-lda_acorn %>%
   tidy() %>%
   group_by(topic) %>%
   top_n(8, beta) %>%
   ungroup() %>%
   mutate(term = reorder(term, beta)) %>%
   ggplot(aes(term, beta, fill = factor(topic))) +
+  theme(text = element_text(size=15)) +
   geom_col(show.legend = FALSE) +
   facet_wrap(~ topic, scales = "free_y") +
   coord_flip()
+ggsave("notebooks/images/topicsAC.png", topics_acorn)
 
 words50_html <- result_html %>%
   group_by(word) %>%
@@ -311,16 +351,18 @@ dtm_html <- words50_html %>%
 
 lda_html <- LDA(dtm_html, k = 5, control = list(seed = 1234))
 
-lda_html %>%
+topics_html <-lda_html %>%
   tidy() %>%
   group_by(topic) %>%
   top_n(8, beta) %>%
   ungroup() %>%
   mutate(term = reorder(term, beta)) %>%
   ggplot(aes(term, beta, fill = factor(topic))) +
+  theme(text = element_text(size=15)) +
   geom_col(show.legend = FALSE) +
   facet_wrap(~ topic, scales = "free_y") +
   coord_flip()
+ggsave("notebooks/images/topicsHTML.png", topics_html)
 
 ####################- Sentiment cloud - have not included it
 set.seed(1234)
@@ -351,36 +393,42 @@ contributions_om <- result_om %>%
   group_by(word) %>%
   summarize(occurences = n(),
             contribution = sum(score))
-contributions_om %>%
+words_om <- contributions_om %>%
   top_n(25, abs(contribution)) %>%
   mutate(word = reorder(word, contribution)) %>%
   ggplot(aes(word, contribution, fill = contribution > 0)) +
+  theme(text = element_text(size=15)) +
   geom_col(show.legend = FALSE) +
   coord_flip()
+ggsave("notebooks/images/wordsOM.png", words_om)
 
 contributions_acorn <- result_acorn %>%
   inner_join(get_sentiments("afinn"), by = "word") %>%
   group_by(word) %>%
   summarize(occurences = n(),
             contribution = sum(score))
-contributions_acorn %>%
+words_acorn <- contributions_acorn %>%
   top_n(25, abs(contribution)) %>%
   mutate(word = reorder(word, contribution)) %>%
   ggplot(aes(word, contribution, fill = contribution > 0)) +
+  theme(text = element_text(size=15)) +
   geom_col(show.legend = FALSE) +
   coord_flip()
+ggsave("notebooks/images/wordsAC.png", words_acorn)
 
 contributions_html <- result_html %>%
   inner_join(get_sentiments("afinn"), by = "word") %>%
   group_by(word) %>%
   summarize(occurences = n(),
             contribution = sum(score))
-contributions_html %>%
+words_html <- contributions_html %>%
   top_n(25, abs(contribution)) %>%
   mutate(word = reorder(word, contribution)) %>%
   ggplot(aes(word, contribution, fill = contribution > 0)) +
+  theme(text = element_text(size=15)) +
   geom_col(show.legend = FALSE) +
   coord_flip()
+ggsave("notebooks/images/wordsHTML.png", words_html)
 
 ###################### Most positive/negative messages
 sentiment_messages_om <- result_om %>%
@@ -429,17 +477,17 @@ sentiment_messages_html <- result_html %>%
 sentiment_messages_html %>%
   arrange(desc(sentiment))
 
-data_html[data_html$sha256=="88c261d0ed59df75041125c68ad48f3604944dc84094bb67f118092de34a12ba",]$content
+data_html[data_html$sha256=="7f1890084e316ec000830f1182b4c7e871f5db96124d68daa182f8eaa6d62755",]$content
 
 sentiment_messages_html %>%
   arrange(sentiment)
 
-data_html[data_html$sha256=="8f47bb74dcd6cb96a54e06f8b1da0b3d62cb6e59a522ec578d7799b3fe465b18",]$content
+data_html[data_html$sha256=="fc8e3bc3841292036220a42d7110c483f93a4f5010fcb59ad9441585be42f058",]$content
 
-###NRC part for ACORN (not included to MD)
-sentiment_nrc <- result_acorn %>% 
+###NRC part for Phase2 individual submissions
+sentiment_nrc <- result_html %>% 
   inner_join(get_sentiments("nrc")) %>% 
-  count(id, sentiment) %>%
+  count(sha256, sentiment) %>%
   spread(sentiment, n, fill=0) %>%
   setNames(c(names(.)[1],paste0('nrc_', names(.)[-1]))) %>%
   mutate(score_nrc = nrc_positive - nrc_negative) %>%
@@ -449,17 +497,17 @@ data_sentiments <- Reduce(full_join,
                           list(sentiment_nrc) )%>% 
   mutate_each(funs(replace(., which(is.na(.)), 0)))
 
-data_full <- full_join(acorn_comment, data_sentiments)  %>% 
+data_full <- full_join(data_html, data_sentiments)  %>% 
   mutate_each(funs(replace(., which(is.na(.)), 0)), starts_with("score"), starts_with("nrc"))
 
 data_full %>%
   top_n(1, score_nrc) %>%
-  select(id, score_nrc, content) 
+  select(sha256, score_nrc, content) 
 
 data_full %>%
   top_n(1, nrc_anger) %>%
-  select(id, nrc_anger, content) 
+  select(sha256, nrc_anger, content) 
 
 data_full %>%
-  top_n(1, nrc_sadness) %>%
-  select(id, nrc_sadness, content)
+  top_n(1, nrc_surprise) %>%
+  select(sha256, nrc_surprise, content)

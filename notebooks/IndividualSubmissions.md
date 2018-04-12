@@ -1,6 +1,6 @@
 ### Individual Submissions stats.
 
-Sources of submissions: OpenMedia, Acorn, individual html submissions.
+Sources of submissions: OpenMedia, Acorn, individual  submissions from Interventions Phase2.
 
 #### OpenMedia
 
@@ -86,11 +86,11 @@ Time to set the record straight. In April 2016, a historic CRTC hearing will sha
  *Reasonable, and I can afford it. Too high, but I can afford it.* | 1
  *Too high, but I can afford it. Extremely high; I can barely afford it. Extremely high; I can't afford it, but because I need it I take money out of my budget for other items* |  1
 
-### Individual html submissions.
-- *266 Submissions*
-  - *239 Submissions in English*
-  - *27 Submissions in French*  (used google translate API to translate them)
-  - *6 Empty submissions*
+### Interventions Phase2
+- *619 Submissions*
+  - *409 Submissions in English*
+  - *93 Submissions in French*  (used google translate API to translate them)
+  - *117 Empty submissions*
 
 
 ### Comparing individual submissions language
@@ -100,77 +100,77 @@ Time to set the record straight. In April 2016, a historic CRTC hearing will sha
   - Why is online access important to you?
   - Please share how your life would change if you could easily afford home high-speed Internet.
   - Please share anything else relevant.
-- 258 individual html submissions.
+- 502 Interventions Phase2 submissions.
+
 
 ##### Top 10 most frequent words
  (excluded words - "canada","service","canadians", "canadian", "services")
 
-OM | ACORN | HTML
+OM | ACORN | Phase2
 --- | --- | ---
- internet  5.4% | internet   4.6% | internet 3.3%
- world  1.9% | access    2.1% | speed 1.5%
- access  1.9% | afford 1.3% | access 1%
- telecom   1.2% | money    1.2% | month 0.7%
- companies   1.1% | online    1% | data 0.7%
- pay   1% | information  1% | mbps 0.6%
- prices   0.9% | family  0.9% | rural 0.6%
- broadband   0.9% | life    0.9% | speeds 0.6%
- speed   0.9% | home    0.8% | live 0.6%
- affordable   0.9% | food 0.8% | bell 0.6%
+ internet  5.4% | internet   4.5% | internet 1.5%
+ world  1.9% | access    2.2% | access 0.6%
+ access  1.9% | afford 1.3% | speed 0.5%
+ telecom   1.2% | money    1.2% | broadband 0.45%
+ companies   1.1% | online    1% | health 0.4%
+ pay   1% | information  1% | rural 0.4%
+ prices   0.9% | family  0.9% | cell 0.4%
+ broadband   0.9% | life    0.9% | exposure 0.4%
+ speed   0.9% | home    0.8% | crtc 0.4%
+ affordable   0.9% | food 0.8% | radiation 0.37%
 
 - Similarities:
-  - ACORN, OM, HTML discuss internet access.
+  - ACORN, OM, Phase2 discuss internet access.
   - ACORN, OM discuss affordability, prices.
-  - OM, HTM discuss internet speeds.
+  - OM, Phase2 discuss internet speeds.
 - Differences:
   - OM discussing more big  telecom companies.
   - ACORN - more often mentions family, life, home.
-  - HTML submissions discuss rural access.
+  - Phase2 submissions discuss rural access as well as health and radiation.
 
 ##### Bigrams
 
-OM | ACORN | HTML
+OM | ACORN | Phase2
 --- | --- | ---
-telecom companies   1.6%  | speed   internet    1.5% | internet    service 1.2%
-internet  services   1.4% | internet  access   1.4% | speed   internet 0.7%
-internet    access   1.2% | online access    1.3% | internet     access 0.5%
-internet   service   1.1% | low    income     0.8% | internet   services 0.4%
-world     class   0.8%    | stay connected     0.5% | download      speed 0.4%
-25      mbps   0.7%     | affordable internet     0.5% | 5       mbps 0.3%
-community    access   0.6% | cell   phone     0.5% | service  providers 0.3%
-3      mbps   0.6%         | internet service     0.3% | data       caps 0.3%
-profit providers   0.6%    | afford internet     0.3% | internet connection 0.3%
-industrialized     world   0.6% | internet services      0.3% | bell     canada 0.2%
+telecom companies   1.6%  | speed   internet    1.5% | internet    service 0.4%
+internet  services   1.4% | internet  access   1.4% | telecommunications           services 0.3%
+internet    access   1.2% | online access    1.3% | cell              phone 0.27%
+internet   service   1.1% | low    income     0.8% | speed           internet 0.27%
+world     class   0.8%    | stay connected     0.5% |  digital            economy 0.25%
+25      mbps   0.7%     | affordable internet     0.5% | basic telecommunications 0.2%
+community    access   0.6% | cell   phone     0.5% | internet             access 0.2%
+3      mbps   0.6%         | internet service     0.3% | internet           services 0.19%
+profit providers   0.6%    | afford internet     0.3% | cell             phones 0.3%
+industrialized     world   0.6% | internet services      0.3% | smart              meter 0.2%
 
-Submissions from both sources discuss internet access and internet services.
+Submissions from all sources discuss internet access and internet services.
 
 ACORN members are more concerned about internet speed (most frequent bigram), internet affordability and importance to stay connected.
 
 OM submissions are more focused on discussing telecom companies, profit providers and community access.
 
-HTML submissions talk about internet speed, data caps and service providers like Bell.
+Phase2 submissions talk about internet speed, cell phone services and digital economy.
 
 ##### Trigrams
 
-OM | ACORN | HTML
+OM | ACORN | Phase2
 --- | --- | ---
-community         access       programs   1.7% | low    income  families 0.7% | internet            service providers 0.3%
-3           mbps         upload   1.6% | affordable internet    access     0.4% | cell              phone   service 0.3%
-25           mbps       download   1.5% | easily   afford      home     0.4% |  1               mbps    upload 0.2%
-municipalities      community         access   1.4% |speed internet    access 0.4% | speed           internet   service 0.2%
- world          class      broadband   1.4% | cell    phone   service     0.3% | basic telecommunications  services 0.2%
- affordable          world          class   1.4% | cell    phone   services     0.3% | residential           internet  services 0.2%
-sell      broadband       services   1.4% | easily   afford groceries 0.3% |  speed           internet    access 0.2%
-incumbent           isps municipalities   1.3% | jobs     jobs      jobs     0.3% | 5               mbps  download 0.2%  
-isps municipalities      community  1.3% | low   income    people    0.3% | internet            service  provider 0.2%
-class      broadband       internet   1.1% | university  student    living     0.3% | mbps             upload     speed 0.2%
+community         access       programs   1.7% | low    income  families 0.7% | basic telecommunications    services 0.3%
+3           mbps         upload   1.6% | affordable internet    access     0.4% | austrian            medical association 0.2%
+25           mbps       download   1.5% | easily   afford      home     0.4% | emf            related      health 0.2%
+municipalities      community         access   1.4% |speed internet    access 0.4% | illnesses                emf    syndrome 0.2%
+ world          class      broadband   1.4% | cell    phone   service     0.3% | smart              meter       risks 0.15%
+ affordable          world          class   1.4% | cell    phone   services     0.3% | british                mps        told 0.14%
+sell      broadband       services   1.4% | easily   afford groceries 0.3% |   meter              risks          uk 0.14%
+incumbent           isps municipalities   1.3% | jobs     jobs      jobs     0.3% | risks                 uk     rollout 0.15%  
+isps municipalities      community  1.3% | low   income    people    0.3% | uk            rollout     delayed 0.15%
+class      broadband       internet   1.1% | university  student    living     0.3% | blood              brain     barrier 0.14%
 
 Affordable world class broadband internet, 3 mbps upload and  25 mbps download  speeds are discussed mostly in OM submissions.
 
 ACORN members talk about low income families and people, university students living, importance of affordable internet access.
 
-HTML submissions talk about 	internet service providers a lot, upload/download speeds
-(1/5 vs 5/25 in OM submissions) and internet as basic telecommunication service.
+Phase2 submissions talk about  basic telecommunication services as well as EMF related health issues.
 
 
 ##### Bigrams visualization
@@ -197,15 +197,15 @@ Narratives:
 - low-income families
 - buy quality food
 
-`HTML`:
+`Phase2`:
 
 ![bigrams3](images/2gram_html.png)
 
 Narratives:
-- telephone-land-cell
-- satellite-tv-cable
-- rural-canadians-internet-speeds
-- data-cap-unlimited
+- health-related-emf-syndrome, breast-cancer, nervous-system, microvave-radiation
+- affordable-broadband-service
+- cell-phone
+- canadian radio/television
 - upload/download speeds
 
 
@@ -216,9 +216,9 @@ Narratives:
 ![topics1](images/topicsOM.png)
 
 OM submissions topics:
-1. telecom companies
+1. world telecom companies
 2. internet: fast/slow/affordable
-3. people pay money to government/country?
+3. people pay money to government/country
 4. speed/cost/price/rates competition
 5. world class broadband access
 
@@ -227,22 +227,22 @@ OM submissions topics:
 ![topics2](images/topicsAC.png)
 
 ACORN submissions topics:
-1. afford/Internet/stress
-2. internet to stay in touch with family
-3. internet/access daily life
-4. money afford internet/food
-5. internet access /online information
+1. internet to stay in touch with family
+2. internet access to get information/ do research and homework
+3. internet/access afford, money, pay bills.
+4. internet access to stay connected and get information, get a job.
+5. budget - home per month - afford internet and food.
 
-`HTML`
+`Phase2`
 
 ![topics3](images/topicsHTML.png)
 
-HTML submissions topics:
-1. internet /live/speech(?) /crtc/shaw
-2. internet providers /speed/data
-3. rural/internet/phone/telus
-4. rural internet/bell
-5. internet download speed pay
+Phase2 submissions topics:
+1. internet speed/access and phone in rural areas.
+2. health issues - radiation effects.
+3. crtc, internet as a basic telecommunication service.
+4. wireless devices - health issues.
+5. radiation exposure effects.
 
 ##### Most common positive/negative words
 
@@ -253,7 +253,7 @@ HTML submissions topics:
 Most common negative word in OM submissions is pay.
 
 Narrative:
-- negative: pay-ridiculous-poor-tired, greed
+- negative: pay-ridiculous-poor-tired.
 - positive: opportunities to improve, support, fair, competitive.
 
 `ACORN`
@@ -269,15 +269,15 @@ Narrative:
 helps-fun-nice-happy-healthy
 
 
-`HTML`
+`Phase2`
 
 ![words3](images/wordsHTML.png)
 
 Most common negative word is pay.
 
 Narrative:
-- negative: pay-poor-limited-ridiculous-disadvantage-terrible.
-- positive: opportunities to improve, hope, support, fair, happy, encourage
+- negative: pay-poor-limited, risk-cancer-illness-fatigue
+- positive: support, help, safety
 
 
 ##### Most negative/positive comments
@@ -298,19 +298,19 @@ Narrative:
 
 "The medical research I access is critically important as I have a health issue I must keep up to date on and my doctor sends me for the tests etc but does not have me to discuss in detail I want to keep up regarding the latest break- throughs and alternative therapies. I would feel more lost and worried without out more extensive information. Being able to email is very important as it keeps me connected to others and as I have this health issue right now it al- lows me to connectwhen I don't always have the energy to go out. "
 
-`Positive HTML(not really positive)`
+`Positive Phase2`
 
-"I am using this as an opportunity to voice my opinion regarding internet in Nova Scotia- that being in rural areas. Several years back Eastlink \"won\" the contract in my area of N.S. ( Lunenburg County) to provide high speed internet. Previously having \"dial-up\" , this was a miracle. First of all they were at least a year over contract to have the job done and our government did nothing to obtain penalties from them. So, then we get it  ! So excited ! As it stands now , evenings and weekends, I am no better off than I was with dial-up. I have called and had my system checked out and told \"NO, that's as good as it gets\" . While I am thankful to have this wireless, the speeds are nowhere near what we were promised and nobody is checking into this. So Eastlink can brush us off and there are no consequences. We are supposed to be satisfied. Bell advertises Fibre-Op - what a joke that is. You have to live somewhere in town or close to town to get it. We are being shafted by corpor... <truncated>"
+" The basic service should include the medium speed internet service in my opinion and cover the whole territory. The customers benefit, the telecommunication companies benefit, the banks benefit, the merchants benefit, the health services, the Government the cities benefit and so on. The costs must therefore be borne by all those who benefit if we want a fair and equitable service.Mario Girard"
 
-`Negative HTML`
+`Angry Phase2 (nrc score)`
 
-"I am a resident of Chaplin Saskatchewan and a vacationer at Palliser Regional Park on Lake Diefenbaker SK.  Our cellular service is absolutely terrible.  We farm 5 miles north of the #1 highway and our service is spotty at best.  North of us where we farm there is absolutely no cell service at all which makes it impossible for communications for breakdowns or any urgent problems or emergencies.At Palliser Park we have a seasonal site and there is not service where we camp there.  We bought a $600 booster so that we can at least be able to text but the tower there is too small to provide service once the park is at full capacity.  This not only causes problems at the park but it hinders all surrounding communities as far a Central Butte, SK.These concerns only encompass cellular coverage.  We also have absolutely terrible internet service.  Worse than the old dial up internet use to be.People in the cities pay a fee for service and have service!  We in the rural areas have to pay f... <truncated>
+"Wireless Technology The Worst Threat to our Health Personal Privacy Democracy and National Security in Canada’s Entire History Jerry Flynn’s BIO Retired Canadian Armed Forces Captain.... <truncated>"
 
 ### Conclusion
-OpenMedia and ACORN and HTML submissions discuss the importance  of affordable  internet access and talk about internet speeds.
+OpenMedia and ACORN and Phase2 submissions discuss the importance  of affordable  internet access and talk about internet speeds.
 
 OpenMedia submissions talk more about about large  telecom companies, real competition, industrialized world and community access. OM submissions mostly often mention upload/download speed  5/25.
 
 ACORN submissions touch low-income families issues, discuss internet as  necessity for work and  everyday life.
 
-HTML submissions mostly discuss large telecom provides - Shaw, Bell and Telus, talk about 1/5 upload/download speeds, mention phone services cell and land.
+Phase2 submissions discuss internet and phone access in rural areas. Phase2 submissions quite often mention health issues related to radiation exposure and electromagnetic  hypersensitivity.
