@@ -33,7 +33,7 @@ data_om$content <- lapply(data_om$content, function(x) gsub("\\n+ |\\t |\\s+", "
 data_om$content <- sub("I acknowledge that my comments.*", "",data_om$content)
 data_om$content <- sub("\\[Insert your comment here\\]", "",data_om$content)
 data_om$content <- unlist(data_om$content)
-write.csv(data_om,"data_om.csv")
+
 
 ###ACORN
 #setwd("~/DS/policy-browser/data/raw")
@@ -52,25 +52,28 @@ acorn_content <- paste(data_acorn$content[1],data_acorn$content[2])
 #query_html= "MATCH path=(:Person)-[]-(p:Participant)-[]-(:Submission)-[]-(d:Document{type:\"html\"})
 #WHERE NOT (:Organization)-[]-(p)
 #RETURN d.content as content, d.sha256 as sha256, d.translated as translated"
-query_html="MATCH (d:Document)<-[r:CONTAINING]-(s:Submission{name:\"Interventions Phase 2\"})
+query_html="MATCH (d:Document{type:\"html\"})<-[r:CONTAINING]-(s:Submission{name:\"Interventions Phase 2\"})
 RETURN d.content as content, d.sha256 as sha256, d.translated as translated"
 data_html = cypher(graph, query_html) 
-dim(data_html) #dim 619
+dim(data_html) #dim 529
 data_html <- data_html[!data_html$content== "Copie envoyée au demandeur et à tout autre intimé si applicable / Copy sent to applicant and to any respondent if applicable: Non/No",]
 data_html <- data_html[!data_html$content== "Copie envoyée au demandeur et à tout autre intimé si applicable / Copy sent to applicant and to any respondent if applicable: Oui/Yes",]
 data_html$content <- lapply(data_html$content, function(x) gsub("\\n+ |\\t |\\s+", " ", x))
 data_html$content <- unlist(data_html$content)
 data_html <- data_html[!data_html$content== " ",]
-dim(data_html) #502
-data_html_english <- data_html[is.na(data_html$translated),] #dim 483
-data_html_french <- data_html[!is.na(data_html$translated),] #dim 93
+dim(data_html) #466
+data_html_english <- data_html[is.na(data_html$translated),] #dim 378
+data_html_french <- data_html[!is.na(data_html$translated),] #dim 88
 data_html_french <-data_html_french[,c("sha256","translated")]
 data_html_english <-data_html_english[,c("sha256","content")]
 colnames(data_html_french) <- colnames(data_html_english)
 data_html <- rbind(data_html_french, data_html_english) 
+
 #Some cleaning
 data_html$content <- gsub('\u009c|\u00F0|\u0093|\u0094|\u0092',' ',data_html$content)
 data_html$content <- gsub('Raisons pour comparaitre / Reasons for appearance', ' ',data_html$content)
+data_html$content <- gsub('Reasons to appear / Reasons for appearance', ' ',data_html$content)
+write.csv(data_html, file = "data_html.csv")
 
 ##Question about pricing (ACORN)
 acorn_pricing <- regmatches(acorn_content,gregexpr("How do you feel about the current pricing of high-speed internet\\?(.*?)Which budget items have you taken money out of to pay for internet\\?",acorn_content))
@@ -238,7 +241,7 @@ bigram_counts_html2 <- bigram_counts_html
 bigram_counts_html2$n <- bigram_counts_html$n*100/sum(bigram_counts_html$n)
 
 bigram_graph_html <- bigram_counts_html %>%
-  filter(n > 25) %>%
+  filter(n > 10) %>%
   graph_from_data_frame()
 
 set.seed(1234)
@@ -482,7 +485,7 @@ data_html[data_html$sha256=="7f1890084e316ec000830f1182b4c7e871f5db96124d68daa18
 sentiment_messages_html %>%
   arrange(sentiment)
 
-data_html[data_html$sha256=="fc8e3bc3841292036220a42d7110c483f93a4f5010fcb59ad9441585be42f058",]$content
+data_html[data_html$sha256=="c17c4a7d96c9b64b3840a038c210acb6a3dff7f2717be423c3bdae86ca3f7c93",]$content
 
 ###NRC part for Phase2 individual submissions
 sentiment_nrc <- result_html %>% 
