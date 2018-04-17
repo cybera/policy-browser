@@ -38,10 +38,11 @@ df.docs_phase %>% group_by(phase) %>% summarise(submissions_per_phase = sum(n)) 
 orgs_total
 
 #Individual html submissions
-q.html_submissions <-"MATCH (d:Document{type:\"html\"})<-[r:CONTAINING]-(s:Submission{name:\"Interventions Phase 2\"})
-  RETURN COUNT(d)
+q.html_submissions <-"
+MATCH (d:Document)<-[r1:CONTAINING]-(s:Submission{name:\"Interventions Phase 2\"})<-[r2:PARTICIPATES_IN]- (p:Participant) 
+WHERE NOT  (d)<-[:SUBMITTED]->() RETURN COUNT(DISTINCT p)
 "
-html_total <- cypher(graph, q.html_submissions)
+html_total <- cypher(graph, q.html_submissions) #420
 
 #ACORN submissions analyzed (from Tatiana)
 acorn_total <- 289
