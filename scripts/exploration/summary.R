@@ -1,7 +1,7 @@
 library(RNeo4j)
 library(dplyr)
 library(ggplot2)
-#library(cld2)
+library(cld2)
 library(stringr)
 library(readr)
 
@@ -38,9 +38,7 @@ df.docs_phase %>% group_by(phase) %>% summarise(submissions_per_phase = sum(n)) 
 orgs_total
 
 #Individual html submissions
-q.html_submissions <- "
-  MATCH path=(:Person)-[]-(p:Participant)-[]-(:Submission)-[]-(d:Document)
-  WHERE NOT (:Organization)-[]-(p)
+q.html_submissions <-"MATCH (d:Document{type:\"html\"})<-[r:CONTAINING]-(s:Submission{name:\"Interventions Phase 2\"})
   RETURN COUNT(d)
 "
 html_total <- cypher(graph, q.html_submissions)
@@ -87,7 +85,7 @@ q.doc_contents <- "
 
 df.doc_contents <- cypher(graph, q.doc_contents)
 df.doc_lang <- df.doc_contents %>%
-  mutate(lang = detect_language(content)) %>%
+  mutate(lang = cld2::detect_language(content)) %>%
   select(-content)
 
 # Uggh... ggplot really makes pie charts hard to produce. It was a disasterously

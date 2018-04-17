@@ -1,26 +1,23 @@
-#### Question9-1:
+### Question9-1:
 
 What are organizations saying about whether the internet should be a basic service?
 
-`Solr searches`
+### Solr queries:
 
-bin/segment 'content:"internet, basic service"~10 OR "broadband, basic service"~10' --add --rows=267
+- bin/segment 'content:"internet, basic service"~10 OR "broadband, basic service"~10' --add --rows=81 --OMexclude
 
-`Results`
+### Summary stats:
+Note: Numbers may be variable depending on what version of the application you're currently using.
 
-Category| In database | Search results
+Category| Number of docs in database  | Number of docs covered by solr search results
 --- | --- | ---
-Advocacy organizations |  289 | 30
+Advocacy organizations |  264 | 29
 Chamber of commerce/economic dev agency |    4 | 0
-Consumer advocacy organizations |    3  | 1
-Government  | 134 | 24
-Network operator - Cable companies | 118 | 26
-Network operator: other | 271 | 37
-Network operator: Telecom Incumbents | 339 | 22
-Other | 107 | 12
-Small incumbents  | 66  | 27   
-
-- 262 documents
-- 180 - have organizations
-- 179 - have category
-- 61 organizations out of 175 covered
+Consumer advocacy organizations |    4  | 0
+Government  | 111 | 21
+Network operator - Cable companies | 125 | 25
+Network operator: other | 208 | 33
+Network operator: Telecom Incumbents | 342 | 24
+ None | 1322  |     91
+Other | 90 | 13
+Small incumbents  | 11  | 1   

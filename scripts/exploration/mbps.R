@@ -63,7 +63,7 @@ plot.mbps <- function(df, mbps_colname, mbps_label="Mbps", threshold=NA, remove_
       distinct(content, .keep_all = TRUE) 
   }
   
-  gplot(df.should_score) +
+  ggplot(df.should_score) +
     geom_jitter(data=df.no_should_score, aes(x=category,y = mbps_col), alpha=0.4) +
     geom_jitter(aes(x=category,y=mbps_col, color=should_score), alpha=0.7) +
     scale_colour_gradient2(low="yellow", mid="orange", high = "red", midpoint=0.07) +
@@ -176,15 +176,15 @@ df.mbps.extract <- rbind(df.mbps,df.mbps.openmedia,df.mbps.html) %>%
   mutate(mbps_index=get_mbps_index(content, should_index, mbps_str)) %>%
   mutate(should_score=1/(mbps_index - should_index))
 
-(plot.mbps.down.500 <- plot.mbps(df.mbps.extract, "mbps_down", "Mbps down", 500))
-(plot.mbps.down.50 <- plot.mbps(df.mbps.extract, "mbps_down", "Mbps down", 50))
-(plot.mbps.up.500 <- plot.mbps(df.mbps.extract, "mbps_up", "Mbps up", 500))
-(plot.mbps.up.50 <- plot.mbps(df.mbps.extract, "mbps_up", "Mbps up", 50))
+(plot.mbps.down.500 <- plot.mbps(df.mbps.extract, "mbps_down", "Mbps down", 500,remove_dups=TRUE))
+(plot.mbps.down.50 <- plot.mbps(df.mbps.extract, "mbps_down", "Mbps down", 50,remove_dups=TRUE))
+(plot.mbps.up.500 <- plot.mbps(df.mbps.extract, "mbps_up", "Mbps up", 500,remove_dups=TRUE))
+(plot.mbps.up.50 <- plot.mbps(df.mbps.extract, "mbps_up", "Mbps up", 50,remove_dups=TRUE))
 
-ggsave("notebooks/images/mbps-down-500.png", plot.mbps.down.500, remove_dups=TRUE)
-ggsave("notebooks/images/mbps-down-50.png", plot.mbps.down.50, remove_dups=TRUE)
-ggsave("notebooks/images/mbps-up-500.png", plot.mbps.up.500, remove_dups=TRUE)
-ggsave("notebooks/images/mbps-up-50.png", plot.mbps.up.50, remove_dups=TRUE)
+ggsave("notebooks/images/mbps-down-500.png", plot.mbps.down.500)
+ggsave("notebooks/images/mbps-down-50.png", plot.mbps.down.50)
+ggsave("notebooks/images/mbps-up-500.png", plot.mbps.up.500)
+ggsave("notebooks/images/mbps-up-50.png", plot.mbps.up.50)
 ########################
 
 ########################

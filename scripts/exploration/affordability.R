@@ -8,9 +8,33 @@ library(RNeo4j)
 library(stringr)
 library(reshape2)
 library(tidyr)
-#library(SnowballC)
+
+####Summary stats
 
 source("scripts/exploration/neo4j.R")
+#Summary
+#without organizations
+query_sum1 ="MATCH (d:Document)
+WHERE NOT (d)<-[:SUBMITTED]->() AND d.type<>'subdoc'
+RETURN d.name as doc_name"
+data_sum1 = cypher(graph, query_sum1)
+dim(data_sum1)
+data_sum1$organization_name <- "None"
+data_sum1$organization_category <- "None"
+
+#Summary with organization
+query_sum2 ="MATCH (d:Document)
+MATCH (o:Organization)<-[:ALIAS_OF*0..1]-()-[:SUBMITTED]->(d)
+WHERE NOT (o)-[:ALIAS_OF]->()
+RETURN d.name as doc_name, o.name as organization_name, o.category as organization_category;"
+data_sum2 = cypher(graph, query_sum2)
+dim(data_sum2) 
+data_sum <- rbind(data_sum1, data_sum2)
+data_org <- data_sum[c("doc_name","organization_name","organization_category")]
+data_org <- data_org[!duplicated(data_org$doc_name),]
+dim(data_org) 
+data.frame(table(data_org$organization_category))
+
 
 #solr without organizations
 query_s1 ="MATCH (qe:Question{ref:\"Q1\"})
@@ -148,12 +172,13 @@ top_sentiment_words <- words_by_category %>%
   inner_join(get_sentiments("afinn"), by = "word") %>%
   mutate(contribution = score * n / sum(n))
 
-top_sentiment_words %>%
+graph<-top_sentiment_words %>%
   group_by(organization_category) %>%
   top_n(8, abs(contribution)) %>%
   mutate(word = reorder(word, contribution)) %>%
   ggplot(aes(word, contribution, fill = contribution > 0)) +
+  #theme(text = element_text(size=15)) +
   geom_col(show.legend = FALSE) +
   facet_wrap(~ organization_category, scales = "free_y") +
   coord_flip()
-
+ggsave("notebooks/images/top_sent.png", graph)

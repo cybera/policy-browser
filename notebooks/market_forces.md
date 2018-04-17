@@ -1,28 +1,27 @@
 
-#### Question4:
+### Question4:
 
  Can market forces and government funding be relied on to ensure that all Canadians have access to basic telecommunications services? What are the roles of the private sector and the various levels of government (federal, provincial, territorial, and municipal) in ensuring that investment in telecommunications infrastructure results in the availability of modern telecommunications services to all Canadians?
 
-`Solr searches`
+### Solr queries:
 
- bin/segment 'content:"What are the roles of the private sector and the various levels of government (federal, provincial, territorial, and municipal) in ensuring that investment in telecommunications infrastructure results in the availability of modern telecommunications services to all Canadians?"'  --add --rows=26
+ - bin/segment 'content:"What are the roles of the private sector and the various levels of government (federal, provincial, territorial, and municipal) in ensuring that investment in telecommunications infrastructure results in the availability of modern telecommunications services to all Canadians?"'  --add --rows=28 --OMexclude
 
-`Results`
+### Doc2vec queries:
 
-Category| In database | Search results | doc2vec |
+Can market forces and government funding be relied on to ensure that all Canadians have access to basic telecommunications services?
+
+### Summary stats:
+Note: Numbers may be variable depending on what version of the application you're currently using.
+
+Category| Number of docs in database | Number of docs covered by solr search results | Number of docs covered by  doc2vec results|
 --- | --- | --- | --- |
-Advocacy organizations |  289 | 2 | 87 | 
-Chamber of commerce/economic dev agency |    4 | 0 | 0 |
-Consumer advocacy organizations |    3  | 1 | 3 |
-Government  | 134 | 4 | 36 |
-Network operator - Cable companies | 118 | 1 | 34 | 
-Network operator: other | 271 | 3 | 67 | 
-Network operator: Telecom Incumbents | 339 | 3 | 55 |
-Other | 107 | 2 | 28 | 
-Small incumbents  | 66  | 1 | 17| 
-
-- 19 documents
-- 17 - have organization
-- 17 - have category
-- 17 organizations out of 175 covered
-
+Advocacy organizations |  264 | 2 | 79
+Chamber of commerce/economic dev agency |    4 | 0 | 0
+Government  | 111 | 4 | 36
+Network operator - Cable companies | 125 | 1 | 38
+Network operator: other | 208 | 3 | 62
+Network operator: Telecom Incumbents | 342 | 3 | 65
+None  | 1322  |  3 |  233
+Other | 90 | 4 |  19
+Small incumbents  | 11  | 1 | 2

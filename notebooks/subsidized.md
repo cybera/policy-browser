@@ -1,33 +1,34 @@
 
-#### Question12:
+### Question12:
 
  Should some or all services that are considered to be basic telecommunications services be subsidized? Explain, with supporting details, which services should be subsidized and under what circumstances.
 
-`Solr searches`
+### Solr queries:
 
-- bin/segment 'content:"services, subsidies"~10 OR "service, subsidies"' --add --rows=113
-- bin/segment 'content:"services, subsidy"~10 OR "service, subsidy"' --rows=141 --add
-- bin/segment 'content:"services, subsidized"~10 OR "service, subsidized"~10' --add --rows=92
+- bin/segment 'content:"services, subsidies"~10 OR "service, subsidies"' --add --rows=115
+- bin/segment 'content:"services, subsidy"~10 OR "service, subsidy"' --rows=142 --add
+- bin/segment 'content:"services, subsidized"~10 OR "service, subsidized"~10' --add --rows=93
 
-`Results`
+### Doc2vec queries:
 
-Category| In database | Search results | doc2vec | 
---- | --- | --- | -- | 
-Advocacy organizations |  289 | 22 | 72 | 
-Chamber of commerce/economic dev agency |    4 | 0 | 0 |
-Consumer advocacy organizations |    3  | 1 | 2 | 
-Government  | 134 | 17 | 28 |
-Network operator - Cable companies | 118 | 23 | 28 | 
-Network operator: other | 271 | 29 | 58 |
-Network operator: Telecom Incumbents | 339 | 30 | 53 |
-Other | 107 | 4 | 23 | 
-Small incumbents  | 66  | 8  | 18 |  
+Should some or all services that are considered to be basic telecommunications services be subsidized?
 
-*Solr search results*:
-- 205 documents
-- 134 - have organization
-- 134 - have category
-- 48 organizations out of 175 covered
+### Summary stats:
+Note: Numbers may be variable depending on what version of the application you're currently using.
+
+
+Category| Number of docs in database | Number of docs covered by solr search results | Number of docs covered by  doc2vec results|
+--- | --- | --- | --- |
+Advocacy organizations |  264 | 20 | 85
+Chamber of commerce/economic dev agency |    4 | 0 | 0
+Government  | 111 | 15 | 43
+Network operator - Cable companies | 125 | 25 | 38
+Network operator: other | 208 | 25 | 71
+Network operator: Telecom Incumbents | 342 | 30 | 80
+None | 1322  | 284
+Other | 90 | 6 | 23
+Small incumbents  | 11  | 1  | 3  
+
 
 ## Bigram Analysis
 
