@@ -7,15 +7,16 @@ library(magrittr)
 library(tsne)
 library(stringr)
 
-#setwd("~/DS/policy-browser/data/processed")
+#setwd("~/DS/hey-cira/data/processed")
 
 docs <- read.csv("data_english.csv",fileEncoding="UTF-8", stringsAsFactors =F)
 docs_fr <- read.csv("data_french.csv",fileEncoding="UTF-8", stringsAsFactors =F)
 docs_fr <- docs_fr[,c(1,2,4)]
 colnames(docs_fr) <- colnames(docs)
+docs_fr$content <- gsub('\u009c|\u00F0',' ',docs_fr$content)
 docs1 <- rbind(docs, docs_fr) 
 
-my_stopwords <- data_frame(word = c(as.character(1:10),"nextgeneration", "nono","highw","hig","highh","highwayay", "http", "st", "https"))
+my_stopwords <- data_frame(word = c(as.character(1:10),"nextgeneration", "nono","highw","hig","highh","highwayay", "http", "st", "https","__","--"))
 
 data_test <- docs1[,c("sha256","content")]
 data_test <- data_test %>% 
@@ -37,9 +38,9 @@ dtm50 <- words50 %>%
   count(sha256, word) %>%
   cast_dtm(sha256, word, n)
 
-modelsize=10
+#modelsize=10
 #modelsize=30
-#modelsize=100
+modelsize=100
 
 model <- LDA(dtm50, k = modelsize, control = list(seed = 1234))
 
@@ -93,16 +94,16 @@ docs1 <- dplyr::inner_join(docs1, doctopics.df, by = "sha256")
 
 #Visualization - topics distribution
 counts <- table(doctopics.df$Topic)
-counts <- counts *100 / sum(counts)
+counts <- counts *100 /2550
 head(sort(counts,decreasing = TRUE))
 barplot(counts, main=paste(modelsize, " topics"), 
         col="darkblue")
 
 #Create datasets
 doc_topics <-docs1[,c("sha256","Topic")]
-write.csv(doc_topics, file = "doc_topics.csv")
+write.csv(doc_topics, file = "doc_topics100.csv")
 
 topics=as.data.frame(t(dtm_terms[1:5,]))
 rownames(topics) <- NULL
 topics$label=topicLabel$Label
-write.csv(topics,file = "topics.csv")
+write.csv(topics,file = "topics100.csv")

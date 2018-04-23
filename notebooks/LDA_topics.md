@@ -53,10 +53,10 @@ Sum  |  56.1% |   |   |   |   |   |   |   |   |   |
 
 Topic| Percent of docs| Keyword1 |Keyword2 | Keyword3 | Keyword4 | Keyword5 | Keyword6 | Keyword7 | Keyword8 | Keyword9 | Keyword10
 --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---
-14  | 8%  | "internet" | "service"  | "speed"  |  "access" |  "bell"  |  "home"   |  "rural"  |  "month"  |  "line"   |  "cellular"
- 82  | 7.4%  | "crtc"    |     "telecom"   |   "regulatory"  |  "commission"  | "notice"    |   "consultation"  | ”canadian"   |  "review"   |    "basic"     |   "services"
-34  | 4%  |  "internet"  |  "data"   |   "service"  |  "price" |    "prices"  |  "month"   |  "speeds"  |   "caps"    |  "canada"  |  "companies"
-99  | 3.8%  |  "bell"   |     "canada"  |    "local"   |    "northwestel" | “bands"   |    "rate"    |   "residential"  | "subsidy"  |   "partnership"  | "télébec"
-29  |  3.6% |  "customers" |  "service"   |  "plan"    |    "call"    |    "wireless"  |   "mobile"   |   "voice"   |    "services"  |  "internet"  |  "information"  
-91  | 2.2%  |   "internet" | "mbps"  |    "unlimited" |  "dsl"  |     "gb"    |    "data"  |    "monthly" |  "speed"    | "business"  |  "cable"
-Sum  | 29%  |   |   |   |   |   |   |   |   |   |  
+65  | 11.6%  | "internet" | "service"  | "access"  |  "rural" |  "cell"  |  "phone"   |  "speed"  |  "live"  |  "services"   |  "provide"
+99  | 8.6%  |"internet" | "service"  |  "speed"  |  "data"  |   "pm"   |    "month"  |   "rural"  |   "slow"   |   "bell"       |   "pay"
+71  | 5.4%  |  "crtc"    |     "commission" |  "telecom"   |   "regulatory"  | "consultation" "notice"   |    "canadian"  |   "information"   |  "review"    |   "basic"  
+72  | 3.3%  |  "information" | "response"  |   "commission"  |  "crtc"   |      "disclosure"  |  "confidential" | "public"  |     "request"  |   "provided"  |   "rogers"
+11  |  2.9% |  "digital"  |    "canadians"  |   "canadian"  |    "canada"  |     "access"   |    "services"  |   "basic"   |     "hearing"    |  "consultation" |  "economy"
+60  | 2.9%  |   "customers" |  "service"  |   "call"  |      "wireless"  |  "plan"  |      "voice"   |    "information" "services"  |  "mobile"  |  "internet"
+Sum  | 34.7%  |   |   |   |   |   |   |   |   |   |  
