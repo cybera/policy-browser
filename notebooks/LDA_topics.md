@@ -55,8 +55,8 @@ Topic| Percent of docs| Keyword1 |Keyword2 | Keyword3 | Keyword4 | Keyword5 | Ke
 --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---
 65  | 11.6%  | "internet" | "service"  | "access"  |  "rural" |  "cell"  |  "phone"   |  "speed"  |  "live"  |  "services"   |  "provide"
 99  | 8.6%  |"internet" | "service"  |  "speed"  |  "data"  |   "pm"   |    "month"  |   "rural"  |   "slow"   |   "bell"       |   "pay"
-71  | 5.4%  |  "crtc"    |     "commission" |  "telecom"   |   "regulatory"  | "consultation" "notice"   |    "canadian"  |   "information"   |  "review"    |   "basic"  
+71  | 5.4%  |  "crtc"    |     "commission" |  "telecom"   |   "regulatory"  | "consultation" | "notice"   |    "canadian"  |   "information"   |  "review"    |   "basic"  
 72  | 3.3%  |  "information" | "response"  |   "commission"  |  "crtc"   |      "disclosure"  |  "confidential" | "public"  |     "request"  |   "provided"  |   "rogers"
 11  |  2.9% |  "digital"  |    "canadians"  |   "canadian"  |    "canada"  |     "access"   |    "services"  |   "basic"   |     "hearing"    |  "consultation" |  "economy"
-60  | 2.9%  |   "customers" |  "service"  |   "call"  |      "wireless"  |  "plan"  |      "voice"   |    "information" "services"  |  "mobile"  |  "internet"
+60  | 2.9%  |   "customers" |  "service"  |   "call"  |      "wireless"  |  "plan"  |      "voice"   |    "information" | "services"  |  "mobile"  |  "internet"
 Sum  | 34.7%  |   |   |   |   |   |   |   |   |   |  
