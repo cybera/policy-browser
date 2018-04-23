@@ -22,6 +22,6 @@ Government  | 111 | 4 | 36
 Network operator - Cable companies | 125 | 1 | 38
 Network operator: other | 208 | 3 | 62
 Network operator: Telecom Incumbents | 342 | 3 | 65
-None  | 1322  |  3 |  233
-Other | 90 | 4 |  19
+None  | 1320  |  3 |  229
+Other | 90 | 4 |  18
 Small incumbents  | 11  | 1 | 2
