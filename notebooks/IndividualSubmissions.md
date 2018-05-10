@@ -120,12 +120,11 @@ OM | ACORN | Phase2
  affordable   0.9% | food 0.8% | crtc 0.5%
 
 - Similarities:
-  - ACORN, OM, Phase2 discuss internet access.
-  - ACORN, OM discuss affordability, prices.
-  - OM, Phase2 discuss internet speeds.
+  -  internet access, internet speeds
+  
 - Differences:
   - OM discussing more big  telecom companies.
-  - ACORN - more often mentions family, life, home.
+  - ACORN - more often mention family, life, home.
   - Phase2 submissions discuss rural access.
 
 ##### Bigrams
@@ -143,13 +142,13 @@ community    access   0.6% | cell   phone     0.5% | broadband  internet 0.43%
 profit providers   0.6%    | afford internet     0.3% | service providers 0.25%
 industrialized     world   0.6% | internet services      0.3% | upload    speeds 0.22%
 
-Submissions from all sources discuss internet access and internet services.
+- Similarities:
+  -  internet access and internet services.
 
-ACORN members are more concerned about internet speed (most frequent bigram), internet affordability and importance to stay connected.
-
-OM submissions are more focused on discussing telecom companies, profit providers and community access.
-
-Phase2 submissions talk about internet speed, cell phone services and digital economy.
+- Differences:
+  - OM submissions are more focused on discussing telecom companies and community access.
+  - ACORN members discuss internet affordability and importance to stay connected.
+  - Phase2 submissions talk about digital economy.
 
 ##### Trigrams
 
@@ -166,11 +165,12 @@ incumbent           isps municipalities   1.3% | jobs     jobs      jobs     0.3
 isps municipalities      community  1.3% | low   income    people    0.3% | canada's           internet   economy 0.12%
 class      broadband       internet   1.1% | university  student    living     0.3% | considered          essential   service 0.12%
 
-Affordable world class broadband internet, 3 mbps upload and  25 mbps download  speeds are discussed mostly in OM submissions.
-
-ACORN members talk about low income families and people, university students living, importance of affordable internet access.
-
-Phase2 submissions talk about internet service providers, canada's internet economy and internet speed.
+- Similarities:
+  - internet access, internet speed
+- Differences:
+   - OM submissions - community  access  programs, 3 mbps upload and  25 mbps download  speeds.
+   - ACORN - low  income  families, easily afford home, easily afford groceries, jobs jobs jobs.
+   - Phase2 submissions talk about canada's internet economy and internet speed.
 
 
 ##### Bigrams visualization
@@ -179,7 +179,7 @@ Phase2 submissions talk about internet service providers, canada's internet econ
 
 ![bigrams1](images/2gram_om.png)
 
-Narratives:
+Clusters:
 
 - canadians pay and canadians deserve affordable Internet
 - internet - slow, expensive, (need to be) faster, cheaper, reliable.
@@ -190,7 +190,7 @@ Narratives:
 
 ![bigrams2](images/2gram_acorn.png)
 
-Narratives:
+Clusters:
 
 - pay bills, search jobs, save extra money
 - stay connected, easily afford internet access.
@@ -201,7 +201,7 @@ Narratives:
 
 ![bigrams3](images/2gram_html.png)
 
-Narratives:
+Clusters:
 - internet essential/poor/basic service
 - internet access reliable/satellite
 - rural communities
@@ -253,7 +253,6 @@ Phase2 submissions topics:
 
 Most common negative word in OM submissions is pay.
 
-Narrative:
 - negative: pay-ridiculous-poor-tired.
 - positive: opportunities to improve, support, fair, competitive.
 
@@ -263,7 +262,6 @@ Narrative:
 
 Similarly in ACORN submissions most common negative word is pay, it goes along with worry
 
-Narrative:
 - negative: pay-worry-poor-hard-limited-struggle-difficult
 - positive: helps-save-hope-care-support
 - to the question how would your life change if you have affordable internet:
@@ -274,9 +272,6 @@ helps-fun-nice-happy-healthy
 
 ![words3](images/wordsHTML.png)
 
-Most common negative word is pay.
-
-Narrative:
 - negative: pay-poor-limited-lack-costly-charged,bad-worse-barrier.
 - positive: support,lucky improve, free.
 
@@ -310,8 +305,8 @@ Narrative:
 ### Conclusion
 OpenMedia and ACORN and Phase2 submissions discuss the importance  of affordable  internet access and talk about internet speeds.
 
-OpenMedia submissions talk more about about large  telecom companies, real competition, industrialized world and community access. OM submissions mostly often mention upload/download speed  5/25.
+OpenMedia submissions talk more about about large  telecom companies and community access. OM submissions mostly often mention upload/download speed  5/25.
 
-ACORN submissions touch low-income families issues, discuss internet as  necessity for work and  everyday life.
+ACORN submissions discuss low-income families issues,talk about  internet as  necessity for work and  everyday life.
 
 Phase2 html submissions discuss internet and phone access in rural areas, talk about land line and cell phone, mention data caps.
