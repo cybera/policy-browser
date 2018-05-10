@@ -303,10 +303,10 @@ helps-fun-nice-happy-healthy
 ""I wish to comment on the regulation of broadband internet services in Canada, particularly the additional charges when customers go over their data usage caps. I am currently with an internet service provider whose best plan, which I have, costs $62.97 per month, and offers me 125GB of data traffic per month (downloading and uploading). If I use additional data, I am charged $3.00 per additional Gigabyte. That means that if I used an additional 125GB, I would be charged an additional $375.00. There is an alternative, which I have looked into, which is to have a second phone line installed, and set up an additional internet connection, to get another 125GB at $62.97. It seems absurd that in the one circumstance, I am paying $375.00 for an additional 125GB, while in the other, I am only paying an $62.97 for an additional 125GB. Why the company wants to put me through this is beyond comprehension. They will be supplying me with an additional modem (at their expense - it comes with th... <truncated>"
 
 ### Conclusion
-OpenMedia and ACORN and Phase2 submissions discuss the importance  of affordable  internet access and talk about internet speeds.
+OpenMedia and ACORN and Phase2 submissions discuss the importance of affordable internet access and talk about internet speeds.
 
-OpenMedia submissions talk more about about large  telecom companies and community access. OM submissions mostly often mention upload/download speed  5/25.
+OpenMedia submissions talk more about large telecom companies and community access. OM submissions most often mention a upload/download speed of 5/25.
 
-ACORN submissions discuss low-income families issues,talk about  internet as  necessity for work and  everyday life.
+ACORN submissions discuss low-income families issues and internet as necessity for work and everyday life.
 
-Phase2 html submissions discuss internet and phone access in rural areas, talk about land line and cell phone, mention data caps.
+Phase2 html submissions discuss internet and phone access in rural areas and land line and cell phone. The Phase2 html submissions also make notable mention data caps.
