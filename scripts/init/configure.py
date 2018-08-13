@@ -88,6 +88,7 @@ class ConfigFile:
 neo4j_config = ConfigFile(path.join("config", "neo4j.yml"))
 neo4j_config.add("username", "Neo4J username")
 neo4j_config.add("password", "Neo4J password")
+neo4j_config.add("ppn", "Consultation to import to neo4j")
 neo4j_config.reconfigure()
 
 browser_config = ConfigFile(path.join("config", "browser.yml"))

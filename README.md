@@ -1,13 +1,12 @@
 # policy-browser
-repo for various CIRA project deliverables
+This repository contains code for working with documents submitted to the CRTC as part of their public consultation process. The code herein will download, process, and import documents associated with a particular consultation from the CRTC and import it into a neo4j database. Further, it will set up a local version of Cybera's policy browser and contains all code used to analyze documents related to CRTC consultation 2015-134 and posted [here](http://www.cybera.ca/news-and-events/publications/) (see the Industry Reviews section).
 
 <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
 - [policy-browser](#policy-browser)
-	- [Running w/ Docker](#running-w-docker)
+	- [High-level representation](#high-level-representation)
+	- [Running w/ Docker (recommended approach)](#running-w-docker-recommended-approach)
 	- [Configuration](#configuration)
-	- [Working with other Consultations](#working-with-other-consultations)
-		- [Sample Config files](#sample-config-files)
 	- [Getting started with Neo4j](#getting-started-with-neo4j)
 		- [Adding data to Neo4J](#adding-data-to-neo4j)
 	- [Getting started with Solr](#getting-started-with-solr)
@@ -15,7 +14,7 @@ repo for various CIRA project deliverables
 		- [Web interface](#web-interface)
 		- [Solr Query Basics](#solr-query-basics)
 		- [Segment script](#segment-script)
-	- [The Policy Browser Browser](#the-policy-browser-browser)
+	- [The Policy Browser](#the-policy-browser)
 		- [Running the browser](#running-the-browser)
 		- [Adding new styles of navigation](#adding-new-styles-of-navigation)
 		- [Adding to the navigation selector](#adding-to-the-navigation-selector)
@@ -32,7 +31,12 @@ repo for various CIRA project deliverables
 
 <!-- /TOC -->
 
-## Running w/ Docker
+## High-level representation
+![schematic](doc/Policy_browser_flowchart.png)
+
+The steps outlined below will perform the steps illustrated in the diagram below. It should have downloaded, processed, and imported all the documents scraped from the CRTC page into a neo4j database. This database is then used to supply the policy browser in order to easily browse and query the documents using SolR (see [The Policy Browser section](#the-policy-browser))
+
+## Running w/ Docker (recommended approach)
 
 1. Install [Docker](https://www.docker.com)
 
@@ -50,12 +54,17 @@ repo for various CIRA project deliverables
   bin/configure
   ```
 
+**NB: Working with other Consultations**
+The scripts and instructions as outlined herein were all tailored for CRTC consultation 2015-134. However, much of the code provided can also be applied to any other CRTC consultation. In particular, it will be possible to download, process, and import all documents into neo4j that can then be browsed using the policy browser and queried using SolR. To do so, run `bin/configure` and customize the responses for the consultation of interest.
+
 4. Scrape CRTC site for documents
 
-  By default, this repository is set up to scrape consultation 2015-134, which was used in our project. In order to apply it to another consultation, see the section [Working with other Consultations.](#Working-with-other-Consultations)
   ```
   bin/scrape
   ```
+
+**NB:** If you want to import a second consultation, make sure you archive any data that was already imported into neo4j (i.e. from `data/raw` and `data/processed`).
+
 
 5. Start required services: Neo4j, Solr, and Memcached
 
@@ -84,6 +93,22 @@ repo for various CIRA project deliverables
   bin/transform
   ```
 
+Given that the repo is set up specific for consultation 2015-134, other consultations will not be able to use some of the transformation scripts used in the original analysis. In order to limit the transformations executed, modify the following file:
+```
+.skip-transforms
+```
+
+We recommend copying the sample .skip-transforms.201708231 to .skip-transforms to ensure only the applicable transformations are run.
+
+8. Start the Policy Browser
+In order to easily browse the documents downloaded and processed, start the policy browser via:
+
+```
+bin/app
+```
+
+The app will be available at [localhost:4567/browser?ppn=2015-134](localhost:4567/browser?ppn=2015-134)
+
 ## Configuration
 
 You'll need to create configuration files for logging into Neo4J and getting access to administrative functions on the browser. There are already templates in the *config* folder (with a *".example"* extension). Make a copy of the files where the extension is removed and update the Neo4J username and password to whatever you set for Neo4J. Update the browser admin password to whatever password you want to use to log in as an admin (it simply has to match what's submitted).
@@ -93,33 +118,6 @@ cd config
 cp browser.yml.example browser.yml
 cp neo4j.yml.example neo4j.yml
 ```
-
-## Working with other Consultations
-The scripts and instructions as outlined herein were all tailored for CRTC consultation 2015-134. However, much of the code provided can also be applied to any other CRTC consultation. In particular, it will be possible to download, process, and import all documents into neo4j that can then be browsed using the policy browser and queried using SolR. In order to do so, the following files will have to be modified.
-
-NB: If you want to import a second consultation, make sure you archive any data that was already imported into neo4j (i.e. from `data/raw` and `data/processed`).
-
-1. For the `bin/scrape` step:
-```
-config/docker/scraper.yml
-```
-This files tells the scraper which consultation to look at, where to place the files (ensure the folder exists), and whether it is a currently ongoing consultation or not.
-
-2. For the `bin/transform` step:  
-a)
-```
-config/neo4j.yml
-```
-Make sure the db name and pw are set and specify which consultation is being imported.   
-b)
-```
-.skip-transforms
-```
-This file is used to indicate which DB transformations to execute. Given that the repo is set up specific for consultation 2015-134, other consultations will not be able to use some of the transformation scripts used. Most likely, only Neo4JImport
-and Neo4JToSolr will be applicable.
-
-### Sample Config files
-In order to help demonstrate how to run the code on another consultation, sample config files are given with a suffix of _201708231, which will scrape and import all documents related to that consultation.
 
 ## Getting started with Neo4j
 
@@ -294,7 +292,7 @@ Comparing that with a simple count of organizations allows us to figure out how 
 
 Currently on my data set, that search seems to provide matches for 39 out of 128 identified companies.
 
-## The Policy Browser Browser
+## The Policy Browser
 
 The "prototype browser" has been refactored, renamed, and moved to the *app* folder. It uses Sinatra as a basic framework, with ERB templates and Bootstrap CSS.
 
